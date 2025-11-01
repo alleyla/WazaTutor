@@ -33,6 +33,8 @@ oatutor-firebase-adminsdk.json
 **/.vscode
 **/.idea
 **/.Rhistory
+*.iml
 pnpm-lock.yaml
+pnpm-workspace.yaml
 
 /generated
