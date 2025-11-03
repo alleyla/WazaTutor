@@ -37,4 +37,9 @@ oatutor-firebase-adminsdk.json
 pnpm-lock.yaml
 pnpm-workspace.yaml
 
+# Server
+server/node_modules
+server/.env
+server/package-lock.json
+
 /generated
