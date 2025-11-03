@@ -56,10 +56,6 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
 function Account() {
   const classes = useStyles();
   const history = useHistory();
-  const [userData, setUserData] = useState({
-    username: '',
-    email: '',
-  });
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -83,7 +79,6 @@ function Account() {
         },
       });
       
-      setUserData(response.data.user);
       setFormData({
         username: response.data.user.username,
         email: response.data.user.email,
@@ -135,7 +130,6 @@ function Account() {
         }
       );
       
-      setUserData(response.data.user);
       setSuccess('Account updated successfully!');
       toast.success('Account updated successfully!');
       
