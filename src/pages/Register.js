@@ -7,11 +7,11 @@ import {
   Button,
   Typography,
   Box,
-  CircularProgress,
-  Alert
+  CircularProgress
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -38,6 +38,16 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
     color: theme.palette.primary.main,
+  },
+  errorText: {
+    color: theme.palette.error.main,
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
+  },
+  successText: {
+    color: theme.palette.success.main,
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
   },
 }));
 
@@ -79,15 +89,16 @@ function Register() {
       localStorage.setItem('username', response.data.user.username);
       
       setSuccess('Registration successful! Redirecting...');
+      toast.success('Registration successful!');
       
       // Redirect to home page after a short delay
       setTimeout(() => {
         history.push('/');
       }, 1500);
     } catch (err) {
-      setError(
-        err.response?.data?.error || 'An error occurred during registration'
-      );
+      const errorMsg = err.response?.data?.error || 'An error occurred during registration';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -102,14 +113,14 @@ function Register() {
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit}>
             {error && (
-              <Box mt={2}>
-                <Alert severity="error">{error}</Alert>
-              </Box>
+              <Typography className={classes.errorText}>
+                {error}
+              </Typography>
             )}
             {success && (
-              <Box mt={2}>
-                <Alert severity="success">{success}</Alert>
-              </Box>
+              <Typography className={classes.successText}>
+                {success}
+              </Typography>
             )}
             <TextField
               variant="outlined"

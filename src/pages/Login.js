@@ -7,11 +7,11 @@ import {
   Button,
   Typography,
   Box,
-  CircularProgress,
-  Alert
+  CircularProgress
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -38,6 +38,11 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
     color: theme.palette.primary.main,
+  },
+  errorText: {
+    color: theme.palette.error.main,
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
   },
 }));
 
@@ -74,12 +79,14 @@ function Login() {
       localStorage.setItem('userId', response.data.user.userId.toString());
       localStorage.setItem('username', response.data.user.username);
       
+      toast.success('Login successful!');
+      
       // Redirect to home page
       history.push('/');
     } catch (err) {
-      setError(
-        err.response?.data?.error || 'An error occurred during login'
-      );
+      const errorMsg = err.response?.data?.error || 'An error occurred during login';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -94,9 +101,9 @@ function Login() {
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit}>
             {error && (
-              <Box mt={2}>
-                <Alert severity="error">{error}</Alert>
-              </Box>
+              <Typography className={classes.errorText}>
+                {error}
+              </Typography>
             )}
             <TextField
               variant="outlined"

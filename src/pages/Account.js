@@ -8,11 +8,11 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Alert,
   Grid
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -39,6 +39,16 @@ const useStyles = makeStyles((theme) => ({
   backButton: {
     marginTop: theme.spacing(2),
   },
+  errorText: {
+    color: theme.palette.error.main,
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
+  },
+  successText: {
+    color: theme.palette.success.main,
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
+  },
 }));
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
@@ -59,11 +69,7 @@ function Account() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    fetchAccountInfo();
-  }, []);
-
-  const fetchAccountInfo = async () => {
+  const fetchAccountInfo = React.useCallback(async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
       history.push('/login');
@@ -85,14 +91,21 @@ function Account() {
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
         localStorage.removeItem('authToken');
+        toast.error('Session expired. Please login again.');
         history.push('/login');
       } else {
-        setError('Failed to load account information');
+        const errorMsg = 'Failed to load account information';
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } finally {
       setFetchLoading(false);
     }
-  };
+  }, [history]);
+
+  useEffect(() => {
+    fetchAccountInfo();
+  }, [fetchAccountInfo]);
 
   const handleChange = (e) => {
     setFormData({
@@ -124,6 +137,7 @@ function Account() {
       
       setUserData(response.data.user);
       setSuccess('Account updated successfully!');
+      toast.success('Account updated successfully!');
       
       // Update localStorage with new username if changed
       if (response.data.user.username !== localStorage.getItem('username')) {
@@ -132,11 +146,12 @@ function Account() {
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
         localStorage.removeItem('authToken');
+        toast.error('Session expired. Please login again.');
         history.push('/login');
       } else {
-        setError(
-          err.response?.data?.error || 'An error occurred while updating account'
-        );
+        const errorMsg = err.response?.data?.error || 'An error occurred while updating account';
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } finally {
       setLoading(false);
@@ -147,6 +162,7 @@ function Account() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
+    toast.success('Logged out successfully');
     history.push('/login');
   };
 
@@ -173,14 +189,14 @@ function Account() {
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit}>
             {error && (
-              <Box mt={2}>
-                <Alert severity="error">{error}</Alert>
-              </Box>
+              <Typography className={classes.errorText}>
+                {error}
+              </Typography>
             )}
             {success && (
-              <Box mt={2}>
-                <Alert severity="success">{success}</Alert>
-              </Box>
+              <Typography className={classes.successText}>
+                {success}
+              </Typography>
             )}
             <Grid container spacing={2}>
               <Grid item xs={12}>
