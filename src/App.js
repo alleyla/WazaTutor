@@ -93,6 +93,8 @@ class App extends React.Component {
         if (!userId) {
             userId = localStorage.getItem(USER_ID_STORAGE_KEY);
             if (!userId) {
+                // For anonymous users only - not security-critical
+                // Authenticated users will use database-generated secure IDs
                 userId = generateRandomInt().toString();
                 localStorage.setItem(USER_ID_STORAGE_KEY, userId);
             }

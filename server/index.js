@@ -34,13 +34,22 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Rate limiting for account endpoints
+const accountLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // Limit each IP to 30 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Apply rate limiting to auth routes
 app.use('/api/auth/register', authLimiter);
 app.use('/api/auth/login', authLimiter);
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/account', accountRoutes);
+app.use('/api/account', accountLimiter, accountRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
