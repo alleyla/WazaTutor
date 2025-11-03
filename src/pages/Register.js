@@ -51,8 +51,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
-
 function Register() {
   const classes = useStyles();
   const history = useHistory();
@@ -81,7 +79,7 @@ function Register() {
     setSuccess('');
 
     try {
-      const response = await axios.post(`${API_URL}/api/auth/register`, formData);
+      const response = await axios.post('/api/auth/register', formData);
       
       // Store token and user info in localStorage
       localStorage.setItem('authToken', response.data.token);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Container,
@@ -51,8 +51,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
-
 function Account() {
   const classes = useStyles();
   const history = useHistory();
@@ -65,7 +63,7 @@ function Account() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const fetchAccountInfo = React.useCallback(async () => {
+  const fetchAccountInfo = useCallback(async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
       history.push('/login');
@@ -73,7 +71,7 @@ function Account() {
     }
 
     try {
-      const response = await axios.get(`${API_URL}/api/account`, {
+      const response = await axios.get('/api/account', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -121,7 +119,7 @@ function Account() {
     
     try {
       const response = await axios.put(
-        `${API_URL}/api/account`,
+        '/api/account',
         formData,
         {
           headers: {

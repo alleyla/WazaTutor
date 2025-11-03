@@ -46,8 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
-
 function Login() {
   const classes = useStyles();
   const history = useHistory();
@@ -72,7 +70,7 @@ function Login() {
     setError('');
 
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, formData);
+      const response = await axios.post('/api/auth/login', formData);
       
       // Store token and user info in localStorage
       localStorage.setItem('authToken', response.data.token);
@@ -94,7 +92,7 @@ function Login() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.container}>
+      <div className={classes.container}> 
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
             Sign In

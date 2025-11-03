@@ -3,8 +3,6 @@ import { Route, Redirect } from 'react-router-dom';
 import { CircularProgress, Box } from '@material-ui/core';
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
-
 /**
  * ProtectedRoute component that checks for authentication token
  * and verifies its validity before rendering the component.
@@ -17,7 +15,7 @@ function ProtectedRoute({ component: Component, ...rest }) {
   useEffect(() => {
     const verifyToken = async () => {
       const token = localStorage.getItem('authToken');
-      
+
       if (!token) {
         setIsAuthenticated(false);
         setIsLoading(false);
@@ -25,15 +23,14 @@ function ProtectedRoute({ component: Component, ...rest }) {
       }
 
       try {
-        // Verify token with backend
-        await axios.get(`${API_URL}/api/auth/verify`, {
+        // Relative URL works in dev (via CRA proxy) and prod (same origin)
+        await axios.get('/api/auth/verify', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         setIsAuthenticated(true);
-      } catch (error) {
-        // Token is invalid or expired
+      } catch (_error) {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userId');
         localStorage.removeItem('username');
@@ -64,7 +61,7 @@ function ProtectedRoute({ component: Component, ...rest }) {
           <Redirect
             to={{
               pathname: '/login',
-              state: { from: props.location }
+              state: { from: props.location },
             }}
           />
         )

@@ -1,88 +1,94 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors'); // Removed: no CORS needed with proxy in dev and same-origin in prod
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const accountRoutes = require('./routes/account');
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3002;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Security middleware
 app.use(helmet());
-
-// CORS configuration
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3001',
-  credentials: true,
-  optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting for auth endpoints
+// Rate limiting
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // Limit each IP to 10 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 10,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Rate limiting for account endpoints
 const accountLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 30, // Limit each IP to 30 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 30,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Apply rate limiting to auth routes
+// Apply rate limiting to specific routes
 app.use('/api/auth/register', authLimiter);
 app.use('/api/auth/login', authLimiter);
 
-// Routes
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/account', accountLimiter, accountRoutes);
 
-// Health check endpoint
+// Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Root endpoint
-app.get('/', (req, res) => {
-  res.json({ 
+// Optional informational endpoint
+app.get('/api', (req, res) => {
+  res.json({
     message: 'WazaTutor API Server',
-    version: '1.0.0'
+    version: '1.0.0',
+    env: NODE_ENV,
   });
 });
 
-// Error handling middleware
+// In production, serve the React app from build/ on the same origin as the API
+if (NODE_ENV === 'production') {
+  const buildPath = path.join(__dirname, '..', 'build');
+  app.use(express.static(buildPath));
+
+  // For any non-API GET request, serve index.html so React Router can handle it
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
+}
+
+// Error handling
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(err.status || 500).json({
-    error: err.message || 'Internal server error'
+    error: err.message || 'Internal server error',
   });
 });
 
-// 404 handler
+// 404 for unmatched routes (API)
 app.use((req, res) => {
-  res.status(404).json({ 
-    error: 'Route not found' 
+  res.status(404).json({
+    error: 'Route not found',
   });
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`WazaTutor API server is running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Environment: ${NODE_ENV}`);
 });
 
 // Graceful shutdown
