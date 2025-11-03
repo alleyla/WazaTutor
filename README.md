@@ -63,6 +63,9 @@ Attribution is given within each json file, indicating the authoring organizatio
 
 The installation assumes that you already have Git, Node.js, and npm installed.
 
+For the authentication system, you will also need:
+- PostgreSQL (v12 or higher) for user data storage
+
 ## Installation
 
 ```sh
@@ -70,7 +73,7 @@ git clone --recurse-submodules https://github.com/CAHLR/OATutor.git
 cd OATutor
 ```
 
-### Dependencies
+### Frontend Dependencies
 ```sh
 npm install
 ```
@@ -78,11 +81,61 @@ npm install
 > You may use an alternative package manager such as [yarn](https://yarnpkg.com/) or
 > [pnpm](https://pnpm.io/).
 
+### Backend Setup (Authentication Server)
+
+The authentication system requires a backend server and database:
+
+1. Navigate to the server directory and install dependencies:
+```sh
+cd server
+npm install
+```
+
+2. Set up PostgreSQL database:
+```sh
+# Create database
+psql -U postgres
+CREATE DATABASE wazatutor;
+\q
+```
+
+3. Configure environment variables:
+```sh
+cd server
+cp .env.example .env
+# Edit .env with your database credentials and JWT secret
+```
+
+4. Initialize the database schema:
+```sh
+npm run init-db
+```
+
+5. Start the backend server:
+```sh
+# Development mode (with auto-reload)
+npm run dev
+
+# OR Production mode
+npm start
+```
+
+The server will run on port 3002 by default.
+
+### Frontend Configuration
+
+Update the `.env` file in the root directory to point to your backend server:
+```
+REACT_APP_API_URL=http://localhost:3002
+```
+
 ### Local Development Server
 
 ```sh
 npm run start
 ```
+
+The frontend will run on port 3001 (or the port specified in `.env`).
 
 ### Building & Deployment
 
@@ -92,6 +145,35 @@ npx serve -s build
 ```
 > The build folder now contains all of the static assets necessary to make a complete deployment on
 > a static site hosting provider.
+
+## Authentication System
+
+WazaTutor now includes a full user authentication system with the following features:
+
+- **User Registration**: Create new accounts with username, email, and password
+- **User Login**: Authenticate with email and password
+- **JWT Authentication**: Secure token-based authentication
+- **Account Management**: Users can view and update their profile information
+- **Protected Routes**: Certain routes require authentication
+
+### Authentication Routes
+
+- `/login` - User login page
+- `/register` - New user registration page
+- `/account` - User account management (protected route)
+
+### API Endpoints
+
+The backend server provides the following endpoints:
+
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login with credentials
+- `GET /api/auth/verify` - Verify JWT token
+- `POST /api/auth/logout` - Logout
+- `GET /api/account` - Get account information (protected)
+- `PUT /api/account` - Update account information (protected)
+
+See [server/README.md](server/README.md) for detailed API documentation.
 
 ### \[Optional\] Firebase Setup
 
