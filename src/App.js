@@ -38,6 +38,10 @@ import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
 import { IS_STAGING_OR_DEVELOPMENT } from "./util/getBuildType";
 import TabFocusTrackerWrapper from "./components/TabFocusTrackerWrapper";
 import ViewAllProblems from "./components/problem-layout/ViewAllProblems";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Account from "./pages/Account";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // ### BEGIN CUSTOMIZABLE IMPORTS ###
 import config from "./config/firebaseConfig.js";
@@ -84,11 +88,14 @@ if (!AB_TEST_MODE) {
 class App extends React.Component {
     constructor(props) {
         super(props);
-        // UserID creation/loading
-        let userId = localStorage.getItem(USER_ID_STORAGE_KEY);
+        // UserID creation/loading - check for authenticated user first
+        let userId = localStorage.getItem('userId'); // Check authenticated user
         if (!userId) {
-            userId = generateRandomInt().toString();
-            localStorage.setItem(USER_ID_STORAGE_KEY, userId);
+            userId = localStorage.getItem(USER_ID_STORAGE_KEY);
+            if (!userId) {
+                userId = generateRandomInt().toString();
+                localStorage.setItem(USER_ID_STORAGE_KEY, userId);
+            }
         }
         this.userID = userId;
         this.bktParams = this.getTreatmentObject(treatmentMapping.bktParams);
@@ -426,6 +433,34 @@ class App extends React.Component {
                                             <SessionExpired
                                                 key={Date.now()}
                                                 {...props}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/login"
+                                        render={(props) => (
+                                            <Login
+                                                key={Date.now()}
+                                                {...props}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/register"
+                                        render={(props) => (
+                                            <Register
+                                                key={Date.now()}
+                                                {...props}
+                                            />
+                                        )}
+                                    />
+                                    <ProtectedRoute
+                                        exact
+                                        path="/account"
+                                        component={Account}
+                                    />
                                             />
                                         )}
                                     />
