@@ -13,6 +13,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import storageService from '../services/storageService';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -64,7 +65,9 @@ function Account() {
   const [success, setSuccess] = useState('');
 
   const fetchAccountInfo = useCallback(async () => {
-    const token = localStorage.getItem('authToken');
+
+    const token = storageService.getAuthToken();
+
     if (!token) {
       history.push('/login');
       return;
@@ -83,7 +86,7 @@ function Account() {
       });
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
-        localStorage.removeItem('authToken');
+        storageService.clearAuthUser();
         toast.error('Session expired. Please login again.');
         history.push('/login');
       } else {
@@ -115,7 +118,7 @@ function Account() {
     setError('');
     setSuccess('');
 
-    const token = localStorage.getItem('authToken');
+    const token = storageService.getAuthToken();
     
     try {
       const response = await axios.put(
@@ -131,13 +134,13 @@ function Account() {
       setSuccess('Account updated successfully!');
       toast.success('Account updated successfully!');
       
-      // Update localStorage with new name if changed
-      if (response.data.user.name !== localStorage.getItem('name')) {
-        localStorage.setItem('name', response.data.user.name);
+      // Update storage with new name if changed
+      if (response.data.user.name !== storageService.getAuthUserName()) {
+          storageService.updateAuthUserName(response.data.user.name);
       }
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
-        localStorage.removeItem('authToken');
+        storageService.clearAuthUser();
         toast.error('Session expired. Please login again.');
         history.push('/login');
       } else {
@@ -151,9 +154,7 @@ function Account() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('id');
-    localStorage.removeItem('name');
+    storageService.clearAuthUser();
     toast.success('Logged out successfully');
     history.push('/login');
   };

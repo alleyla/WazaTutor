@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { CircularProgress, Box } from '@material-ui/core';
 import axios from 'axios';
+import storageService from '../services/storageService';
 
 /**
  * ProtectedRoute component that checks for authentication token
@@ -13,32 +14,35 @@ function ProtectedRoute({ component: Component, ...rest }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const verifyToken = async () => {
-      const token = localStorage.getItem('authToken');
+      const verifyToken = async () => {
 
-      if (!token) {
-        setIsAuthenticated(false);
-        setIsLoading(false);
-        return;
-      }
+          const token = storageService.getAuthToken();
 
-      try {
-        // Relative URL works in dev (via CRA proxy) and prod (same origin)
-        await axios.get('/api/auth/verify', {
-            headers: {
+          if (!token) {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+            return;
+          }
+
+          try {
+            // Relative URL works in dev (via CRA proxy) and prod (same origin)
+            await axios.get('/api/auth/verify', {
+                headers: {
                 'x-auth-token': token,
             }
-        });
-        setIsAuthenticated(true);
-      } catch (_error) {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('id');
-        localStorage.removeItem('name');
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+            });
+            setIsAuthenticated(true);
+          } catch (_error) {
+              // Only clear auth data on authentication errors
+              if (_error.response?.status === 401 || _error.response?.status === 403) {
+                  storageService.clearInvalidToken();
+                  // Don't remove userId - App.js handles the fallback to anonymous
+              }
+            setIsAuthenticated(false);
+          } finally {
+            setIsLoading(false);
+          }
+      };
 
     verifyToken();
   }, []);

@@ -4,6 +4,7 @@ import Platform from "./platform-logic/Platform.js";
 import DebugPlatform from "./platform-logic/DebugPlatform.js";
 import Firebase from "@components/Firebase.js";
 import { LocalizationProvider } from "./util/LocalizationContext";
+import storageService from './services/storageService';
 import {
     AB_TEST_MODE
 } from "./config/config.js";
@@ -89,15 +90,12 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         // UserID creation/loading - check for authenticated user first
-        let userId = localStorage.getItem('userId'); // Check authenticated user
+        let userId = storageService.getCurrentUserId(); // Check authenticated user
         if (!userId) {
-            userId = localStorage.getItem(USER_ID_STORAGE_KEY);
-            if (!userId) {
-                // For anonymous users only - not security-critical
-                // Authenticated users will use database-generated secure IDs
-                userId = generateRandomInt().toString();
-                localStorage.setItem(USER_ID_STORAGE_KEY, userId);
-            }
+            // For anonymous users only - not security-critical
+            // Authenticated users will use ids from database
+            userId = generateRandomInt().toString();
+            storageService.setAnonymousUserId(userId);
         }
         this.userID = userId;
         this.bktParams = this.getTreatmentObject(treatmentMapping.bktParams);
@@ -355,7 +353,7 @@ class App extends React.Component {
                                       exact
                                       path="/lessons/:lessonID/problems"
                                         component={ViewAllProblems}
-                                       />
+                                    />
                                     <Route
                                     exact
                                         path="/lessons/:lessonID"
@@ -462,9 +460,6 @@ class App extends React.Component {
                                         exact
                                         path="/account"
                                         component={Account}
-                                    />
-                                            />
-                                        )}
                                     />
                                     <Route component={NotFound} />
                                 </Switch>

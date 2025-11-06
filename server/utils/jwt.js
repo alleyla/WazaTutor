@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION || '7d';
+const JWT_ISSUER = process.env.JWT_ISSUER;
 
 // Ensure JWT_SECRET is set in production
 if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
@@ -14,14 +15,14 @@ const secret = JWT_SECRET || 'development-secret-key-change-in-production';
 function generateToken(payload) {
   return jwt.sign(payload, secret, {
     expiresIn: JWT_EXPIRATION,
-    issuer: 'wazatutor'
+    issuer: JWT_ISSUER
   });
 }
 
 function verifyToken(token) {
   try {
     return jwt.verify(token, secret, {
-      issuer: 'wazatutor'
+      issuer: JWT_ISSUER
     });
   } catch (error) {
 

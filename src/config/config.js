@@ -70,10 +70,17 @@ const _SHORT_SITE_NAME = SITE_NAME.toLowerCase()
     .replace(/[^a-z]/g, "")
     .substr(0, 16);
 
+
+// ⚠️ DEPRECATED: Storage keys moved to storageService.js
+// These are kept for backward compatibility only
+// Use storageService methods instead of direct localStorage access
 const USER_ID_STORAGE_KEY = `${_SHORT_SITE_NAME}-user_id`;
+
+
 const PROGRESS_STORAGE_KEY = `${_SHORT_SITE_NAME}-progress`;
 export const LESSON_PROGRESS_STORAGE_KEY = (lessonId) =>
     `${PROGRESS_STORAGE_KEY}-${lessonId}`;
+
 
 const CANVAS_WARNING_STORAGE_KEY = `${_SHORT_SITE_NAME}-canvas-warning-dismissed`;
 

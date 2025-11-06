@@ -12,6 +12,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import storageService from '../services/storageService';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -71,11 +72,13 @@ function Login() {
 
     try {
       const response = await axios.post('/api/auth/login', formData);
-      
-      // Store token and user info in localStorage
-      localStorage.setItem('authToken', response.data.token);
-      localStorage.setItem('id', response.data.user.id.toString());
-      localStorage.setItem('name', response.data.user.name);
+
+        // Store token and user info using storageService
+        storageService.setAuthUser(
+            response.data.token,
+            response.data.user.id,
+            response.data.user.name
+        );
       
       toast.success('Login successful!');
       
