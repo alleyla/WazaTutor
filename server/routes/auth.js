@@ -1,142 +1,109 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const pool = require('../db/pool');
+const { validate, registerSchema, loginSchema } = require('../middleware/validation');
+const { authLimiter } = require('../middleware/rateLimiter');
+
 const router = express.Router();
-const User = require('../models/User');
-const { generateToken } = require('../utils/jwt');
-const { registrationSchema, loginSchema } = require('../utils/validation');
-const authenticateToken = require('../middleware/auth');
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// POST /api/auth/register - User Registration
-router.post('/register', async (req, res) => {
-  try {
-    // Validate input
-    const { error, value } = registrationSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ 
-        error: error.details[0].message 
-      });
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not set.');
+}
+
+// User registration
+router.post('/register', authLimiter, validate(registerSchema), async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        // Check if email already exists
+        const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (userExists.rows.length > 0) {
+            return res.status(409).json({ message: 'Email is already in use.' });
+        }
+
+        // Hash the password
+        const salt = await bcrypt.genSalt(10);
+        const password_hash = await bcrypt.hash(password, salt);
+
+        // Insert new user
+        const newUser = await pool.query(
+            'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email',
+            [name, email, password_hash]
+        );
+
+        res.status(201).json({
+            message: 'User registered successfully.',
+            user: newUser.rows[0],
+        });
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ message: 'Server error during registration.' });
     }
-
-    const { username, email, password } = value;
-
-    // Check if user already exists
-    const existingUserByEmail = await User.findByEmail(email);
-    if (existingUserByEmail) {
-      return res.status(400).json({ 
-        error: 'Email already registered' 
-      });
-    }
-
-    const existingUserByUsername = await User.findByUsername(username);
-    if (existingUserByUsername) {
-      return res.status(400).json({ 
-        error: 'Username already taken' 
-      });
-    }
-
-    // Hash password
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
-
-    // Create user
-    const newUser = await User.create(username, email, passwordHash);
-
-    // Generate JWT token
-    const token = generateToken({
-      userId: newUser.user_id,
-      username: newUser.username,
-      email: newUser.email
-    });
-
-    res.status(201).json({
-      message: 'User registered successfully',
-      token,
-      user: {
-        userId: newUser.user_id,
-        username: newUser.username,
-        email: newUser.email
-      }
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ 
-      error: 'An error occurred during registration' 
-    });
-  }
 });
 
-// POST /api/auth/login - User Login
-router.post('/login', async (req, res) => {
-  try {
-    // Validate input
-    const { error, value } = loginSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ 
-        error: error.details[0].message 
-      });
+// User login
+router.post('/login', authLimiter, validate(loginSchema), async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Check if user exists
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        const user = result.rows[0];
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials.' });
+        }
+
+        // Check password
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials.' });
+        }
+
+        // Create and sign JWT
+        const payload = {
+            user: {
+                id: user.id,
+            },
+        };
+
+        jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }, (err, token) => {
+            if (err) throw err;
+            res.json({
+                token,
+                userId: user.id,
+                message: 'Logged in successfully.',
+            });
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Server error during login.' });
     }
-
-    const { email, password } = value;
-
-    // Find user by email
-    const user = await User.findByEmail(email);
-    if (!user) {
-      return res.status(401).json({ 
-        error: 'Invalid email or password' 
-      });
-    }
-
-    // Compare password
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    if (!isPasswordValid) {
-      return res.status(401).json({ 
-        error: 'Invalid email or password' 
-      });
-    }
-
-    // Generate JWT token
-    const token = generateToken({
-      userId: user.user_id,
-      username: user.username,
-      email: user.email
-    });
-
-    res.json({
-      message: 'Login successful',
-      token,
-      user: {
-        userId: user.user_id,
-        username: user.username,
-        email: user.email
-      }
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ 
-      error: 'An error occurred during login' 
-    });
-  }
 });
 
-// GET /api/auth/verify - Verify JWT token
-router.get('/verify', authenticateToken, (req, res) => {
-  res.json({
-    valid: true,
-    user: {
-      userId: req.user.userId,
-      username: req.user.username,
-      email: req.user.email
+// Verify token
+router.get('/verify', (req, res) => {
+    const token = req.header('x-auth-token');
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token, authorization denied.' });
     }
-  });
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded.user;
+        res.json({ isValid: true, userId: req.user.id });
+    } catch (error) {
+        res.status(401).json({ message: 'Token is not valid.', isValid: false });
+    }
 });
 
-// POST /api/auth/logout - Logout (client-side token removal)
+// User logout (handled client-side by destroying the token)
 router.post('/logout', (req, res) => {
-  // With JWT, logout is primarily handled client-side by removing the token
-  // This endpoint can be used for additional server-side logging if needed
-  res.json({ 
-    message: 'Logout successful' 
-  });
+    // Client will remove token. This endpoint is for semantics.
+    res.json({ message: 'Logged out successfully.' });
 });
 
 module.exports = router;
