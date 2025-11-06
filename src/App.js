@@ -17,7 +17,6 @@ import {
     PROGRESS_STORAGE_KEY,
     SITE_VERSION,
     ThemeContext,
-    USER_ID_STORAGE_KEY,
 } from "./config/config.js";
 import {
     createTheme,
@@ -43,6 +42,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
 import ProtectedRoute from "./components/ProtectedRoute";
+import GuestRoute from "./components/GuestRoute";
 
 // ### BEGIN CUSTOMIZABLE IMPORTS ###
 import config from "./config/firebaseConfig.js";
@@ -436,30 +436,22 @@ class App extends React.Component {
                                             />
                                         )}
                                     />
-                                    <Route
-                                        exact
-                                        path="/login"
-                                        render={(props) => (
-                                            <Login
-                                                key={Date.now()}
-                                                {...props}
-                                            />
-                                        )}
-                                    />
-                                    <Route
-                                        exact
-                                        path="/register"
-                                        render={(props) => (
-                                            <Register
-                                                key={Date.now()}
-                                                {...props}
-                                            />
-                                        )}
-                                    />
+                                    {/* Protected Routes - Only accessible when logged in */}
                                     <ProtectedRoute
                                         exact
                                         path="/account"
                                         component={Account}
+                                    />
+                                    {/* Guest Routes - Only accessible when NOT logged in */}
+                                    <GuestRoute
+                                        exact
+                                        path="/login"
+                                        component={Login}
+                                    />
+                                    <GuestRoute
+                                        exact
+                                        path="/register"
+                                        component={Register}
                                     />
                                     <Route component={NotFound} />
                                 </Switch>
@@ -467,8 +459,16 @@ class App extends React.Component {
                             {DO_FOCUS_TRACKING && <TabFocusTrackerWrapper />}
                         </Router>
                         <ToastContainer
-                            autoClose={false}
-                            closeOnClick={false}
+                            position="top-right"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={true}
+                            closeOnClick={true}
+                            rtl={false}
+                            pauseOnFocusLoss={true}
+                            draggable={true}
+                            pauseOnHover={false}
+                            theme="light"
                         />
                     </GlobalErrorBoundary>
                     </LocalizationProvider>
