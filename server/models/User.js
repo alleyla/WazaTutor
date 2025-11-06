@@ -11,30 +11,22 @@ class User {
 
   static async findById(userId) {
     const result = await pool.query(
-      'SELECT user_id, username, email, created_at, updated_at FROM users WHERE user_id = $1',
+      'SELECT id, name, email, created_at, updated_at FROM users WHERE id = $1',
       [userId]
     );
     return result.rows[0];
   }
 
-  static async findByUsername(username) {
+  static async create(name, email, passwordHash) {
     const result = await pool.query(
-      'SELECT * FROM users WHERE username = $1',
-      [username]
-    );
-    return result.rows[0];
-  }
-
-  static async create(username, email, passwordHash) {
-    const result = await pool.query(
-      'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING user_id, username, email, created_at',
-      [username, email, passwordHash]
+      'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email, created_at',
+      [name, email, passwordHash]
     );
     return result.rows[0];
   }
 
   static async update(userId, updates) {
-    const allowedFields = ['username', 'email'];
+    const allowedFields = ['name', 'email'];
     const setClauses = [];
     const values = [];
     let paramCount = 1;
@@ -57,12 +49,16 @@ class User {
     const query = `
       UPDATE users 
       SET ${setClauses.join(', ')}
-      WHERE user_id = $${paramCount}
-      RETURNING user_id, username, email, updated_at
+      WHERE id = $${paramCount}
+      RETURNING id, name, email, updated_at
     `;
 
     const result = await pool.query(query, values);
     return result.rows[0];
+  }
+
+  static async updateById(userId, updates){
+      return User.update(userId, updates);
   }
 }
 

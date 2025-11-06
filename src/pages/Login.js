@@ -74,15 +74,15 @@ function Login() {
       
       // Store token and user info in localStorage
       localStorage.setItem('authToken', response.data.token);
-      localStorage.setItem('userId', response.data.user.userId.toString());
-      localStorage.setItem('username', response.data.user.username);
+      localStorage.setItem('id', response.data.user.id.toString());
+      localStorage.setItem('name', response.data.user.name);
       
       toast.success('Login successful!');
       
       // Redirect to home page
       history.push('/');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'An error occurred during login';
+      const errorMsg = err.response?.data?.message || 'An error occurred during login';
       setError(errorMsg);
       toast.error(errorMsg);
     } finally {

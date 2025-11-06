@@ -24,6 +24,7 @@ function verifyToken(token) {
       issuer: 'wazatutor'
     });
   } catch (error) {
+
     throw new Error('Invalid or expired token');
   }
 }

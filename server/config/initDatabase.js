@@ -1,24 +1,21 @@
 require('dotenv').config();
 const pool = require('./database');
+const fs = require('fs');
+const path = require('path');
 
-const createUsersTable = `
-  CREATE TABLE IF NOT EXISTS users (
-    user_id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  );
-  
-  CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-  CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
-`;
+// Make filepath for init.sql file
+const sqlFilePath = path.join(__dirname, '..', 'db', 'init.sql');
+// Read the SQL file content into a string
+const sqlQuery = fs.readFileSync(sqlFilePath, 'utf8');
+
 
 async function initDatabase() {
   try {
     console.log('Initializing database...');
-    await pool.query(createUsersTable);
+
+    // Execute the entire SQL string from the init.sql file
+    await pool.query(sqlQuery);
+
     console.log('Database initialized successfully!');
     console.log('Users table created.');
     process.exit(0);

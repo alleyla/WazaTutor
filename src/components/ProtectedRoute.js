@@ -25,15 +25,15 @@ function ProtectedRoute({ component: Component, ...rest }) {
       try {
         // Relative URL works in dev (via CRA proxy) and prod (same origin)
         await axios.get('/api/auth/verify', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            headers: {
+                'x-auth-token': token,
+            }
         });
         setIsAuthenticated(true);
       } catch (_error) {
         localStorage.removeItem('authToken');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('username');
+        localStorage.removeItem('id');
+        localStorage.removeItem('name');
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);

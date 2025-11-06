@@ -55,7 +55,7 @@ function Account() {
   const classes = useStyles();
   const history = useHistory();
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
   });
   const [loading, setLoading] = useState(false);
@@ -72,13 +72,13 @@ function Account() {
 
     try {
       const response = await axios.get('/api/account', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          headers: {
+              'x-auth-token': token,
+          }
       });
       
       setFormData({
-        username: response.data.user.username,
+        name: response.data.user.name,
         email: response.data.user.email,
       });
     } catch (err) {
@@ -122,18 +122,18 @@ function Account() {
         '/api/account',
         formData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            headers: {
+                'x-auth-token': token,
+            },
         }
       );
       
       setSuccess('Account updated successfully!');
       toast.success('Account updated successfully!');
       
-      // Update localStorage with new username if changed
-      if (response.data.user.username !== localStorage.getItem('username')) {
-        localStorage.setItem('username', response.data.user.username);
+      // Update localStorage with new name if changed
+      if (response.data.user.name !== localStorage.getItem('name')) {
+        localStorage.setItem('name', response.data.user.name);
       }
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
@@ -141,7 +141,7 @@ function Account() {
         toast.error('Session expired. Please login again.');
         history.push('/login');
       } else {
-        const errorMsg = err.response?.data?.error || 'An error occurred while updating account';
+        const errorMsg = err.response?.data?.message || 'An error occurred while updating account';
         setError(errorMsg);
         toast.error(errorMsg);
       }
@@ -152,8 +152,8 @@ function Account() {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('username');
+    localStorage.removeItem('id');
+    localStorage.removeItem('name');
     toast.success('Logged out successfully');
     history.push('/login');
   };
@@ -196,11 +196,11 @@ function Account() {
                   variant="outlined"
                   required
                   fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
-                  value={formData.username}
+                  id="name"
+                  label="Name"
+                  name="name"
+                  autoComplete="name"
+                  value={formData.name}
                   onChange={handleChange}
                 />
               </Grid>

@@ -1,16 +1,11 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const pool = require('../db/pool');
+const bcrypt = require('bcrypt');
+const { generateToken, verifyToken } = require('../utils/jwt');
+const User = require('../models/User');
 const { validate, registerSchema, loginSchema } = require('../middleware/validation');
 const { authLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET environment variable is not set.');
-}
 
 // User registration
 router.post('/register', authLimiter, validate(registerSchema), async (req, res) => {
@@ -18,8 +13,8 @@ router.post('/register', authLimiter, validate(registerSchema), async (req, res)
 
     try {
         // Check if email already exists
-        const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-        if (userExists.rows.length > 0) {
+        const existingUser = await User.findByEmail(email);
+        if (existingUser) {
             return res.status(409).json({ message: 'Email is already in use.' });
         }
 
@@ -27,15 +22,12 @@ router.post('/register', authLimiter, validate(registerSchema), async (req, res)
         const salt = await bcrypt.genSalt(10);
         const password_hash = await bcrypt.hash(password, salt);
 
-        // Insert new user
-        const newUser = await pool.query(
-            'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email',
-            [name, email, password_hash]
-        );
+        // Create new user
+        const newUser = await User.create(name, email, password_hash);
 
         res.status(201).json({
             message: 'User registered successfully.',
-            user: newUser.rows[0],
+            user: newUser,
         });
     } catch (error) {
         console.error('Registration error:', error);
@@ -47,20 +39,28 @@ router.post('/register', authLimiter, validate(registerSchema), async (req, res)
 router.post('/login', authLimiter, validate(loginSchema), async (req, res) => {
     const { email, password } = req.body;
 
+    console.log('=== LOGIN ATTEMPT ===');
+    console.log('Email from request:', email);
+    console.log('Password from request:', password);
+
+
     try {
         // Check if user exists
-        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-        const user = result.rows[0];
+        const user = await User.findByEmail(email);
 
         if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials.' });
+            return res.status(401).json({ message: 'Invalid credentials:email.' });
         }
 
         // Check password
         const isMatch = await bcrypt.compare(password, user.password_hash);
+
         if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials.' });
+            console.log('FAIL: Password does not match');
+            return res.status(401).json({ message: 'Invalid credentials:password wrong.' });
         }
+
+        console.log('SUCCESS: Login successful');
 
         // Create and sign JWT
         const payload = {
@@ -69,13 +69,17 @@ router.post('/login', authLimiter, validate(loginSchema), async (req, res) => {
             },
         };
 
-        jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }, (err, token) => {
-            if (err) throw err;
-            res.json({
-                token,
-                userId: user.id,
-                message: 'Logged in successfully.',
-            });
+        // Use generateToken from utils/jwt.js
+        const token = generateToken(payload);
+
+        res.json({
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            },
+            message: 'Logged in successfully.',
         });
     } catch (error) {
         console.error('Login error:', error);
@@ -92,9 +96,8 @@ router.get('/verify', (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded.user;
-        res.json({ isValid: true, userId: req.user.id });
+        const decoded = verifyToken(token);  // Use verifyToken from utils
+        res.json({ isValid: true, id: decoded.user.id });
     } catch (error) {
         res.status(401).json({ message: 'Token is not valid.', isValid: false });
     }

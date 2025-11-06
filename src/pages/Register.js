@@ -55,7 +55,7 @@ function Register() {
   const classes = useStyles();
   const history = useHistory();
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -83,8 +83,8 @@ function Register() {
       
       // Store token and user info in localStorage
       localStorage.setItem('authToken', response.data.token);
-      localStorage.setItem('userId', response.data.user.userId.toString());
-      localStorage.setItem('username', response.data.user.username);
+      localStorage.setItem('id', response.data.user.id.toString());
+      localStorage.setItem('name', response.data.user.name);
       
       setSuccess('Registration successful! Redirecting...');
       toast.success('Registration successful!');
@@ -94,7 +94,7 @@ function Register() {
         history.push('/');
       }, 1500);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'An error occurred during registration';
+      const errorMsg = err.response?.data?.message || 'An error occurred during registration';
       setError(errorMsg);
       toast.error(errorMsg);
     } finally {
@@ -125,12 +125,12 @@ function Register() {
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
+              id="name"
+              label="Name"
+              name="name"
+              autoComplete="name"
               autoFocus
-              value={formData.username}
+              value={formData.name}
               onChange={handleChange}
             />
             <TextField
