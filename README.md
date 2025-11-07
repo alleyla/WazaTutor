@@ -159,7 +159,28 @@ npx serve -s build
 
 ## Authentication System
 
-WazaTutor now includes a full user authentication system with the following features:
+## Authentication System
+
+WazaTutor now includes a comprehensive user authentication system with:
+
+- User registration and login
+- JWT-based token authentication
+- PostgreSQL database backend
+- Protected routes for authenticated users
+- Backward compatible with anonymous users
+
+See [AUTHENTICATION.md](AUTHENTICATION.md) for complete documentation.
+
+### Quick Start with Authentication
+
+1. Set up PostgreSQL database
+2. Copy `server/.env.example` to `server/.env` and configure
+3. Initialize database: `cd server && npm run init-db`
+4. Start backend: `npm start`
+5. Start frontend: `cd .. && npm start`
+6. Navigate to `/register` to create an account
+
+For development without authentication, the system continues to work with anonymous users as before.
 
 - **User Registration**: Create new accounts with username, email, and password
 - **User Login**: Authenticate with email and password
@@ -212,7 +233,7 @@ OATutor can use Firebase to persistently store log data.
     * Deployment: Github Actions to Github Pages
     * [Optional] Logging: Firebase (Cloud Firestore)
 * Middleware: ExpressJS
-    * Database: Level-DB
+    * Database: Level-DB, Postgres(authentication)
 * Offline Computation/Iteration:
     * Python (dAFM Machine Learning algorithm)
 
