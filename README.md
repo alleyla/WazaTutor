@@ -1,12 +1,23 @@
+# WazaTutor
+
+WazaTutor is a tutoring web application based on and derived from the open‑source OATutor software maintained by the CAHLR group. It builds on OATutor’s adaptive tutoring capabilities (Bayesian Knowledge Tracing, curated content, and optional LMS interoperability) and adapts them for the WazaTutor experience.
+
+- Upstream OATutor project: [OATutor on GitHub](https://github.com/CAHLR/OATutor)
+- This repository: [WazaTutor on GitHub](https://github.com/alleyla/WazaTutor)
+
+All original OATutor attributions, credits, and citations are preserved below to comply with upstream licensing and attribution requirements. Content licensing (e.g., OpenStax) is also preserved.
+
 # OATutor
 
 OATutor is an Open-source Adaptive Tutoring System (OAT) based on Intelligent Tutoring System principles. It uses Bayesian Knowledge Tracing for skill mastery estimation and is implemented entirely in React JS with optional logging using [Firebase](https://firebase.google.com/). 
 The system can be deployed to git-pages without the use of any backend. For LMS integration, 
 a middleware backend is required by Learning Tools Interoperability (LTI). Our [hosted backend server](https://cahlr.github.io/OATutor/#/posts/set-up-canvas-integration) can be used or the middleware can be launched independently. OATutor is Section 508 accessibility [compliant](https://cahlr.github.io/OATutor/static/documents/OATutor_Sec508_WCAG.pdf).
+The system can be deployed to GitHub Pages without the use of any backend. For LMS integration, 
+a middleware backend is required by Learning Tools Interoperability (LTI). Our [hosted backend server](https://cahlr.github.io/OATutor/#/posts/set-up-canvas-integration) can be used or the middleware can be hosted on your own server.
 
 > [Quick clone and deploy notebook example](https://colab.research.google.com/drive/11X3eW9cDnRcvROaCWglPM5VH0NRAXFKp?usp=sharing)
 >
-> [Sign-up for our mailinglist](https://forms.gle/9SedjDENmfhBM13v8)
+> [Sign-up for our mailing list](https://forms.gle/9SedjDENmfhBM13v8)
 >
 > [Introduction to OATutor press article](https://bse.berkeley.edu/leveraging-ai-improve-adaptive-tutoring-systems)
 
@@ -26,13 +37,13 @@ Zachary A. Pardos, Matthew Tang, Ioannis Anastasopoulos, Shreya K. Sheel, and Et
 }
 ```
 
-Our journal paper, reporting finding on learning gains and LLM-based hint generation with OATutor: [https://doi.org/10.1371/journal.pone.0304013](https://doi.org/10.1371/journal.pone.0304013)
+Our journal paper, reporting findings on learning gains and LLM-based hint generation with OATutor: [https://doi.org/10.1371/journal.pone.0304013](https://doi.org/10.1371/journal.pone.0304013)
 
 ### Content
 Content Repository: [Link](https://github.com/CAHLR/OATutor-Content)
 
-This content repository contains problems curated from [OpenStax](https://openstax.org/) and classroom syllabus with hints and scaffolds authored by the OATutor Project. 
-As of Fall 2024, these materials have been piloted in classrooms. The hints and scaffolds for the problems have been curated by the OATutor team. 
+This content repository contains problems curated from [OpenStax](https://openstax.org/) and classroom syllabi with hints and scaffolds authored by the OATutor Project.
+As of Fall 2024, these materials have been piloted in classrooms. The hints and scaffolds for the problems have been curated by the OATutor team.
 If you identify any errors please issue a pull request or bug report.
 
 > Jump to our website: [OATutor.io](https://www.oatutor.io/)
@@ -40,7 +51,7 @@ If you identify any errors please issue a pull request or bug report.
 The textbooks contained in this repo are:
 * [Elementary Algebra 2e](https://openstax.org/details/books/elementary-algebra-2e)
 * [Intermediate Algebra 2e](https://openstax.org/details/books/intermediate-algebra-2e)
-* [College Algebra 2e with Corequisite Support](https://openstax.org/details/books/college-algebra-corequisite-support-2e) 
+* [College Algebra 2e with Corequisite Support](https://openstax.org/details/books/college-algebra-corequisite-support-2e)
 * [Introductory Statistics 2e](https://openstax.org/details/books/introductory-statistics-2e)
 * [Calculus Volume 1](https://openstax.org/details/books/calculus-volume-1)
 * Pre-Calculus Essentials (UC Berkeley Math 1B)
@@ -63,14 +74,17 @@ Attribution is given within each json file, indicating the authoring organizatio
 
 The installation assumes that you already have Git, Node.js, and npm installed.
 
+For the authentication system, you will also need:
+- PostgreSQL (v12 or higher) for user data storage
+
 ## Installation
 
 ```sh
-git clone --recurse-submodules https://github.com/CAHLR/OATutor.git
-cd OATutor
+git clone --recurse-submodules https://github.com/alleyla/WazaTutor.git
+cd WazaTutor
 ```
 
-### Dependencies
+### Frontend Dependencies
 ```sh
 npm install
 ```
@@ -78,11 +92,63 @@ npm install
 > You may use an alternative package manager such as [yarn](https://yarnpkg.com/) or
 > [pnpm](https://pnpm.io/).
 
+### Backend Setup (Authentication Server)
+
+The authentication system requires a backend server and database:
+
+1. Navigate to the server directory and install dependencies:
+```sh
+cd server
+npm install
+```
+
+2. Set up PostgreSQL database:
+```sh
+# Create database
+psql -U postgres
+CREATE DATABASE wazatutor;
+\q
+```
+
+3. Configure environment variables:
+```sh
+cd server
+cp .env.example .env
+# Edit .env with your database credentials and JWT secret
+```
+
+4. Initialize the database schema:
+```sh
+npm run init-db
+```
+
+5. Start the backend server:
+```sh
+# Development mode (with auto-reload)
+npm run dev
+
+# OR Production mode
+npm start
+```
+
+The server will run on port 3002 by default.
+
+### Development Proxy (no CORS needed)
+
+- The React app uses a development proxy (src/setupProxy.js), so frontend code can call relative URLs like `/api/auth/login` without setting a base URL.
+- During development:
+  - React dev server runs on http://localhost:3001
+  - API server runs on http://localhost:3002
+  - The dev server forwards requests from `/api/*` to the API server automatically.
+- In production, the Express server can serve both the API and the built React app from the same origin, so no CORS is required when deployed this way.
+
 ### Local Development Server
 
 ```sh
 npm run start
 ```
+
+The frontend will run on port 3001 (or the port specified in `.env`).
 
 ### Building & Deployment
 
@@ -93,7 +159,57 @@ npx serve -s build
 > The build folder now contains all of the static assets necessary to make a complete deployment on
 > a static site hosting provider.
 
-### \[Optional\] Firebase Setup
+## Authentication System
+
+## Authentication System
+
+WazaTutor now includes a comprehensive user authentication system with:
+
+- User registration and login
+- JWT-based token authentication
+- PostgreSQL database backend
+- Protected routes for authenticated users
+- Backward compatible with anonymous users
+
+See [AUTHENTICATION.md](AUTHENTICATION.md) for complete documentation.
+
+### Quick Start with Authentication
+
+1. Set up PostgreSQL database
+2. Copy `server/.env.example` to `server/.env` and configure
+3. Initialize database: `cd server && npm run init-db`
+4. Start backend: `npm start`
+5. Start frontend: `cd .. && npm start`
+6. Navigate to `/register` to create an account
+
+For development without authentication, the system continues to work with anonymous users as before.
+
+- **User Registration**: Create new accounts with username, email, and password
+- **User Login**: Authenticate with email and password
+- **JWT Authentication**: Secure token-based authentication
+- **Account Management**: Users can view and update their profile information
+- **Protected Routes**: Certain routes require authentication
+
+### Authentication Routes
+
+- `/login` - User login page
+- `/register` - New user registration page
+- `/account` - User account management (protected route)
+
+### API Endpoints
+
+The backend server provides the following endpoints:
+
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login with credentials
+- `GET /api/auth/verify` - Verify JWT token
+- `POST /api/auth/logout` - Logout
+- `GET /api/account` - Get account information (protected)
+- `PUT /api/account` - Update account information (protected)
+
+See [server/README.md](server/README.md) for detailed API documentation.
+
+### [Optional] Firebase Setup
 
 OATutor can use Firebase to persistently store log data.
 
@@ -117,9 +233,9 @@ OATutor can use Firebase to persistently store log data.
     * Theme: Material UI
     * Database: localForage (localStorage, WebSQL, IndexedDB)
     * Deployment: Github Actions to Github Pages
-    * \[Optional\] Logging: Firebase (Cloud Firestore)
+    * [Optional] Logging: Firebase (Cloud Firestore)
 * Middleware: ExpressJS
-    * Database: Level-DB
+    * Database: Level-DB, Postgres(authentication)
 * Offline Computation/Iteration:
     * Python (dAFM Machine Learning algorithm)
 
@@ -151,7 +267,7 @@ Code for this project is located in the `src` directory.
 
 - `HintTextbox.js`: Textbox for scaffold types of hints with answers.
 
-- `Problem.js`: The "problem" component created in App.js. The component is initailized with a "problem" object as one
+- `Problem.js`: The "problem" component created in App.js. The component is initialized with a "problem" object as one
   of its props. It then creates a series of "ProblemCards" in `const parts` (currently keys for ProblemCard components
   are random values, should be UUIDs in the future).
 
@@ -172,7 +288,6 @@ website for more info on this syntax.
 - `checkAnswer.js`: Function to check answers. 3 different types of answers are supported: Algebraic, String, Numeric.
   Algebraic will simplify numeric expressions, numeric checks numeric equivalence, string requires answers to exactly
   match.
-
 - `Platform.js`: Creates top "AppBar" and presents the first "problem" (everything under the app bar is part of the
   problem component). Also imports all of the problem files and stores them in `const problemIndex`. The
   function `nextProblem` is used to determine the next problem to be displayed.
@@ -190,7 +305,7 @@ website for more info on this syntax.
 #### Markdown Support
 
 - All `\` must be escaped as `\\` because values are strings
-- Wrap Latex in `$` for inline LaTeX
+- Wrap LaTeX in `$` for inline LaTeX
 - Newlines can be created with `\n`, escaped as `\\n`
 
 ### ./config [Configurable]
@@ -225,8 +340,6 @@ of your choosing.
 5. Copy the email address for the service account
 6. Share the target spreadsheet with that email address and give them editor access
 7. Create `.env.local` in `src/tools` and add this line `SPREADSHEET_ID=YOUR_SPREADSHEET_ID_HERE`
-8. If your school runs on a quarter system, you may change the first line in
-   `common/global-config.js` to `QUARTER`
 
 From the `src/tools` directory, `node populateGoogleSheets.js`
 
@@ -254,8 +367,7 @@ Contains common helper methods for the frontend React app.
 }}>
     <Platform props_here/>
     <ReactCursorPosition/>
-    }}>
-
+    }}
 ```
 
 ### Focus Logging
@@ -289,7 +401,7 @@ DO_FOCUS_TRACKING = false;
 - Each _problem_ is contained in its own folder.
 - Problems can contain _steps_ which are contained in their own sub-folder.
 - Steps can contain _hints_ which are stored as _pathways_ in the `tutoring` sub-folder.
-- All problems are pre-processed before being ingested by the frontend platform. 
+- All problems are pre-processed before being ingested by the frontend platform.
   All problems are accumulated in the `generated/processed-content-pool/[source_name].json` file prior to each run or build.
 
 #### ./bkt-params
@@ -319,7 +431,7 @@ DO_FOCUS_TRACKING = false;
 6. Create a sub-folder within the step's sub-folder called `tutoring`
 7. Place each hint pathway within the folder (Ex. `circle1aDefaultPathway.json`)
 8. In `./skillModel.json`, tag each problem with the appropriate skills
-9. If the skill does not already exist in `bktParams` and you are using the BKT model, add its BKT parameters in the 
+9. If the skill does not already exist in `bktParams` and you are using the BKT model, add its BKT parameters in the
    appropriate `bkt-params/bktParams.json` files
 
 ### Types of problems
@@ -330,7 +442,6 @@ DO_FOCUS_TRACKING = false;
 * `MultipleChoice`: List choices as `choices: ["Choice A", "Choice B"]`, must have `answerType: "string"`
 
 ### Example Directory Structure
-
 ```
 content-sources/
 └── oatutor [submodule]/
@@ -357,12 +468,11 @@ content-sources/
 ```
 
 ### Example Problem File
-
 ```json5
 {
     "id": "circle1",
     "title": "Buying a Big Rug",
-    "body": "Bob wants to surprise Alice by buying a new rug for their living room. Their living room is 28 feet wide and 20 feet long. To further surprise Alice, Bob wants to buy the biggest circular rug that will fit.",
+    "body": "Bob wants to surprise Alice by buying a new rug for their living room. Their living room is 28 feet wide and 20 feet long. To further surprise Alice, Bob wants to buy the biggest circle that will fit. What is the maximum radius?",
     "variabilization": {},
     "oer": "https://example.com",
     "lesson": "1.1 Circle Radius",
@@ -371,7 +481,6 @@ content-sources/
 ```
 
 ### Example Step File
-
 ```json5
 {
     "id": "circle1a",
@@ -387,7 +496,6 @@ content-sources/
 ```
 
 ### Example Hint Pathway File
-
 ```json5
 [
     {
@@ -412,7 +520,7 @@ content-sources/
     {
         "id": "circle1a-h3",
         "title": "Solution",
-        "text": "Recall that the radius is half the diameter, so $r = \\frac{d}{2} = 10$",
+        "text": "Recall that the radius is half the diameter, so $r = \frac{d}{2} = 10$",
         "type": "solution",
         "dependencies": [1],
         "variabilization": {}
@@ -426,7 +534,7 @@ content-sources/
 {
     "id": "pythag1", //Substeps will be in the form problem.id + 'a' and so on
     "title": "Car Forces",
-    "body": "A %CAR% experiences three horizontal forces of -3.10N, 1.70N and -4.00N. It also experiences three vertical forces of -4.30N, 0.20N and 4.20N. \\n Round all answers to the hundredths place. \\n##triangle.png## ",
+    "body": "A %CAR% experiences three horizontal forces of -3.10N, 1.70N and -4.00N. It also experiences three vertical forces of -4.30N, 0.20N and 4.20N. \n Round all answers to the hundredths.",
     "variabilization": {}
 }
 ```
@@ -456,7 +564,7 @@ content-sources/
 ### AB testing
 OATutor was designed with the research case in mind and thus supports AB testing for many features. The benefit of the
 open source nature of the platform allows researchers to insert AB testing logic into any part of the platform they
-would like. To show that this is possible, we have included several examples of how one could use AB testing. 
+would like. To show that this is possible, we have included several examples of how one could use AB testing.
 
 AB testing is conducted by randomly assigning users into one of two groups. The treatment split is 50/50 by default,
 but it can be easily changed to a different split percentage or more than two splits. The userID is recorded in all data
@@ -514,8 +622,8 @@ const treatmentMapping = {
 ```
 
 #### Hint Pathways
-Most content in the OATutor-Content repository currently only contains one hint pathway (the `defaultPathway`), but 
-additional hint pathways can easily be added. AB testing can be done with multiple hint pathways for efficacy tests. 
+Most content in the OATutor-Content repository currently only contains one hint pathway (the `defaultPathway`), but
+additional hint pathways can easily be added. AB testing can be done with multiple hint pathways for efficacy tests.
 New hint pathway files can be added to the tutoring folder of within a step.
 
 ```js
@@ -540,12 +648,12 @@ content-sources/
     │   │       │   ├── circle1a.json
     │   │       │   └── tutoring/
     │   │       │       ├── circle1aDefaultPathway.json
-    │   │       │       └── circle1aYourNewPathwayHere.json  <--- Add your new pathway here
+    │   │       │       └── circle1aYourNewPathwayHere.json
     │   │       └── circle1b/
     │   │           ├── circble1b.json
     │   │           └── tutoring/
     │   │               ├── circle1bDefaultPathway.json
-    │   │               └── circle1bYourNewPathwayHere.json  <--- Add your new pathway here
+    │   │               └── circle1bYourNewPathwayHere.json
     │   └── slope1/
     │       ├── slope1.json
     │       └── ...
@@ -567,32 +675,37 @@ or multiple choice. Steps can contain help items which can be toggled to be show
 step. There are two possible help items: hints which are purely textual and have no user input, or scaffolds which
 contain user input (again, either textbox or multiple choice). Scaffolds can contain help items themselves, except this
 is the deepest level of content (the scaffolds's scaffolds cannot contain any help items).
+Problems are decomposed into steps. Problems do not contain an answer field (problems without real steps are formatted as
+a problem with only one step). Steps can be one of 2 answer types: textbox or multiple choice. Steps can contain help
+items which can be toggled to be shown by clicking a raised hand icon on each step. There are two possible help items:
+hints which are purely textual and have no user input, or scaffolds which contain user input (again, either textbox or
+multiple choice). Scaffolds can contain help items themselves, except this is the deepest level of content.
 
 ### BKT algorithm selecting problems
 
 OATutor uses Bayesian Knowledge Tracing to determine model mastery based on an input. (If you need to describe how BKT
 works, just copy the descriptions of the 4 model parameters used in BKT from wikipedia along with equations a thru d.
-The implementation is exactly identical to wikpedia, nothing special here)
+The implementation is exactly identical to wikipedia, nothing special here)
 
 Problem selection is determined using a heuristic which is fully configurable and can be AB tested (see above). For the
 purposes of this paper, let us assume we are using a heuristic that selects problems prioritizing the lowest mastery
 first. Upon receiving user input, the standard BKT update equations will update the predicted user's mastery. Upon
-completion of a problem, OATutor will iterate through all problems and compute each problem's mastery level(note:
+completion of a problem, OATutor will iterate through all problems and compute each problem's mastery level (note:
 mastery level is computed at the problem granularity not the step) for the user. This is done by multiplying all the
-mastery priors for all KCs of that step (as labelled by the researcher in the KC model) and then multiplying all step
-masteries together to get the problem mastery. The heuristic will be applied, which in this case is lowest mastery
-first, so the problem with the lowest mastery is selected to give to the user. In the case that the first problem is
-being chosen in the session, equation a from the BKT model is used and the default probMastery is considered the user's
-mastery. Ties (of equal mastery) in the heuristic selection algorithm are broken by randomly choosing a problem.
+mastery priors for all KCs of that step and then multiplying all step masteries together to get the problem mastery. The
+heuristic will be applied, which in this case is lowest mastery first, so the problem with the lowest mastery is
+selected to give to the user. In the case that the first problem is being chosen in the session, equation a from the BKT
+model is used and the default probMastery is considered the user's mastery. Ties (of equal mastery) are broken by
+randomly choosing a problem.
 
 ### Supported Meta Tags
 - **giveStuFeedback:** controls correctness feedback (i.e. whether a user inputted the correct answer or not)
 - **giveStuHints:** controls whether hints should be displayed or not (i.e. controls the hint icon as well)
 - **doMasteryUpdate:** controls whether OATutor should track student mastery
 - **allowRecycle:** controls whether problems/steps can be repeated or not
-- **showStuMastery:** controls whether matters should be displayed to the user in the upper right corner
+- **showStuMastery:** controls whether mastery should be displayed to the user in the upper right corner
 - **unlockFirstHint:** controls whether the first hint should be auto-expanded when the user clicks the hint icon
 - **allowDynamicHint:** controls whether a dynamically generated hint should be given to the user
-- **giveStuBottomHint:** controls whether the suer should receive a bottom-out hint (last hint in the hint pathway that contains the answer)
+- **giveStuBottomHint:** controls whether the user should receive a bottom-out hint (last hint in the hint pathway that contains the answer)
 - **giveHintOnIncorrect:** controls whether an incorrect response should automatically force the user into the hint pathway
 - **keepMCOrder:** controls whether to preserve the order of MCQ choices in the spreadsheet

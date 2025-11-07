@@ -4,6 +4,7 @@ import Platform from "./platform-logic/Platform.js";
 import DebugPlatform from "./platform-logic/DebugPlatform.js";
 import Firebase from "@components/Firebase.js";
 import { LocalizationProvider } from "./util/LocalizationContext";
+import storageService from './services/storageService';
 import {
     AB_TEST_MODE
 } from "./config/config.js";
@@ -16,7 +17,6 @@ import {
     PROGRESS_STORAGE_KEY,
     SITE_VERSION,
     ThemeContext,
-    USER_ID_STORAGE_KEY,
 } from "./config/config.js";
 import {
     createTheme,
@@ -38,6 +38,11 @@ import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
 import { IS_STAGING_OR_DEVELOPMENT } from "./util/getBuildType";
 import TabFocusTrackerWrapper from "./components/TabFocusTrackerWrapper";
 import ViewAllProblems from "./components/problem-layout/ViewAllProblems";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Account from "./pages/Account";
+import ProtectedRoute from "./components/ProtectedRoute";
+import GuestRoute from "./components/GuestRoute";
 
 // ### BEGIN CUSTOMIZABLE IMPORTS ###
 import config from "./config/firebaseConfig.js";
@@ -84,11 +89,13 @@ if (!AB_TEST_MODE) {
 class App extends React.Component {
     constructor(props) {
         super(props);
-        // UserID creation/loading
-        let userId = localStorage.getItem(USER_ID_STORAGE_KEY);
+        // UserID creation/loading - check for authenticated user first
+        let userId = storageService.getCurrentUserId(); // Check authenticated user
         if (!userId) {
+            // For anonymous users only - not security-critical
+            // Authenticated users will use ids from database
             userId = generateRandomInt().toString();
-            localStorage.setItem(USER_ID_STORAGE_KEY, userId);
+            storageService.setAnonymousUserId(userId);
         }
         this.userID = userId;
         this.bktParams = this.getTreatmentObject(treatmentMapping.bktParams);
@@ -346,7 +353,7 @@ class App extends React.Component {
                                       exact
                                       path="/lessons/:lessonID/problems"
                                         component={ViewAllProblems}
-                                       />
+                                    />
                                     <Route
                                     exact
                                         path="/lessons/:lessonID"
@@ -429,14 +436,39 @@ class App extends React.Component {
                                             />
                                         )}
                                     />
+                                    {/* Protected Routes - Only accessible when logged in */}
+                                    <ProtectedRoute
+                                        exact
+                                        path="/account"
+                                        component={Account}
+                                    />
+                                    {/* Guest Routes - Only accessible when NOT logged in */}
+                                    <GuestRoute
+                                        exact
+                                        path="/login"
+                                        component={Login}
+                                    />
+                                    <GuestRoute
+                                        exact
+                                        path="/register"
+                                        component={Register}
+                                    />
                                     <Route component={NotFound} />
                                 </Switch>
                             </div>
                             {DO_FOCUS_TRACKING && <TabFocusTrackerWrapper />}
                         </Router>
                         <ToastContainer
-                            autoClose={false}
-                            closeOnClick={false}
+                            position="top-right"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={true}
+                            closeOnClick={true}
+                            rtl={false}
+                            pauseOnFocusLoss={true}
+                            draggable={true}
+                            pauseOnHover={false}
+                            theme="light"
                         />
                     </GlobalErrorBoundary>
                     </LocalizationProvider>
