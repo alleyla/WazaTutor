@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-// const cors = require('cors'); // Removed: no CORS needed with proxy in dev and same-origin in prod
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');

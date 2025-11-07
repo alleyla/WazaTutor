@@ -9,7 +9,9 @@ All original OATutor attributions, credits, and citations are preserved below to
 
 # OATutor
 
-OATutor is an Open-source Adaptive Tutoring System (OAT) based on Intelligent Tutoring System principles. It uses Bayesian Knowledge Tracing for skill mastery estimation and is implemented entirely in the browser using React.
+OATutor is an Open-source Adaptive Tutoring System (OAT) based on Intelligent Tutoring System principles. It uses Bayesian Knowledge Tracing for skill mastery estimation and is implemented entirely in React JS with optional logging using [Firebase](https://firebase.google.com/). 
+The system can be deployed to git-pages without the use of any backend. For LMS integration, 
+a middleware backend is required by Learning Tools Interoperability (LTI). Our [hosted backend server](https://cahlr.github.io/OATutor/#/posts/set-up-canvas-integration) can be used or the middleware can be launched independently. OATutor is Section 508 accessibility [compliant](https://cahlr.github.io/OATutor/static/documents/OATutor_Sec508_WCAG.pdf).
 The system can be deployed to GitHub Pages without the use of any backend. For LMS integration, 
 a middleware backend is required by Learning Tools Interoperability (LTI). Our [hosted backend server](https://cahlr.github.io/OATutor/#/posts/set-up-canvas-integration) can be used or the middleware can be hosted on your own server.
 
@@ -22,7 +24,7 @@ a middleware backend is required by Learning Tools Interoperability (LTI). Our [
 ## Paper
 To credit this system, please cite our CHI'23 paper:
 
-Zachary A. Pardos, Matthew Tang, Ioannis Anastasopoulos, Shreya K. Sheel, and Ethan Zhang. 2023. OATutor: An Open-source Adaptive Tutoring System and Curated Content Library for Learning Sciences Research.
+Zachary A. Pardos, Matthew Tang, Ioannis Anastasopoulos, Shreya K. Sheel, and Ethan Zhang. 2023. OATutor: An Open-source Adaptive Tutoring System and Curated Content Library for Learning Sciences Research. In *Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems (CHI '23)*. Association for Computing Machinery, New York, NY, USA, Article 416, 1–17. [https://doi.org/10.1145/3544548.3581574](https://doi.org/10.1145/3544548.3581574)
 ```
 @inproceedings{pardos2023oat,
   title={OATutor: An Open-source Adaptive Tutoring System and Curated Content Library for Learning Sciences Research},
@@ -667,6 +669,12 @@ stores a mapping between step IDs and the KCs array as a JSON object.
 bktParams.js contains a JSON object that maps KCs to their corresponding BKT parameters (probMastery, probTransit,
 probSlip, and probGuess). These values are typically empirically determined and can be AB tested (see above).
 
+What the format of a section looks like Problems are decomposed into steps. Problems do not contain an answer field (
+problems without real steps are formatted as a problem with only one step). Steps can be one of 2 answer types: textbox
+or multiple choice. Steps can contain help items which can be toggled to be shown by clicking a raised hand icon on each
+step. There are two possible help items: hints which are purely textual and have no user input, or scaffolds which
+contain user input (again, either textbox or multiple choice). Scaffolds can contain help items themselves, except this
+is the deepest level of content (the scaffolds's scaffolds cannot contain any help items).
 Problems are decomposed into steps. Problems do not contain an answer field (problems without real steps are formatted as
 a problem with only one step). Steps can be one of 2 answer types: textbox or multiple choice. Steps can contain help
 items which can be toggled to be shown by clicking a raised hand icon on each step. There are two possible help items:
