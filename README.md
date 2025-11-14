@@ -21,7 +21,8 @@ a middleware backend is required by Learning Tools Interoperability (LTI). Our [
 >
 > [Introduction to OATutor press article](https://bse.berkeley.edu/leveraging-ai-improve-adaptive-tutoring-systems)
 
-## Paper
+## OATutor Paper
+
 To credit this system, please cite our CHI'23 paper:
 
 Zachary A. Pardos, Matthew Tang, Ioannis Anastasopoulos, Shreya K. Sheel, and Ethan Zhang. 2023. OATutor: An Open-source Adaptive Tutoring System and Curated Content Library for Learning Sciences Research. In *Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems (CHI '23)*. Association for Computing Machinery, New York, NY, USA, Article 416, 1–17. [https://doi.org/10.1145/3544548.3581574](https://doi.org/10.1145/3544548.3581574)
@@ -36,7 +37,6 @@ Zachary A. Pardos, Matthew Tang, Ioannis Anastasopoulos, Shreya K. Sheel, and Et
   year={2023}
 }
 ```
-
 Our journal paper, reporting findings on learning gains and LLM-based hint generation with OATutor: [https://doi.org/10.1371/journal.pone.0304013](https://doi.org/10.1371/journal.pone.0304013)
 
 ### Content
@@ -100,6 +100,15 @@ The authentication system requires a backend server and database:
 ```sh
 cd server
 npm install
+```
+If using pnpm
+```sh
+pnpm install
+```
+Note: to force it to install server specific dependencies, you may need to use --ignore-workspace with the install command as well as any necessary pnpm approve-builds
+```sh
+pnpm install --ignore-workspace
+pnpm approve-builds --ignore-workspace
 ```
 
 2. Set up PostgreSQL database:

@@ -1,17 +1,16 @@
 [
     {
-        "courseName": "OpenStax_College_Algebra",
-        "courseOER": "https://openstax.org/details/books/college-algebra-2e <OpenStax: College Algebra>",
+        "courseName": "OpenStax PreAlgebra",
+        "courseOER": "https://openstax.org/details/books/prealgebra-2e <OpenStax: College PreAlgebra>",
         "courseLicense": "https://creativecommons.org/licenses/by/4.0/ <CC BY 4.0>",
         "lessons": [
             {
-                "id": "4GRWDRDl-lqs6-4gccTByiE1",
-                "name": "Lesson 1.1",
-                "topics": "Real Numbers",
+                "id": "9e51fb5e-223c-c5b5a0c622",
+                "name": "Lesson 4.1",
+                "topics": "Visualize Fractions",
                 "allowRecycle": true,
                 "learningObjectives": {
-                    "classifying_a_real_number": 0.85,
-                    "evaluating_algebraic_expressions": 0.85
+                    "visualize_fractions": 0.85
                 }
             }
         ]

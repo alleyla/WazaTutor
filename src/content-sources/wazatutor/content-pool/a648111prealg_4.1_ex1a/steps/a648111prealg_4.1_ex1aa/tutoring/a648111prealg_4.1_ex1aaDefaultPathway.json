@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a648111prealg_4.1_ex1aa-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Count the total parts",
+        "text": "First, count the total number of equal parts the shape is divided into. This will be your denominator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex1aa-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex1aa-h1"
+        ],
+        "title": "Count the shaded parts",
+        "text": "Next, count only the parts that are shaded. This will be your numerator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex1aa-h3",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex1aa-h2"
+        ],
+        "title": "Write the fraction",
+        "text": "Place the number of shaded parts over the total number of parts: $$\\frac{\\text{shaded}}{\\text{total}}$$ (5 shaded over $$8$$ total).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

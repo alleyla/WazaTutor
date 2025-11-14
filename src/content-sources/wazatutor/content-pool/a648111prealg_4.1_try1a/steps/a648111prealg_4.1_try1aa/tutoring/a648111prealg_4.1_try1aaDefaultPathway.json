@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a648111prealg_4.1_try1aa-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Total parts",
+        "text": "The circle is divided into $$8$$ equal parts.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try1aa-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try1aa-h1"
+        ],
+        "title": "Count the shaded parts",
+        "text": "How many parts are shaded?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try1aa-h3",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try1aa-h2"
+        ],
+        "title": "Write the fraction",
+        "text": "$$3$$ parts are shaded out of $$8$$ total parts.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

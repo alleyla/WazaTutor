@@ -1,11 +1,5 @@
 {
-    "classifying_a_real_number": {
-        "probMastery": 0.1,
-        "probTransit": 0.1,
-        "probSlip": 0.1,
-        "probGuess": 0.1
-    },
-    "evaluating_algebraic_expressions": {
+    "visualize_fractions": {
         "probMastery": 0.1,
         "probTransit": 0.1,
         "probSlip": 0.1,

@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a648111prealg_4.1_try1ba-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Total parts",
+        "text": "The circle is divided into $$9$$ equal parts.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try1ba-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try1ba-h1"
+        ],
+        "title": "Count the shaded parts",
+        "text": "How many parts are shaded?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try1ba-h3",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try1ba-h2"
+        ],
+        "title": "Write the fraction",
+        "text": "$$4$$ parts are shaded out of $$9$$ total parts.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]
