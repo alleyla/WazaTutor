@@ -109,6 +109,7 @@ class App extends React.Component {
         this.state = {
             additionalContext: {},
             sessionId: this.generateSessionId(),
+            serverDataReady: false,
         };
 
         if (IS_STAGING_OR_DEVELOPMENT) {
@@ -289,6 +290,8 @@ class App extends React.Component {
             console.error('Server load failed:', error);
         }
 
+        this.setState({ serverDataReady: true });
+
         console.log('[DEBUG] loadSkillMasteryFromServer complete');
     }
 
@@ -448,6 +451,39 @@ class App extends React.Component {
     };
 
     render() {
+        // Add this loading check at the very beginning
+        if (storageService.isAuthenticated() && !this.state.serverDataReady) {
+            return (
+                <ThemeProvider theme={theme}>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100vh',
+                        flexDirection: 'column',
+                        gap: '20px'
+                    }}>
+                        <div className="spinner" style={{
+                            border: '4px solid #f3f3f3',
+                            borderTop: '4px solid #3498db',
+                            borderRadius: '50%',
+                            width: '50px',
+                            height: '50px',
+                            animation: 'spin 1s linear infinite'
+                        }}></div>
+                        <p>Loading your progress...</p>
+                        <style>
+                            {`
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        `}
+                        </style>
+                    </div>
+                </ThemeProvider>
+            );
+        }
         return (
             <ThemeProvider theme={theme}>
                 <ThemeContext.Provider
