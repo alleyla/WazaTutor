@@ -205,11 +205,28 @@ class App extends React.Component {
         // Load skill mastery from server if authenticated
         if (storageService.isAuthenticated()) {
             await this.loadSkillMasteryFromServer();
+            await this.restoreLastLesson();
         }
     }
 
     componentWillUnmount() {
         this.mounted = false;
+    }
+
+    /**
+     * Restore user's last active lesson
+     */
+    async restoreLastLesson() {
+        try {
+            const currentLessonData = await progressService.loadCurrentLesson();
+            if (currentLessonData && currentLessonData.lessonId) {
+                // Optionally navigate to last lesson
+                // this.props.history.push(`/lessons/${currentLessonData.lessonId}`);
+                console.log('Last lesson:', currentLessonData.lessonId);
+            }
+        } catch (error) {
+            console.error('Failed to restore last lesson:', error);
+        }
     }
 
     /**
@@ -283,6 +300,11 @@ class App extends React.Component {
 
         // Clear local storage
         await removeByKey(PROGRESS_STORAGE_KEY);
+
+        // Clear current lesson
+        storageService.clearCurrentLesson();
+
+        // Clear all lesson progress
         const existingKeys = (await getKeys()) || [];
         const lessonStorageKeys = existingKeys.filter((key) =>
             key.startsWith(PROGRESS_STORAGE_KEY)

@@ -92,3 +92,30 @@ CREATE TABLE user_practice_sessions (
 
 CREATE INDEX idx_practice_sessions_user_id ON user_practice_sessions(user_id);
 CREATE INDEX idx_practice_sessions_user_date ON user_practice_sessions(user_id, practice_date DESC);
+
+
+-- Table for tracking user's current/last active lesson
+CREATE TABLE IF NOT EXISTS user_current_lesson (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    lesson_id VARCHAR(255) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table for tracking lesson-level progress (overall completion %, completed problems, etc.)
+CREATE TABLE IF NOT EXISTS user_lesson_progress (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    lesson_id VARCHAR(255) NOT NULL,
+    completed_problems TEXT[], -- Array of completed problem IDs
+    total_problems INTEGER DEFAULT 0,
+    completion_percentage DECIMAL(5,2) DEFAULT 0.00,
+    last_problem_id VARCHAR(255),
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, lesson_id)
+);
+
+CREATE INDEX idx_user_lesson_progress_user ON user_lesson_progress(user_id);
+CREATE INDEX idx_user_lesson_progress_lesson ON user_lesson_progress(lesson_id);
+CREATE INDEX idx_user_current_lesson_user ON user_current_lesson(user_id);
+

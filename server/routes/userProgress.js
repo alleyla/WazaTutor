@@ -160,6 +160,174 @@ router.get('/skills/breakdown', auth, async (req, res) => {
     }
 });
 
+// ==================== LESSON PROGRESS ENDPOINTS ====================
+
+/**
+ * Save/Update user's current (last active) lesson
+ * POST /api/progress/current-lesson
+ * Body: { lessonId }
+ */
+router.post('/current-lesson', auth, async (req, res) => {
+    const userId = req.user.id;
+    const { lessonId } = req.body;
+
+    if (!lessonId || typeof lessonId !== 'string') {
+        return res.status(400).json({ error: 'Valid lessonId is required' });
+    }
+
+    const sanitizedLessonId = lessonId.substring(0, 255);
+
+    try {
+        await pool.query(`
+            INSERT INTO user_current_lesson (user_id, lesson_id, updated_at)
+            VALUES ($1, $2, NOW())
+            ON CONFLICT (user_id)
+            DO UPDATE SET 
+                lesson_id = EXCLUDED.lesson_id,
+                updated_at = NOW()
+        `, [userId, sanitizedLessonId]);
+
+        res.json({ success: true, message: 'Current lesson updated' });
+    } catch (error) {
+        console.error('Error updating current lesson:', error);
+        res.status(500).json({ error: 'Failed to update current lesson' });
+    }
+});
+
+/**
+ * Get user's current (last active) lesson
+ * GET /api/progress/current-lesson
+ */
+router.get('/current-lesson', auth, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const result = await pool.query(
+            'SELECT lesson_id, updated_at FROM user_current_lesson WHERE user_id = $1',
+            [userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.json({ success: true, currentLesson: null });
+        }
+
+        res.json({
+            success: true,
+            currentLesson: {
+                lessonId: result.rows[0].lesson_id,
+                lastUpdatedAt: result.rows[0].updated_at
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching current lesson:', error);
+        res.status(500).json({ error: 'Failed to fetch current lesson' });
+    }
+});
+
+/**
+ * Save/Update lesson progress (completed problems, completion %)
+ * POST /api/progress/lesson
+ * Body: { lessonId, completedProblems, totalProblems, completionPercentage, lastProblemId }
+ */
+router.post('/lesson', auth, async (req, res) => {
+    const userId = req.user.id;
+    const { lessonId, completedProblems, totalProblems, completionPercentage, lastProblemId } = req.body;
+
+    if (!lessonId || typeof lessonId !== 'string') {
+        return res.status(400).json({ error: 'Valid lessonId is required' });
+    }
+
+    if (!Array.isArray(completedProblems)) {
+        return res.status(400).json({ error: 'completedProblems must be an array' });
+    }
+
+    // Sanitize inputs
+    const sanitizedLessonId = lessonId.substring(0, 255);
+    const sanitizedProblems = completedProblems.slice(0, 1000).map(p => String(p).substring(0, 255));
+    const validatedTotalProblems = validateInteger(totalProblems, 0, 0, 10000);
+    const validatedCompletion = validateFloat(completionPercentage, 0, 0, 100);
+    const sanitizedLastProblemId = lastProblemId ? String(lastProblemId).substring(0, 255) : null;
+
+    try {
+        await pool.query(`
+            INSERT INTO user_lesson_progress 
+                (user_id, lesson_id, completed_problems, total_problems, completion_percentage, last_problem_id, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, NOW())
+            ON CONFLICT (user_id, lesson_id)
+            DO UPDATE SET
+                completed_problems = EXCLUDED.completed_problems,
+                total_problems = EXCLUDED.total_problems,
+                completion_percentage = EXCLUDED.completion_percentage,
+                last_problem_id = EXCLUDED.last_problem_id,
+                updated_at = NOW()
+        `, [userId, sanitizedLessonId, sanitizedProblems, validatedTotalProblems, validatedCompletion, sanitizedLastProblemId]);
+
+        res.json({ success: true, message: 'Lesson progress updated' });
+    } catch (error) {
+        console.error('Error updating lesson progress:', error);
+        res.status(500).json({ error: 'Failed to update lesson progress' });
+    }
+});
+
+/**
+ * Get lesson progress for a specific lesson
+ * GET /api/progress/lesson/:lessonId
+ */
+router.get('/lesson/:lessonId', auth, async (req, res) => {
+    const userId = req.user.id;
+    const { lessonId } = req.params;
+
+    try {
+        const result = await pool.query(
+            `SELECT lesson_id, completed_problems, total_problems, completion_percentage, 
+                    last_problem_id, started_at, updated_at
+             FROM user_lesson_progress 
+             WHERE user_id = $1 AND lesson_id = $2`,
+            [userId, lessonId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.json({ success: true, progress: null });
+        }
+
+        res.json({
+            success: true,
+            progress: result.rows[0]
+        });
+    } catch (error) {
+        console.error('Error fetching lesson progress:', error);
+        res.status(500).json({ error: 'Failed to fetch lesson progress' });
+    }
+});
+
+/**
+ * Get all lesson progress for user
+ * GET /api/progress/lessons
+ */
+router.get('/lessons', auth, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const result = await pool.query(
+            `SELECT lesson_id, completed_problems, total_problems, completion_percentage,
+                    last_problem_id, started_at, updated_at
+             FROM user_lesson_progress
+             WHERE user_id = $1
+             ORDER BY updated_at DESC`,
+            [userId]
+        );
+
+        res.json({
+            success: true,
+            lessons: result.rows,
+            count: result.rows.length
+        });
+    } catch (error) {
+        console.error('Error fetching all lesson progress:', error);
+        res.status(500).json({ error: 'Failed to fetch lesson progress' });
+    }
+});
+
 // ==================== PROBLEM ATTEMPT LOGGING ====================
 
 /**
@@ -474,7 +642,21 @@ router.delete('/clear', auth, async (req, res) => {
         );
         deletedCounts.practiceSessions = sessionsResult.rowCount;
 
-        // Optionally delete attempt history
+        // Always delete lesson progress
+        const lessonProgressResult = await client.query(
+            'DELETE FROM user_lesson_progress WHERE user_id = $1',
+            [userId]
+        );
+        deletedCounts.lessonProgress = lessonProgressResult.rowCount;
+
+        // Delete current lesson
+        const currentLessonResult = await client.query(
+            'DELETE FROM user_current_lesson WHERE user_id = $1',
+            [userId]
+        );
+        deletedCounts.currentLesson = currentLessonResult.rowCount;
+
+        // Delete attempt history
         if (includeAttempts === 'true') {
             const attemptsResult = await client.query(
                 'DELETE FROM user_problem_attempts WHERE user_id = $1',

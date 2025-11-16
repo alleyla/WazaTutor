@@ -303,6 +303,139 @@ class ProgressService {
             return null;
         }
     }
+
+    /**
+     * Save current lesson to server
+     */
+    async saveCurrentLesson(lessonId) {
+        if (!storageService.isAuthenticated()) {
+            return { success: false, reason: 'not_authenticated' };
+        }
+
+        const token = storageService.getAuthToken();
+
+        try {
+            const response = await axios.post(
+                `${API_BASE_URL}/progress/current-lesson`,
+                { lessonId },
+                {
+                    headers: { 'x-auth-token': token },
+                    timeout: 5000
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Failed to save current lesson:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Load current lesson from server
+     */
+    async loadCurrentLesson() {
+        if (!storageService.isAuthenticated()) {
+            return null;
+        }
+
+        const token = storageService.getAuthToken();
+
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/progress/current-lesson`,
+                {
+                    headers: { 'x-auth-token': token },
+                    timeout: 5000
+                }
+            );
+            return response.data.success ? response.data.currentLesson : null;
+        } catch (error) {
+            console.error('Failed to load current lesson:', error.message);
+            return null;
+        }
+    }
+
+    /**
+     * Save lesson progress to server
+     */
+    async saveLessonProgress(lessonId, completedProblems, totalProblems, completionPercentage, lastProblemId) {
+        if (!storageService.isAuthenticated()) {
+            return { success: false, reason: 'not_authenticated' };
+        }
+
+        const token = storageService.getAuthToken();
+
+        try {
+            const response = await axios.post(
+                `${API_BASE_URL}/progress/lesson`,
+                {
+                    lessonId,
+                    completedProblems,
+                    totalProblems,
+                    completionPercentage,
+                    lastProblemId
+                },
+                {
+                    headers: { 'x-auth-token': token },
+                    timeout: 5000
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Failed to save lesson progress:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Load lesson progress from server
+     */
+    async loadLessonProgress(lessonId) {
+        if (!storageService.isAuthenticated()) {
+            return null;
+        }
+
+        const token = storageService.getAuthToken();
+
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/progress/lesson/${lessonId}`,
+                {
+                    headers: { 'x-auth-token': token },
+                    timeout: 5000
+                }
+            );
+            return response.data.success ? response.data.progress : null;
+        } catch (error) {
+            console.error('Failed to load lesson progress:', error.message);
+            return null;
+        }
+    }
+
+    /**
+     * Load all lesson progress from server
+     */
+    async loadAllLessonProgress() {
+        if (!storageService.isAuthenticated()) {
+            return null;
+        }
+
+        const token = storageService.getAuthToken();
+
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/progress/lessons`,
+                {
+                    headers: { 'x-auth-token': token },
+                    timeout: 10000
+                }
+            );
+            return response.data.success ? response.data.lessons : null;
+        } catch (error) {
+            console.error('Failed to load all lesson progress:', error.message);
+            return null;
+        }
+    }
 }
 
 export default new ProgressService();

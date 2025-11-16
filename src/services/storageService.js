@@ -1,11 +1,11 @@
 /**
  * Centralized localStorage management for user authentication and anonymous tracking
  */
-import { USER_ID_STORAGE_KEY, PROGRESS_STORAGE_KEY } from '../config/config';
+import { USER_ID_STORAGE_KEY, CURRENT_LESSON_STORAGE_KEY, PROGRESS_STORAGE_KEY, LESSON_PROGRESS_STORAGE_KEY } from '../config/config';
 
 
 // Storage Keys
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
     AUTH_TOKEN: 'authToken',
     USER_ID: 'userId',           // Authenticated user ID from database
     USER_NAME: 'name',            // Authenticated user name
@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
     ANONYMOUS_ID: USER_ID_STORAGE_KEY,
     // Application state (backward compatible)
     PROGRESS: PROGRESS_STORAGE_KEY,
+    CURRENT_LESSON: CURRENT_LESSON_STORAGE_KEY,
     LOCALE: 'locale',
     DEFAULT_LOCALE: 'defaultLocale',
     BIO_INFO: 'bioInfo',
@@ -72,6 +73,7 @@ class StorageService {
         localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.USER_ID);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_LESSON);
         // Note: Don't clear anonymous ID - let App.js handle that
     }
 
@@ -141,6 +143,35 @@ class StorageService {
 
     removeProgress() {
         localStorage.removeItem(STORAGE_KEYS.PROGRESS);
+    }
+
+    /**
+     * Get user's current active lesson ID
+     * @returns {string}
+     */
+    getCurrentLesson() {
+        return localStorage.getItem(STORAGE_KEYS.CURRENT_LESSON);
+    }
+
+    setCurrentLesson(lessonId) {
+        localStorage.setItem(STORAGE_KEYS.CURRENT_LESSON, lessonId);
+    }
+    /**
+     * Clear current lesson (on logout)
+     */
+    clearCurrentLesson() {
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_LESSON);
+    }
+
+    getLessonProgress(lessonId) {
+        const key = LESSON_PROGRESS_STORAGE_KEY(lessonId);
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : null;
+    }
+
+    setLessonProgress(lessonId, progressData) {
+        const key = LESSON_PROGRESS_STORAGE_KEY(lessonId);
+        localStorage.setItem(key, JSON.stringify(progressData));
     }
 }
 

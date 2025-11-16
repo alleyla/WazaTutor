@@ -4,6 +4,8 @@ import Grid from "@material-ui/core/Grid";
 import ProblemWrapper from "@components/problem-layout/ProblemWrapper.js";
 import LessonSelectionWrapper from "@components/problem-layout/LessonSelectionWrapper.js";
 import { withRouter } from "react-router-dom";
+import progressService from '../services/progressService';
+import storageService from '../services/storageService';
 
 import {
     coursePlans,
@@ -73,6 +75,8 @@ class Platform extends React.Component {
         }
 
         this.selectLesson = this.selectLesson.bind(this);
+        this.saveLessonProgress = this.saveLessonProgress.bind(this);
+        this.setCurrentLesson = this.setCurrentLesson.bind(this);
     }
 
     componentDidMount() {
@@ -91,12 +95,8 @@ class Platform extends React.Component {
             );
 
             const { setLanguage } = this.props;
-            if (lesson.courseName == 'Matematik 4') {
-                setLanguage('se')
-            } else {
-                const defaultLocale = localStorage.getItem('defaultLocale');
-                setLanguage(defaultLocale)
-            }
+            const defaultLocale = localStorage.getItem('defaultLocale');
+            setLanguage(defaultLocale)
         } else if (this.props.courseNum != null) {
             this.selectCourse(coursePlans[parseInt(this.props.courseNum)]);
         }
@@ -230,12 +230,30 @@ class Platform extends React.Component {
         }
 
         this.lesson = lesson;
+        await this.setCurrentLesson(lesson.id);
 
         const loadLessonProgress = async () => {
+            // Try server first if authenticated
+            if (storageService.isAuthenticated()) {
+                try {
+                    const serverProgress = await progressService.loadLessonProgress(lesson.id);
+                    if (serverProgress && serverProgress.completed_problems) {
+                        console.debug('Loaded lesson progress from server:', serverProgress);
+                        return serverProgress.completed_problems;
+                    }
+                } catch (err) {
+                    console.warn('Failed to load lesson progress from server:', err);
+                }
+            }
+
+            // Fallback to local storage
             const { getByKey } = this.context.browserStorage;
             return await getByKey(
-                LESSON_PROGRESS_STORAGE_KEY(this.lesson.id)
-            ).catch((err) => {});
+                LESSON_PROGRESS_STORAGE_KEY(lesson.id)
+            ).catch((err) => {
+                console.debug('No local lesson progress found:', err);
+                return null;
+            });
         };
 
         const [, prevCompletedProbs] = await Promise.all([
@@ -260,8 +278,8 @@ class Platform extends React.Component {
                 ),
             },
             () => {
-                //console.log(this.state.currProblem);
-                //console.log(this.lesson);
+                console.log(this.state.currProblem);
+                console.log(this.lesson);
             }
         );
     }
@@ -277,6 +295,24 @@ class Platform extends React.Component {
         seed = Date.now().toString();
         this.setState({ seed: seed });
         this.props.saveProgress();
+
+        if (this.lesson && this.completedProbs.size > 0) {
+            const problemsArray = Array.from(this.completedProbs);
+            const totalProblems = this.lesson.learningObjectives ?
+                Object.keys(this.lesson.learningObjectives).length : 0;
+            const completionPercentage = totalProblems > 0 ?
+                (problemsArray.length / totalProblems) * 100 : 0;
+
+            this.saveLessonProgress(
+                problemsArray,
+                totalProblems,
+                completionPercentage,
+                this.state.currProblem?.id
+            ).catch(err => {
+                console.error('Failed to save lesson progress:', err);
+            });
+        }
+
         const problems = this.problemIndex.problems.filter(
             ({ courseName }) => !courseName.toString().startsWith("!!")
         );
@@ -380,7 +416,7 @@ class Platform extends React.Component {
         const { setByKey } = this.context.browserStorage;
         await setByKey(
             LESSON_PROGRESS_STORAGE_KEY(this.lesson.id),
-            this.completedProbs
+            Array.from(this.completedProbs)
         ).catch((error) => {
             this.context.firebase.submitSiteLog(
                 "site-error",
@@ -394,6 +430,23 @@ class Platform extends React.Component {
                 this.state.currProblem.id
             );
         });
+
+        if (this.lesson) {
+            const problemsArray = Array.from(this.completedProbs);
+            const totalProblems = this.lesson.learningObjectives ?
+                Object.keys(this.lesson.learningObjectives).length : 0;
+            const completionPercentage = totalProblems > 0 ?
+                (problemsArray.length / totalProblems) * 100 : 0;
+
+            await this.saveLessonProgress(
+                problemsArray,
+                totalProblems,
+                completionPercentage,
+                this.state.currProblem.id
+            ).catch(err => {
+                console.error('Failed to save lesson progress:', err);
+            });
+        }
         this._nextProblem(context);
     };
 
@@ -402,6 +455,55 @@ class Platform extends React.Component {
         if (mastery >= MASTERY_THRESHOLD) {
             toast.success("You've successfully completed this assignment!", {
                 toastId: ToastID.successfully_completed_lesson.toString(),
+            });
+        }
+    };
+
+    /**
+     * Save lesson progress to both localStorage and server
+     */
+    saveLessonProgress = async (completedProblems, totalProblems, completionPercentage, lastProblemId) => {
+        if (!this.lesson) return;
+
+        const lessonId = this.lesson.id;
+
+        const progressData = {
+            completedProblems,
+            totalProblems,
+            completionPercentage,
+            lastProblemId,
+            updatedAt: new Date().toISOString()
+        };
+
+        // Save to localStorage
+        storageService.setLessonProgress(lessonId, progressData);
+
+        // Sync to server if authenticated
+        if (storageService.isAuthenticated()) {
+            await progressService.saveLessonProgress(
+                lessonId,
+                completedProblems,
+                totalProblems,
+                completionPercentage,
+                lastProblemId
+            ).catch(err => {
+                console.error('Failed to sync lesson progress to server:', err);
+                // Don't throw - allow app to continue with localStorage
+            });
+        }
+    };
+
+    /**
+     * Set the current lesson user is working on
+     */
+    setCurrentLesson = async (lessonId) => {
+        // Save to localStorage
+        storageService.setCurrentLesson(lessonId);
+
+        // Sync to server if authenticated
+        if (storageService.isAuthenticated()) {
+            await progressService.saveCurrentLesson(lessonId).catch(err => {
+                console.error('Failed to sync current lesson to server:', err);
             });
         }
     };
