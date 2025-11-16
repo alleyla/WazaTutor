@@ -41,6 +41,7 @@ import ViewAllProblems from "./components/problem-layout/ViewAllProblems";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
+import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 
@@ -52,6 +53,7 @@ import experimentalBKTParams from "./content-sources/wazatutor/bkt-params/experi
 import { heuristic as defaultHeuristic } from "./models/BKT/problem-select-heuristics/defaultHeuristic.js";
 import { heuristic as experimentalHeuristic } from "./models/BKT/problem-select-heuristics/experimentalHeuristic.js";
 import BrowserStorage from "./util/browserStorage";
+import progressService from './services/progressService';
 // ### END CUSTOMIZABLE IMPORTS ###
 
 loadFirebaseEnvConfig(config);
@@ -106,6 +108,8 @@ class App extends React.Component {
 
         this.state = {
             additionalContext: {},
+            skillMasteryLoaded: false,
+            sessionId: this.generateSessionId(),
         };
 
         if (IS_STAGING_OR_DEVELOPMENT) {
@@ -192,12 +196,60 @@ class App extends React.Component {
         this.saveProgress = this.saveProgress.bind(this);
     }
 
-    componentDidMount() {
+    generateSessionId() {
+        return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+
+    async componentDidMount() {
         this.mounted = true;
+        // Load skill mastery from server if authenticated
+        if (storageService.isAuthenticated()) {
+            await this.loadSkillMasteryFromServer();
+        }
     }
 
     componentWillUnmount() {
         this.mounted = false;
+    }
+
+    /**
+     * Load skill mastery from server and merge with local data
+     * Server data takes precedence for authenticated users
+     */
+    async loadSkillMasteryFromServer() {
+        try {
+            const serverMastery = await progressService.loadSkillMastery();
+
+            if (serverMastery && Object.keys(serverMastery).length > 0) {
+                console.log(`Loaded ${Object.keys(serverMastery).length} skills from server`);
+
+                // Merge server mastery with current bktParams
+                // Server data takes precedence over local data
+                Object.keys(serverMastery).forEach(skillName => {
+                    if (!this.bktParams[skillName]) {
+                        // Skill exists on server but not locally - add it
+                        this.bktParams[skillName] = serverMastery[skillName];
+                    } else {
+                        // Skill exists in both places - use server data (it's the source of truth)
+                        this.bktParams[skillName] = {
+                            ...this.bktParams[skillName],
+                            ...serverMastery[skillName]
+                        };
+                    }
+                });
+
+                this.setState({ skillMasteryLoaded: true });
+
+                console.log('Successfully merged server skill mastery');
+            } else {
+                console.log('No skill mastery data on server, using local/default');
+                this.setState({ skillMasteryLoaded: true });
+            }
+        } catch (error) {
+            console.error('Error loading skill mastery from server:', error);
+            // Continue with local data if server fails
+            this.setState({ skillMasteryLoaded: true });
+        }
     }
 
     getTreatment = () => {
@@ -212,7 +264,24 @@ class App extends React.Component {
     };
 
     removeProgress = async () => {
+
+        // Show confirmation dialog
+        const confirmed = window.confirm(
+            'Are you sure you want to clear all your progress? This action cannot be undone.\n\n' +
+            'This will reset:\n' +
+            '- All skill mastery levels\n' +
+            '- Practice streak data\n' +
+            '- Daily progress statistics\n\n' +
+            '(Note: Your problem attempt history will be preserved)'
+        );
+
+        if (!confirmed) {
+            return; // User cancelled
+        }
+
         const { getKeys, removeByKey } = this.browserStorage;
+
+        // Clear local storage
         await removeByKey(PROGRESS_STORAGE_KEY);
         const existingKeys = (await getKeys()) || [];
         const lessonStorageKeys = existingKeys.filter((key) =>
@@ -221,40 +290,101 @@ class App extends React.Component {
         await Promise.allSettled(
             lessonStorageKeys.map(async (key) => await removeByKey(key))
         );
+
+        // Reset local BKT params
         this.bktParams = this.getTreatmentObject(treatmentMapping.bktParams);
-        window.location.reload();
+
+        // Clear server-side progress for authenticated users
+        if (storageService.isAuthenticated()) {
+            try {
+                const result = await progressService.clearProgress(false); // false = keep attempt history
+                if (result.success) {
+                    console.log('Server progress cleared:', result.deleted);
+                    toast.success('Progress reset successfully!', {
+                        toastId: 'progress_cleared',
+                    });
+                } else {
+                    console.warn('Failed to clear server progress:', result.error);
+                    toast.warn('Progress cleared locally, but server sync failed', {
+                        toastId: 'server_clear_failed',
+                    });
+                }
+            } catch (error) {
+                console.error('Error clearing server progress:', error);
+                // Don't block the reload if server clear fails
+            }
+        } else {
+            toast.success('Progress reset successfully!', {
+                toastId: 'progress_cleared',
+            });
+        }
+
+        // Reload after a brief delay to show the toast
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
     };
 
-    saveProgress = () => {
+    /**
+     * Save progress to both local storage and server (if authenticated)
+     */
+    saveProgress = async () => {
         console.debug("saving progress");
 
         const progressedBktParams = Object.fromEntries(
             // only add to db if it is not the same as originally provided bkt params
             Object.entries(this.bktParams || {}).filter(([key, val]) => {
-                // console.debug(this.originalBktParams[key]?.probMastery, 'vs.', val.probMastery)
                 return (
                     this.originalBktParams[key]?.probMastery !== val.probMastery
                 );
             })
         );
+
+        // ✅ FIXED: Use promise-based approach instead of mixing await with callback
         const { setByKey } = this.browserStorage;
-        setByKey(PROGRESS_STORAGE_KEY, progressedBktParams, (err) => {
-            if (err) {
-                console.debug("save progress error: ", err);
-                toast.warn("Unable to save mastery progress :(", {
-                    toastId: "unable_to_save_progress",
-                });
-            } else {
-                console.debug("saved progress successfully");
+        try {
+            await setByKey(PROGRESS_STORAGE_KEY, progressedBktParams);
+            console.debug("saved progress to local storage successfully");
+        } catch (err) {
+            console.debug("save progress error: ", err);
+            toast.warn("Unable to save mastery progress :(", {
+                toastId: "unable_to_save_progress",
+            });
+        }
+
+        // Sync to server if authenticated
+        if (storageService.isAuthenticated()) {
+            try {
+                const result = await progressService.syncSkillMastery(this.bktParams);
+                if (result.success) {
+                    console.debug(`Synced ${result.count} skills to server`);
+                } else {
+                    console.warn('Failed to sync to server:', result.reason || result.error);
+                }
+            } catch (error) {
+                console.error('Error syncing mastery to server:', error);
+                // Don't show error to user - local save still succeeded
             }
-        }).then((_) => {});
+        }
     };
 
+    /**
+     * Load BKT progress from local storage
+     * For authenticated users, server data is loaded in componentDidMount
+     * and takes precedence
+     */
     loadBktProgress = async () => {
+        // If authenticated and server data already loaded, skip local loading
+        if (storageService.isAuthenticated() && this.state.skillMasteryLoaded) {
+            console.debug('Using server mastery data, skipping local load');
+            return;
+        }
+
         const { getByKey } = this.browserStorage;
         const progress = await getByKey(PROGRESS_STORAGE_KEY).catch((_e) => {
             console.debug("error with getting previous progress", _e);
         });
+
         if (
             progress == null ||
             typeof progress !== "object" ||
@@ -269,7 +399,7 @@ class App extends React.Component {
             );
         } else {
             console.debug(
-                "restoring progress from before (raw, uncleaned): ",
+                "restoring progress from local storage: ",
                 progress
             );
             Object.assign(this.bktParams, cleanObjectKeys(progress));
@@ -301,6 +431,7 @@ class App extends React.Component {
                         problemID: "n/a",
                         problemIDs: null,
                         ...this.state.additionalContext,
+                        sessionId: this.state.sessionId,
                         browserStorage: this.browserStorage,
                     }}
                 >
@@ -441,6 +572,11 @@ class App extends React.Component {
                                         exact
                                         path="/account"
                                         component={Account}
+                                    />
+                                    <ProtectedRoute
+                                        exact
+                                        path="/dashboard"
+                                        component={Dashboard}
                                     />
                                     {/* Guest Routes - Only accessible when NOT logged in */}
                                     <GuestRoute

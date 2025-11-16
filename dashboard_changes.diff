@@ -1,0 +1,1660 @@
+diff --git a/server/config/initDatabase.js b/server/config/initDatabase.js
+index dfd49f41cf..cb27ed3dd6 100644
+--- a/server/config/initDatabase.js
++++ b/server/config/initDatabase.js
+@@ -17,7 +17,6 @@ async function initDatabase() {
+     await pool.query(sqlQuery);
+ 
+     console.log('Database initialized successfully!');
+-    console.log('Users table created.');
+     process.exit(0);
+   } catch (error) {
+     console.error('Error initializing database:', error);
+diff --git a/server/db/init.sql b/server/db/init.sql
+index 451a16e03b..d3b7454d6a 100644
+--- a/server/db/init.sql
++++ b/server/db/init.sql
+@@ -1,5 +1,8 @@
+ -- Drop tables if they exist to ensure a clean slate
+ DROP TABLE IF EXISTS users CASCADE;
++DROP TABLE IF EXISTS user_practice_sessions CASCADE;
++DROP TABLE IF EXISTS user_problem_attempts CASCADE;
++DROP TABLE IF EXISTS user_skill_mastery CASCADE;
+ 
+ -- Create the users table
+ CREATE TABLE users (
+@@ -27,4 +30,65 @@ $$ LANGUAGE plpgsql;
+ CREATE TRIGGER update_users_updated_at
+ BEFORE UPDATE ON users
+ FOR EACH ROW
+-EXECUTE FUNCTION update_updated_at_column();
+\ No newline at end of file
++EXECUTE FUNCTION update_updated_at_column();
++
++-- Table to store skill mastery state per user
++CREATE TABLE user_skill_mastery (
++        id SERIAL PRIMARY KEY,
++        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
++        skill_name VARCHAR(255) NOT NULL,
++        prob_mastery DECIMAL(5, 4) NOT NULL DEFAULT 0.1000,
++        prob_slip DECIMAL(5, 4) NOT NULL DEFAULT 0.1000,
++        prob_guess DECIMAL(5, 4) NOT NULL DEFAULT 0.2500,
++        prob_transit DECIMAL(5, 4) NOT NULL DEFAULT 0.1000,
++        last_updated TIMESTAMP NOT NULL DEFAULT NOW(),
++        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
++        UNIQUE(user_id, skill_name),
++        CHECK (prob_mastery >= 0 AND prob_mastery <= 1),
++        CHECK (prob_slip >= 0 AND prob_slip <= 1),
++        CHECK (prob_guess >= 0 AND prob_guess <= 1),
++        CHECK (prob_transit >= 0 AND prob_transit <= 1)
++);
++
++CREATE INDEX idx_user_skill_mastery_user_id ON user_skill_mastery(user_id);
++CREATE INDEX idx_user_skill_mastery_skill_name ON user_skill_mastery(skill_name);
++CREATE INDEX idx_user_skill_mastery_last_updated ON user_skill_mastery(last_updated);
++
++-- Table to store individual problem attempts (for analytics and stats)
++CREATE TABLE user_problem_attempts (
++       id SERIAL PRIMARY KEY,
++       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
++       problem_id VARCHAR(255) NOT NULL,
++       step_id VARCHAR(255),
++       skill_name VARCHAR(255),
++       is_correct BOOLEAN NOT NULL,
++       time_spent_seconds INTEGER,
++       hint_count INTEGER DEFAULT 0,
++       attempt_number INTEGER DEFAULT 1,
++       completed_at TIMESTAMP NOT NULL DEFAULT NOW(),
++       session_id VARCHAR(255),
++       lesson_id VARCHAR(255),
++       course_name VARCHAR(255)
++);
++
++CREATE INDEX idx_problem_attempts_user_id ON user_problem_attempts(user_id);
++CREATE INDEX idx_problem_attempts_completed_at ON user_problem_attempts(completed_at);
++CREATE INDEX idx_problem_attempts_user_date ON user_problem_attempts(user_id, completed_at DESC);
++CREATE INDEX idx_problem_attempts_skill ON user_problem_attempts(user_id, skill_name);
++
++-- Table to store daily practice sessions (for streak calculation)
++CREATE TABLE user_practice_sessions (
++        id SERIAL PRIMARY KEY,
++        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
++        practice_date DATE NOT NULL,
++        problems_solved INTEGER NOT NULL DEFAULT 0,
++        total_time_seconds INTEGER NOT NULL DEFAULT 0,
++        problems_attempted INTEGER NOT NULL DEFAULT 0,
++        lesson_ids TEXT[],
++        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
++        updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
++        UNIQUE(user_id, practice_date)
++);
++
++CREATE INDEX idx_practice_sessions_user_id ON user_practice_sessions(user_id);
++CREATE INDEX idx_practice_sessions_user_date ON user_practice_sessions(user_id, practice_date DESC);
+\ No newline at end of file
+diff --git a/server/index.js b/server/index.js
+index b879398d91..8d322bc17f 100644
+--- a/server/index.js
++++ b/server/index.js
+@@ -6,6 +6,8 @@ const path = require('path');
+ 
+ const authRoutes = require('./routes/auth');
+ const accountRoutes = require('./routes/account');
++const userProgressRoutes = require('./routes/userProgress');
++
+ 
+ const app = express();
+ const PORT = process.env.SERVER_PORT || 3002;
+@@ -42,6 +44,8 @@ app.use('/api/auth/login', authLimiter);
+ // API routes
+ app.use('/api/auth', authRoutes);
+ app.use('/api/account', accountLimiter, accountRoutes);
++app.use('/api/progress', userProgressRoutes);
++
+ 
+ // Health check
+ app.get('/health', (req, res) => {
+diff --git a/server/routes/userProgress.js b/server/routes/userProgress.js
+new file mode 100644
+index 0000000000..a4457ea75f
+--- /dev/null
++++ b/server/routes/userProgress.js
+@@ -0,0 +1,504 @@
++
++const express = require('express');
++const router = express.Router();
++const authenticateToken = require('../middleware/auth');
++const pool = require('../config/database');
++
++// ==================== INPUT VALIDATION HELPERS ====================
++
++/**
++ * Validate and sanitize integer input
++ */
++const validateInteger = (value, defaultValue, min = 1, max = 1000) => {
++    const parsed = parseInt(value, 10);
++    if (isNaN(parsed) || parsed < min || parsed > max) {
++        return defaultValue;
++    }
++    return parsed;
++};
++
++/**
++ * Validate and sanitize float input
++ */
++const validateFloat = (value, defaultValue, min = 0, max = 1) => {
++    const parsed = parseFloat(value);
++    if (isNaN(parsed) || parsed < min || parsed > max) {
++        return defaultValue;
++    }
++    return parsed;
++};
++
++// ==================== SKILL MASTERY ENDPOINTS ====================
++
++/**
++ * Save/Update skill mastery after BKT update
++ * POST /api/progress/mastery/update
++ * Body: { skills: [{ skillName, probMastery, probSlip, probGuess, probTransit }] }
++ */
++router.post('/mastery/update', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++    const { skills } = req.body;
++
++    if (!Array.isArray(skills) || skills.length === 0) {
++        return res.status(400).json({ error: 'Skills array is required' });
++    }
++
++    // Validate skills array length to prevent DoS
++    if (skills.length > 1000) {
++        return res.status(400).json({ error: 'Too many skills in single request' });
++    }
++
++    const client = await pool.connect();
++
++    try {
++        await client.query('BEGIN');
++
++        for (const skill of skills) {
++            // Validate skill data
++            if (!skill.skillName || typeof skill.skillName !== 'string') {
++                continue;
++            }
++
++            if (skill.probMastery === undefined || typeof skill.probMastery !== 'number') {
++                continue;
++            }
++
++            // Sanitize and validate probabilities
++            const probMastery = validateFloat(skill.probMastery, 0, 0, 1);
++            const probSlip = validateFloat(skill.probSlip, 0.1, 0, 1);
++            const probGuess = validateFloat(skill.probGuess, 0.25, 0, 1);
++            const probTransit = validateFloat(skill.probTransit, 0.1, 0, 1);
++
++            // Sanitize skill name (limit length)
++            const skillName = skill.skillName.substring(0, 255);
++
++            await client.query(`
++                INSERT INTO user_skill_mastery 
++                    (user_id, skill_name, prob_mastery, prob_slip, prob_guess, prob_transit, last_updated)
++                VALUES ($1, $2, $3, $4, $5, $6, NOW())
++                ON CONFLICT (user_id, skill_name) 
++                DO UPDATE SET 
++                    prob_mastery = EXCLUDED.prob_mastery,
++                    prob_slip = EXCLUDED.prob_slip,
++                    prob_guess = EXCLUDED.prob_guess,
++                    prob_transit = EXCLUDED.prob_transit,
++                    last_updated = NOW()
++            `, [userId, skillName, probMastery, probSlip, probGuess, probTransit]);
++        }
++
++        await client.query('COMMIT');
++        res.json({ success: true, message: 'Mastery updated', count: skills.length });
++    } catch (error) {
++        await client.query('ROLLBACK');
++        console.error('Error updating mastery:', error);
++        res.status(500).json({ error: 'Failed to update mastery' });
++    } finally {
++        client.release();
++    }
++});
++
++/**
++ * Get all skill mastery for a user (for session restoration)
++ * GET /api/progress/mastery
++ */
++router.get('/mastery', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++
++    try {
++        const result = await pool.query(
++            `SELECT skill_name, prob_mastery, prob_slip, prob_guess, prob_transit, last_updated 
++             FROM user_skill_mastery 
++             WHERE user_id = $1
++             ORDER BY last_updated DESC`,
++            [userId]
++        );
++
++        res.json({
++            success: true,
++            skills: result.rows,
++            count: result.rows.length
++        });
++    } catch (error) {
++        console.error('Error fetching mastery:', error);
++        res.status(500).json({ error: 'Failed to fetch mastery' });
++    }
++});
++
++/**
++ * Get skill mastery breakdown with categorization
++ * GET /api/progress/skills/breakdown?masteryThreshold=0.95
++ */
++router.get('/skills/breakdown', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++    const masteryThreshold = validateFloat(req.query.masteryThreshold, 0.95, 0, 1);
++
++    try {
++        const result = await pool.query(`
++            SELECT
++                skill_name,
++                prob_mastery,
++                CASE
++                    WHEN prob_mastery >= $2 THEN 'mastered'
++                    WHEN prob_mastery >= 0.7 THEN 'proficient'
++                    WHEN prob_mastery >= 0.4 THEN 'developing'
++                    ELSE 'beginning'
++                    END as mastery_level,
++                last_updated
++            FROM user_skill_mastery
++            WHERE user_id = $1
++            ORDER BY prob_mastery DESC
++        `, [userId, masteryThreshold]);
++
++        res.json({
++            success: true,
++            skills: result.rows,
++            count: result.rows.length
++        });
++    } catch (error) {
++        console.error('Error fetching skill breakdown:', error);
++        res.status(500).json({ error: 'Failed to fetch skill breakdown' });
++    }
++});
++
++// ==================== PROBLEM ATTEMPT LOGGING ====================
++
++/**
++ * Log a problem attempt
++ * POST /api/progress/attempts
++ * Body: { problemId, stepId, skillName, isCorrect, timeSpentSeconds, hintCount, attemptNumber, sessionId, lessonId, courseName }
++ */
++router.post('/attempts', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++    const {
++        problemId,
++        stepId,
++        skillName,
++        isCorrect,
++        timeSpentSeconds,
++        hintCount,
++        attemptNumber,
++        sessionId,
++        lessonId,
++        courseName
++    } = req.body;
++
++    // Validate required fields
++    if (!problemId || typeof problemId !== 'string') {
++        return res.status(400).json({ error: 'Valid problemId is required' });
++    }
++
++    if (typeof isCorrect !== 'boolean') {
++        return res.status(400).json({ error: 'isCorrect must be a boolean' });
++    }
++
++    // Sanitize and validate inputs
++    const sanitizedProblemId = problemId.substring(0, 255);
++    const sanitizedStepId = stepId ? stepId.substring(0, 255) : null;
++    const sanitizedSkillName = skillName ? skillName.substring(0, 255) : null;
++    const sanitizedSessionId = sessionId ? sessionId.substring(0, 255) : null;
++    const sanitizedLessonId = lessonId ? lessonId.substring(0, 255) : null;
++    const sanitizedCourseName = courseName ? courseName.substring(0, 255) : null;
++
++    const validatedTimeSpent = validateInteger(timeSpentSeconds, 0, 0, 86400); // Max 24 hours
++    const validatedHintCount = validateInteger(hintCount, 0, 0, 100);
++    const validatedAttemptNumber = validateInteger(attemptNumber, 1, 1, 100);
++
++    const client = await pool.connect();
++
++    try {
++        await client.query('BEGIN');
++
++        // Insert the attempt
++        const attemptResult = await client.query(`
++            INSERT INTO user_problem_attempts 
++                (user_id, problem_id, step_id, skill_name, is_correct, time_spent_seconds, 
++                 hint_count, attempt_number, session_id, lesson_id, course_name, completed_at)
++            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())
++            RETURNING id
++        `, [
++            userId,
++            sanitizedProblemId,
++            sanitizedStepId,
++            sanitizedSkillName,
++            isCorrect,
++            validatedTimeSpent,
++            validatedHintCount,
++            validatedAttemptNumber,
++            sanitizedSessionId,
++            sanitizedLessonId,
++            sanitizedCourseName
++        ]);
++
++        // Update daily practice session
++        const lessonIdForSession = sanitizedLessonId || 'unknown';
++        await client.query(`
++            INSERT INTO user_practice_sessions 
++                (user_id, practice_date, problems_solved, total_time_seconds, problems_attempted, lesson_ids, updated_at)
++            VALUES ($1, CURRENT_DATE, $2, $3, 1, ARRAY[$4]::TEXT[], NOW())
++            ON CONFLICT (user_id, practice_date) 
++            DO UPDATE SET 
++                problems_solved = user_practice_sessions.problems_solved + EXCLUDED.problems_solved,
++                total_time_seconds = user_practice_sessions.total_time_seconds + EXCLUDED.total_time_seconds,
++                problems_attempted = user_practice_sessions.problems_attempted + 1,
++                lesson_ids = CASE 
++                    WHEN $4 = ANY(user_practice_sessions.lesson_ids) THEN user_practice_sessions.lesson_ids
++                    ELSE array_append(user_practice_sessions.lesson_ids, $4)
++                END,
++                updated_at = NOW()
++        `, [userId, isCorrect ? 1 : 0, validatedTimeSpent, lessonIdForSession]);
++
++        await client.query('COMMIT');
++
++        res.json({
++            success: true,
++            attemptId: attemptResult.rows[0].id
++        });
++    } catch (error) {
++        await client.query('ROLLBACK');
++        console.error('Error logging attempt:', error);
++        res.status(500).json({ error: 'Failed to log attempt' });
++    } finally {
++        client.release();
++    }
++});
++
++/**
++ * Get recent problem attempts
++ * GET /api/progress/attempts/recent?limit=20
++ */
++router.get('/attempts/recent', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++    const limit = validateInteger(req.query.limit, 20, 1, 100);
++
++    try {
++        const result = await pool.query(`
++            SELECT
++                problem_id, step_id, skill_name, is_correct,
++                time_spent_seconds, hint_count, completed_at, lesson_id, course_name
++            FROM user_problem_attempts
++            WHERE user_id = $1
++            ORDER BY completed_at DESC
++                LIMIT $2
++        `, [userId, limit]);
++
++        res.json({
++            success: true,
++            attempts: result.rows
++        });
++    } catch (error) {
++        console.error('Error fetching recent attempts:', error);
++        res.status(500).json({ error: 'Failed to fetch recent attempts' });
++    }
++});
++
++// ==================== USER STATISTICS ====================
++
++/**
++ * Get comprehensive user statistics
++ * GET /api/progress/stats?days=7&streakMinProblems=1&masteryThreshold=0.95
++ */
++router.get('/stats', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++    const days = validateInteger(req.query.days, 7, 1, 365);
++    const streakMinProblems = validateInteger(req.query.streakMinProblems, 1, 1, 100);
++    const masteryThreshold = validateFloat(req.query.masteryThreshold, 0.95, 0, 1);
++
++    try {
++        // Skills mastered count
++        const masteryResult = await pool.query(`
++            SELECT 
++                COUNT(*) FILTER (WHERE prob_mastery >= $2) as skills_mastered,
++                COUNT(*) as total_skills_practiced,
++                COALESCE(AVG(prob_mastery), 0) as average_mastery
++            FROM user_skill_mastery 
++            WHERE user_id = $1
++        `, [userId, masteryThreshold]);
++
++        // Calculate the interval for date queries
++        const daysInterval = days - 1; // Subtract 1 because CURRENT_DATE is inclusive
++
++        // Time on task (recent activity)
++        const timeResult = await pool.query(`
++            SELECT COALESCE(SUM(total_time_seconds), 0) as total_seconds
++            FROM user_practice_sessions
++            WHERE user_id = $1 
++                AND practice_date >= CURRENT_DATE - $2 * INTERVAL '1 day'
++        `, [userId, daysInterval]);
++
++        // Problems solved (recent activity)
++        const problemsResult = await pool.query(`
++            SELECT COALESCE(SUM(problems_solved), 0) as problems_solved
++            FROM user_practice_sessions
++            WHERE user_id = $1 
++                AND practice_date >= CURRENT_DATE - $2 * INTERVAL '1 day'
++        `, [userId, daysInterval]);
++
++        // Practice streak calculation
++        const streakResult = await pool.query(`
++            WITH RECURSIVE date_series AS (
++                SELECT CURRENT_DATE as practice_date
++                UNION ALL
++                SELECT (practice_date - INTERVAL '1 day')::date
++                FROM date_series
++                WHERE practice_date > CURRENT_DATE - INTERVAL '365 days'
++            ),
++            user_sessions AS (
++                SELECT practice_date, problems_solved
++                FROM user_practice_sessions
++                WHERE user_id = $1
++                    AND practice_date >= CURRENT_DATE - INTERVAL '365 days'
++            ),
++            streak_data AS (
++                SELECT 
++                    ds.practice_date,
++                    COALESCE(us.problems_solved, 0) >= $2 as met_threshold,
++                    ROW_NUMBER() OVER (ORDER BY ds.practice_date DESC) as day_num
++                FROM date_series ds
++                LEFT JOIN user_sessions us ON ds.practice_date = us.practice_date
++                WHERE ds.practice_date <= CURRENT_DATE
++            ),
++            streak_breaks AS (
++                SELECT 
++                    practice_date,
++                    met_threshold,
++                    day_num,
++                    SUM(CASE WHEN NOT met_threshold THEN 1 ELSE 0 END) 
++                        OVER (ORDER BY day_num) as break_group
++                FROM streak_data
++            )
++            SELECT COUNT(*) as streak_days
++            FROM streak_breaks
++            WHERE break_group = 0 AND met_threshold = true
++        `, [userId, streakMinProblems]);
++
++        res.json({
++            success: true,
++            stats: {
++                skillsMastered: parseInt(masteryResult.rows[0].skills_mastered) || 0,
++                totalSkillsPracticed: parseInt(masteryResult.rows[0].total_skills_practiced) || 0,
++                averageMastery: parseFloat(masteryResult.rows[0].average_mastery) || 0,
++                timeOnTask: {
++                    days: days,
++                    totalSeconds: parseInt(timeResult.rows[0].total_seconds) || 0,
++                    totalMinutes: Math.round((parseInt(timeResult.rows[0].total_seconds) || 0) / 60)
++                },
++                problemsSolved: {
++                    days: days,
++                    count: parseInt(problemsResult.rows[0].problems_solved) || 0
++                },
++                practiceStreak: {
++                    currentStreak: parseInt(streakResult.rows[0].streak_days) || 0,
++                    minProblemsPerDay: streakMinProblems
++                }
++            }
++        });
++    } catch (error) {
++        console.error('Error fetching stats:', error);
++        res.status(500).json({ error: 'Failed to fetch stats' });
++    }
++});
++
++/**
++ * Get practice history (for charts/visualizations)
++ * GET /api/progress/practice-history?days=30
++ */
++router.get('/practice-history', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++    const days = validateInteger(req.query.days, 30, 1, 365);
++    const daysInterval = days - 1;
++
++    try {
++        const result = await pool.query(`
++            SELECT 
++                practice_date,
++                problems_solved,
++                total_time_seconds,
++                problems_attempted,
++                lesson_ids
++            FROM user_practice_sessions
++            WHERE user_id = $1 
++                AND practice_date >= CURRENT_DATE - $2 * INTERVAL '1 day'
++            ORDER BY practice_date DESC
++        `, [userId, daysInterval]);
++
++        res.json({
++            success: true,
++            history: result.rows
++        });
++    } catch (error) {
++        console.error('Error fetching practice history:', error);
++        res.status(500).json({ error: 'Failed to fetch practice history' });
++    }
++});
++
++
++// ==================== CLEAR PROGRESS ====================
++
++/**
++ * Clear all progress data for the authenticated user
++ * DELETE /api/progress/clear
++ * Query params:
++ *   - confirm: must be 'true' to prevent accidental deletion
++ *   - includeAttempts: 'true' to also delete attempt history (default: false)
++ */
++router.delete('/clear', authenticateToken, async (req, res) => {
++    const userId = req.user.id;
++    const { confirm, includeAttempts } = req.query;
++
++    // Require explicit confirmation to prevent accidental deletion
++    if (confirm !== 'true') {
++        return res.status(400).json({
++            error: 'Confirmation required',
++            message: 'To clear progress, add ?confirm=true to the request'
++        });
++    }
++
++    const client = await pool.connect();
++
++    try {
++        await client.query('BEGIN');
++
++        let deletedCounts = {};
++
++        // Always delete skill mastery
++        const masteryResult = await client.query(
++            'DELETE FROM user_skill_mastery WHERE user_id = $1',
++            [userId]
++        );
++        deletedCounts.skillMastery = masteryResult.rowCount;
++
++        // Always delete practice sessions (for streak data)
++        const sessionsResult = await client.query(
++            'DELETE FROM user_practice_sessions WHERE user_id = $1',
++            [userId]
++        );
++        deletedCounts.practiceSessions = sessionsResult.rowCount;
++
++        // Optionally delete attempt history
++        if (includeAttempts === 'true') {
++            const attemptsResult = await client.query(
++                'DELETE FROM user_problem_attempts WHERE user_id = $1',
++                [userId]
++            );
++            deletedCounts.problemAttempts = attemptsResult.rowCount;
++        }
++
++        await client.query('COMMIT');
++
++        console.log(`User ${userId} cleared progress:`, deletedCounts);
++
++        res.json({
++            success: true,
++            message: 'Progress cleared successfully',
++            deleted: deletedCounts
++        });
++    } catch (error) {
++        await client.query('ROLLBACK');
++        console.error('Error clearing progress:', error);
++        res.status(500).json({ error: 'Failed to clear progress' });
++    } finally {
++        client.release();
++    }
++});
++
++module.exports = router;
+\ No newline at end of file
+diff --git a/src/App.js b/src/App.js
+index 74217c5047..35764602ba 100644
+--- a/src/App.js
++++ b/src/App.js
+@@ -41,6 +41,7 @@ import ViewAllProblems from "./components/problem-layout/ViewAllProblems";
+ import Login from "./pages/Login";
+ import Register from "./pages/Register";
+ import Account from "./pages/Account";
++import Dashboard from "./pages/Dashboard";
+ import ProtectedRoute from "./components/ProtectedRoute";
+ import GuestRoute from "./components/GuestRoute";
+ 
+@@ -52,6 +53,7 @@ import experimentalBKTParams from "./content-sources/wazatutor/bkt-params/experi
+ import { heuristic as defaultHeuristic } from "./models/BKT/problem-select-heuristics/defaultHeuristic.js";
+ import { heuristic as experimentalHeuristic } from "./models/BKT/problem-select-heuristics/experimentalHeuristic.js";
+ import BrowserStorage from "./util/browserStorage";
++import progressService from './services/progressService';
+ // ### END CUSTOMIZABLE IMPORTS ###
+ 
+ loadFirebaseEnvConfig(config);
+@@ -106,6 +108,8 @@ class App extends React.Component {
+ 
+         this.state = {
+             additionalContext: {},
++            skillMasteryLoaded: false,
++            sessionId: this.generateSessionId(),
+         };
+ 
+         if (IS_STAGING_OR_DEVELOPMENT) {
+@@ -192,14 +196,62 @@ class App extends React.Component {
+         this.saveProgress = this.saveProgress.bind(this);
+     }
+ 
+-    componentDidMount() {
++    generateSessionId() {
++        return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
++    }
++
++    async componentDidMount() {
+         this.mounted = true;
++        // Load skill mastery from server if authenticated
++        if (storageService.isAuthenticated()) {
++            await this.loadSkillMasteryFromServer();
++        }
+     }
+ 
+     componentWillUnmount() {
+         this.mounted = false;
+     }
+ 
++    /**
++     * Load skill mastery from server and merge with local data
++     * Server data takes precedence for authenticated users
++     */
++    async loadSkillMasteryFromServer() {
++        try {
++            const serverMastery = await progressService.loadSkillMastery();
++
++            if (serverMastery && Object.keys(serverMastery).length > 0) {
++                console.log(`Loaded ${Object.keys(serverMastery).length} skills from server`);
++
++                // Merge server mastery with current bktParams
++                // Server data takes precedence over local data
++                Object.keys(serverMastery).forEach(skillName => {
++                    if (!this.bktParams[skillName]) {
++                        // Skill exists on server but not locally - add it
++                        this.bktParams[skillName] = serverMastery[skillName];
++                    } else {
++                        // Skill exists in both places - use server data (it's the source of truth)
++                        this.bktParams[skillName] = {
++                            ...this.bktParams[skillName],
++                            ...serverMastery[skillName]
++                        };
++                    }
++                });
++
++                this.setState({ skillMasteryLoaded: true });
++
++                console.log('Successfully merged server skill mastery');
++            } else {
++                console.log('No skill mastery data on server, using local/default');
++                this.setState({ skillMasteryLoaded: true });
++            }
++        } catch (error) {
++            console.error('Error loading skill mastery from server:', error);
++            // Continue with local data if server fails
++            this.setState({ skillMasteryLoaded: true });
++        }
++    }
++
+     getTreatment = () => {
+         return this.userID % 2;
+     };
+@@ -212,7 +264,24 @@ class App extends React.Component {
+     };
+ 
+     removeProgress = async () => {
++
++        // Show confirmation dialog
++        const confirmed = window.confirm(
++            'Are you sure you want to clear all your progress? This action cannot be undone.\n\n' +
++            'This will reset:\n' +
++            '- All skill mastery levels\n' +
++            '- Practice streak data\n' +
++            '- Daily progress statistics\n\n' +
++            '(Note: Your problem attempt history will be preserved)'
++        );
++
++        if (!confirmed) {
++            return; // User cancelled
++        }
++
+         const { getKeys, removeByKey } = this.browserStorage;
++
++        // Clear local storage
+         await removeByKey(PROGRESS_STORAGE_KEY);
+         const existingKeys = (await getKeys()) || [];
+         const lessonStorageKeys = existingKeys.filter((key) =>
+@@ -221,40 +290,102 @@ class App extends React.Component {
+         await Promise.allSettled(
+             lessonStorageKeys.map(async (key) => await removeByKey(key))
+         );
++
++        // Reset local BKT params
+         this.bktParams = this.getTreatmentObject(treatmentMapping.bktParams);
+-        window.location.reload();
++
++        // Clear server-side progress for authenticated users
++        if (storageService.isAuthenticated()) {
++            try {
++                const result = await progressService.clearProgress(false); // false = keep attempt history
++                if (result.success) {
++                    console.log('Server progress cleared:', result.deleted);
++                    toast.success('Progress reset successfully!', {
++                        toastId: 'progress_cleared',
++                    });
++                } else {
++                    console.warn('Failed to clear server progress:', result.error);
++                    toast.warn('Progress cleared locally, but server sync failed', {
++                        toastId: 'server_clear_failed',
++                    });
++                }
++            } catch (error) {
++                console.error('Error clearing server progress:', error);
++                // Don't block the reload if server clear fails
++            }
++        } else {
++            toast.success('Progress reset successfully!', {
++                toastId: 'progress_cleared',
++            });
++        }
++
++        // Reload after a brief delay to show the toast
++        setTimeout(() => {
++            window.location.reload();
++        }, 1000);
+     };
+ 
+-    saveProgress = () => {
++    /**
++     * Save progress to both local storage and server (if authenticated)
++     */
++    saveProgress = async () => {
+         console.debug("saving progress");
+ 
+         const progressedBktParams = Object.fromEntries(
+             // only add to db if it is not the same as originally provided bkt params
+             Object.entries(this.bktParams || {}).filter(([key, val]) => {
+-                // console.debug(this.originalBktParams[key]?.probMastery, 'vs.', val.probMastery)
+                 return (
+                     this.originalBktParams[key]?.probMastery !== val.probMastery
+                 );
+             })
+         );
++
++        // Save to local storage (for backward compatibility and offline use)
+         const { setByKey } = this.browserStorage;
+-        setByKey(PROGRESS_STORAGE_KEY, progressedBktParams, (err) => {
++        await setByKey(PROGRESS_STORAGE_KEY, progressedBktParams, (err) => {
+             if (err) {
+                 console.debug("save progress error: ", err);
+                 toast.warn("Unable to save mastery progress :(", {
+                     toastId: "unable_to_save_progress",
+                 });
+             } else {
+-                console.debug("saved progress successfully");
++                console.debug("saved progress to local storage successfully");
++            }
++        });
++
++        // Sync to server if authenticated
++        if (storageService.isAuthenticated()) {
++            try {
++                const result = await progressService.syncSkillMastery(this.bktParams);
++                if (result.success) {
++                    console.debug(`Synced ${result.count} skills to server`);
++                } else {
++                    console.warn('Failed to sync to server:', result.reason || result.error);
++                }
++            } catch (error) {
++                console.error('Error syncing mastery to server:', error);
++                // Don't show error to user - local save still succeeded
+             }
+-        }).then((_) => {});
++        }
+     };
+ 
++    /**
++     * Load BKT progress from local storage
++     * For authenticated users, server data is loaded in componentDidMount
++     * and takes precedence
++     */
+     loadBktProgress = async () => {
++        // If authenticated and server data already loaded, skip local loading
++        if (storageService.isAuthenticated() && this.state.skillMasteryLoaded) {
++            console.debug('Using server mastery data, skipping local load');
++            return;
++        }
++
+         const { getByKey } = this.browserStorage;
+         const progress = await getByKey(PROGRESS_STORAGE_KEY).catch((_e) => {
+             console.debug("error with getting previous progress", _e);
+         });
++
+         if (
+             progress == null ||
+             typeof progress !== "object" ||
+@@ -269,7 +400,7 @@ class App extends React.Component {
+             );
+         } else {
+             console.debug(
+-                "restoring progress from before (raw, uncleaned): ",
++                "restoring progress from local storage: ",
+                 progress
+             );
+             Object.assign(this.bktParams, cleanObjectKeys(progress));
+@@ -301,6 +432,7 @@ class App extends React.Component {
+                         problemID: "n/a",
+                         problemIDs: null,
+                         ...this.state.additionalContext,
++                        sessionId: this.state.sessionId,
+                         browserStorage: this.browserStorage,
+                     }}
+                 >
+@@ -442,6 +574,11 @@ class App extends React.Component {
+                                         path="/account"
+                                         component={Account}
+                                     />
++                                    <ProtectedRoute
++                                        exact
++                                        path="/dashboard"
++                                        component={Dashboard}
++                                    />
+                                     {/* Guest Routes - Only accessible when NOT logged in */}
+                                     <GuestRoute
+                                         exact
+diff --git a/src/components/problem-layout/Problem.js b/src/components/problem-layout/Problem.js
+index 7ef80d2ffd..6bdd1b7718 100644
+--- a/src/components/problem-layout/Problem.js
++++ b/src/components/problem-layout/Problem.js
+@@ -18,6 +18,9 @@ import { NavLink } from "react-router-dom";
+ import HelpOutlineOutlinedIcon from "@material-ui/icons/HelpOutlineOutlined";
+ import FeedbackOutlinedIcon from "@material-ui/icons/FeedbackOutlined";
+ import withTranslation from "../../util/withTranslation.js"
++import progressService from "../../services/progressService";
++import storageService from "../../services/storageService";
++
+ 
+ import {
+     CANVAS_WARNING_STORAGE_KEY,
+@@ -45,13 +48,13 @@ class Problem extends React.Component {
+         super(props);
+ 
+         const { setLanguage } = props;
+-        if (props.lesson.courseName == "Matematik 4") {
+-            setLanguage('se')
+-        }
+ 
+         this.bktParams = context.bktParams;
+         this.heuristic = context.heuristic;
+ 
++        this.stepStartTime = Date.now();
++        this.stepAttemptCounts = {}; // Track attempts per step
++
+         const giveStuFeedback = this.props.lesson?.giveStuFeedback;
+         const giveStuHints = this.props.lesson?.giveStuHints;
+         const keepMCOrder = this.props.lesson?.keepMCOrder;
+@@ -229,6 +232,7 @@ class Problem extends React.Component {
+     answerMade = (cardIndex, kcArray, isCorrect) => {
+         const { stepStates, firstAttempts } = this.state;
+         const { lesson, problem } = this.props;
++        const step = problem.steps[cardIndex];
+ 
+         console.debug(`answer made and is correct: ${isCorrect}`);
+ 
+@@ -258,6 +262,35 @@ class Problem extends React.Component {
+                 if (this.doMasteryUpdate && (firstAttempts[cardIndex] === undefined || firstAttempts[cardIndex] === false)) {
+                     firstAttempts[cardIndex] = true;
+                     update(this.bktParams[kc], isCorrect);
++
++                    // Log attempt to server for authenticated users
++                    if (storageService.isAuthenticated()) {
++                        const timeSpent = Math.floor((Date.now() - this.stepStartTime) / 1000);
++                        const attemptNum = (this.stepAttemptCounts[step.id] || 0) + 1;
++                        this.stepAttemptCounts[step.id] = attemptNum;
++
++                        // Get lesson info from props or context
++                        const lesson = this.props.lesson || this.context.lesson;
++
++                        progressService.logProblemAttempt({
++                            problemId: problem.id,
++                            stepId: step.id,
++                            skillName: kc,
++                            isCorrect,
++                            timeSpentSeconds: timeSpent,
++                            hintCount: this.state.usedHints?.[cardIndex] || 0,
++                            attemptNumber: attemptNum,
++                            sessionId: this.context.sessionId,
++                            lessonId: lesson?.id || this.props.lessonID || null,
++                            courseName: lesson?.courseName || null
++                        }).catch(err => {
++                            console.error('Failed to log attempt:', err);
++                            // Don't throw - allow problem to continue
++                        });
++
++                        // Reset step timer for next step
++                        this.stepStartTime = Date.now();
++                    }
+                 }
+             }
+         }
+diff --git a/src/pages/Account.js b/src/pages/Account.js
+index cc29b2ef9a..5d9f3e8c35 100644
+--- a/src/pages/Account.js
++++ b/src/pages/Account.js
+@@ -14,6 +14,8 @@ import { makeStyles } from '@material-ui/core/styles';
+ import axios from 'axios';
+ import { toast } from 'react-toastify';
+ import storageService from '../services/storageService';
++import { Link } from 'react-router-dom';
++import DashboardIcon from '@material-ui/icons/Dashboard';
+ 
+ const useStyles = makeStyles((theme) => ({
+   container: {
+@@ -237,6 +239,17 @@ function Account() {
+             >
+               Back to Home
+             </Button>
++              <Button
++                  component={Link}
++                  to="/dashboard"
++                  variant="contained"
++                  color="primary"
++                  startIcon={<DashboardIcon />}
++                  fullWidth
++                  style={{ marginTop: 16 }}
++              >
++                  View My Dashboard
++              </Button>
+             <Button
+               fullWidth
+               variant="outlined"
+diff --git a/src/pages/Dashboard.js b/src/pages/Dashboard.js
+new file mode 100644
+index 0000000000..01d8396eb9
+--- /dev/null
++++ b/src/pages/Dashboard.js
+@@ -0,0 +1,350 @@
++import React, { useEffect, useState } from 'react';
++import progressService from '../services/progressService';
++import { 
++    Card, 
++    CardContent, 
++    Typography, 
++    Button, 
++    ButtonGroup, 
++    CircularProgress, 
++    Box,
++    Container,
++    Grid,
++    Paper
++} from '@material-ui/core';
++import { makeStyles } from '@material-ui/core/styles';
++import { useHistory } from 'react-router-dom';
++import TrendingUpIcon from '@material-ui/icons/TrendingUp';
++import CheckCircleIcon from '@material-ui/icons/CheckCircle';
++import TimerIcon from '@material-ui/icons/Timer';
++import AssignmentIcon from '@material-ui/icons/Assignment';
++import WhatshotIcon from '@material-ui/icons/Whatshot';
++import BrandLogoNav from '../components/BrandLogoNav';
++
++const useStyles = makeStyles((theme) => ({
++    root: {
++        minHeight: '100vh',
++        backgroundColor: theme.palette.background.default,
++        paddingTop: theme.spacing(4),
++        paddingBottom: theme.spacing(4),
++    },
++    header: {
++        marginBottom: theme.spacing(4),
++        display: 'flex',
++        justifyContent: 'space-between',
++        alignItems: 'center',
++    },
++    dashboardGrid: {
++        marginTop: theme.spacing(3),
++    },
++    statCard: {
++        height: '100%',
++        display: 'flex',
++        flexDirection: 'column',
++        transition: 'transform 0.2s',
++        '&:hover': {
++            transform: 'translateY(-4px)',
++            boxShadow: theme.shadows[8],
++        },
++    },
++    statValue: {
++        fontSize: '3rem',
++        fontWeight: 'bold',
++        color: theme.palette.primary.main,
++        marginTop: theme.spacing(1),
++        marginBottom: theme.spacing(1),
++    },
++    statLabel: {
++        color: theme.palette.text.secondary,
++        fontSize: '0.875rem',
++        textTransform: 'uppercase',
++        letterSpacing: 1,
++    },
++    statDetail: {
++        color: theme.palette.text.secondary,
++        fontSize: '0.9rem',
++        marginTop: theme.spacing(0.5),
++    },
++    timeRangeSelector: {
++        display: 'flex',
++        justifyContent: 'center',
++        marginTop: theme.spacing(3),
++        marginBottom: theme.spacing(3),
++    },
++    streakIcon: {
++        fontSize: '4rem',
++        marginTop: theme.spacing(1),
++    },
++    loadingContainer: {
++        display: 'flex',
++        justifyContent: 'center',
++        alignItems: 'center',
++        minHeight: 400,
++    },
++    iconHeader: {
++        display: 'flex',
++        alignItems: 'center',
++        gap: theme.spacing(1),
++        marginBottom: theme.spacing(1),
++    },
++    cardIcon: {
++        color: theme.palette.primary.main,
++        fontSize: '2rem',
++    },
++    backButton: {
++        marginBottom: theme.spacing(2),
++    },
++}));
++
++export default function Dashboard() {
++    const classes = useStyles();
++    const history = useHistory();
++    const [dashboardData, setDashboardData] = useState(null);
++    const [loading, setLoading] = useState(true);
++    const [timeRange, setTimeRange] = useState(7);
++    const [error, setError] = useState(null);
++
++    useEffect(() => {
++        loadDashboard();
++    }, [timeRange]);
++
++    const loadDashboard = async () => {
++        setLoading(true);
++        setError(null);
++        
++        try {
++            const data = await progressService.getUserStats(timeRange, 1, 0.95);
++            setDashboardData(data);
++        } catch (err) {
++            setError('Failed to load dashboard');
++            console.error(err);
++        } finally {
++            setLoading(false);
++        }
++    };
++
++    const getStreakEmoji = (streak) => {
++        if (streak === 0) return '💤';
++        if (streak >= 30) return '🔥🔥🔥';
++        if (streak >= 7) return '🔥🔥';
++        return '🔥';
++    };
++
++    if (loading) {
++        return (
++            <div className={classes.root}>
++                <BrandLogoNav />
++                <Container maxWidth="lg">
++                    <Box className={classes.loadingContainer}>
++                        <CircularProgress size={60} />
++                    </Box>
++                </Container>
++            </div>
++        );
++    }
++
++    if (error) {
++        return (
++            <div className={classes.root}>
++                <BrandLogoNav />
++                <Container maxWidth="lg">
++                    <Box className={classes.header}>
++                        <Typography variant="h4">Your Progress Dashboard</Typography>
++                    </Box>
++                    <Paper style={{ padding: 24, textAlign: 'center' }}>
++                        <Typography color="error" variant="h6">{error}</Typography>
++                        <Button 
++                            onClick={loadDashboard} 
++                            variant="contained" 
++                            color="primary"
++                            style={{ marginTop: 16 }}
++                        >
++                            Retry
++                        </Button>
++                    </Paper>
++                </Container>
++            </div>
++        );
++    }
++
++    if (!dashboardData) {
++        return (
++            <div className={classes.root}>
++                <BrandLogoNav />
++                <Container maxWidth="lg">
++                    <Box className={classes.header}>
++                        <Typography variant="h4">Your Progress Dashboard</Typography>
++                    </Box>
++                    <Paper style={{ padding: 24, textAlign: 'center' }}>
++                        <Typography variant="h6">
++                            No data available yet.
++                        </Typography>
++                        <Typography color="textSecondary" style={{ marginTop: 8 }}>
++                            Start practicing to see your progress!
++                        </Typography>
++                        <Button
++                            variant="contained"
++                            color="primary"
++                            style={{ marginTop: 16 }}
++                            onClick={() => history.push('/')}
++                        >
++                            Start Practicing
++                        </Button>
++                    </Paper>
++                </Container>
++            </div>
++        );
++    }
++
++    return (
++        <div className={classes.root}>
++            <BrandLogoNav />
++            <Container maxWidth="lg">
++                <Box className={classes.header}>
++                    <Typography variant="h4">Your Progress Dashboard</Typography>
++                    <Button 
++                        variant="outlined" 
++                        onClick={() => history.goBack()}
++                    >
++                        Back
++                    </Button>
++                </Box>
++
++                <Box className={classes.timeRangeSelector}>
++                    <ButtonGroup color="primary" size="large">
++                        <Button 
++                            onClick={() => setTimeRange(1)}
++                            variant={timeRange === 1 ? 'contained' : 'outlined'}
++                        >
++                            Today
++                        </Button>
++                        <Button 
++                            onClick={() => setTimeRange(7)}
++                            variant={timeRange === 7 ? 'contained' : 'outlined'}
++                        >
++                            7 Days
++                        </Button>
++                        <Button 
++                            onClick={() => setTimeRange(30)}
++                            variant={timeRange === 30 ? 'contained' : 'outlined'}
++                        >
++                            30 Days
++                        </Button>
++                        <Button 
++                            onClick={() => setTimeRange(365)}
++                            variant={timeRange === 365 ? 'contained' : 'outlined'}
++                        >
++                            Year
++                        </Button>
++                    </ButtonGroup>
++                </Box>
++
++                <Grid container spacing={3} className={classes.dashboardGrid}>
++                    {/* Skills Mastered */}
++                    <Grid item xs={12} sm={6} md={3}>
++                        <Card className={classes.statCard} elevation={3}>
++                            <CardContent>
++                                <div className={classes.iconHeader}>
++                                    <CheckCircleIcon className={classes.cardIcon} />
++                                    <Typography variant="h6">
++                                        Skills Mastered
++                                    </Typography>
++                                </div>
++                                <Typography className={classes.statValue}>
++                                    {dashboardData.skillsMastered}
++                                </Typography>
++                                <Typography className={classes.statDetail}>
++                                    out of {dashboardData.totalSkillsPracticed} practiced
++                                </Typography>
++                                <Typography className={classes.statDetail}>
++                                    Avg: {(dashboardData.averageMastery * 100).toFixed(1)}%
++                                </Typography>
++                            </CardContent>
++                        </Card>
++                    </Grid>
++
++                    {/* Practice Streak */}
++                    <Grid item xs={12} sm={6} md={3}>
++                        <Card className={classes.statCard} elevation={3}>
++                            <CardContent>
++                                <div className={classes.iconHeader}>
++                                    <WhatshotIcon className={classes.cardIcon} />
++                                    <Typography variant="h6">
++                                        Practice Streak
++                                    </Typography>
++                                </div>
++                                <Typography className={classes.statValue}>
++                                    {dashboardData.practiceStreak.currentStreak}
++                                </Typography>
++                                <Typography className={classes.statDetail}>
++                                    consecutive days
++                                </Typography>
++                                <div className={classes.streakIcon}>
++                                    {getStreakEmoji(dashboardData.practiceStreak.currentStreak)}
++                                </div>
++                            </CardContent>
++                        </Card>
++                    </Grid>
++
++                    {/* Time on Task */}
++                    <Grid item xs={12} sm={6} md={3}>
++                        <Card className={classes.statCard} elevation={3}>
++                            <CardContent>
++                                <div className={classes.iconHeader}>
++                                    <TimerIcon className={classes.cardIcon} />
++                                    <Typography variant="h6">
++                                        Time Practiced
++                                    </Typography>
++                                </div>
++                                <Typography className={classes.statValue}>
++                                    {dashboardData.timeOnTask.totalMinutes}
++                                </Typography>
++                                <Typography className={classes.statDetail}>
++                                    minutes
++                                </Typography>
++                                <Typography className={classes.statDetail}>
++                                    in the last {dashboardData.timeOnTask.days} day{dashboardData.timeOnTask.days !== 1 ? 's' : ''}
++                                </Typography>
++                            </CardContent>
++                        </Card>
++                    </Grid>
++
++                    {/* Problems Solved */}
++                    <Grid item xs={12} sm={6} md={3}>
++                        <Card className={classes.statCard} elevation={3}>
++                            <CardContent>
++                                <div className={classes.iconHeader}>
++                                    <AssignmentIcon className={classes.cardIcon} />
++                                    <Typography variant="h6">
++                                        Problems Solved
++                                    </Typography>
++                                </div>
++                                <Typography className={classes.statValue}>
++                                    {dashboardData.problemsSolved.count}
++                                </Typography>
++                                <Typography className={classes.statDetail}>
++                                    problems completed
++                                </Typography>
++                                <Typography className={classes.statDetail}>
++                                    in the last {dashboardData.problemsSolved.days} day{dashboardData.problemsSolved.days !== 1 ? 's' : ''}
++                                </Typography>
++                            </CardContent>
++                        </Card>
++                    </Grid>
++                </Grid>
++
++                {/* Motivational Message */}
++                {dashboardData.practiceStreak.currentStreak > 0 && (
++                    <Paper style={{ marginTop: 24, padding: 16, textAlign: 'center' }}>
++                        <Typography variant="h6" color="primary">
++                            🎉 Keep up the great work!
++                        </Typography>
++                        <Typography color="textSecondary">
++                            You're on a {dashboardData.practiceStreak.currentStreak}-day streak!
++                        </Typography>
++                    </Paper>
++                )}
++            </Container>
++        </div>
++    );
++}
+diff --git a/src/services/progressService.js b/src/services/progressService.js
+new file mode 100644
+index 0000000000..58dbadedaf
+--- /dev/null
++++ b/src/services/progressService.js
+@@ -0,0 +1,308 @@
++/**
++ * Service for managing user progress and skill mastery persistence
++ */
++import storageService from './storageService';
++import axios from 'axios';
++
++const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
++
++class ProgressService {
++    constructor() {
++        this.syncInProgress = false;
++        this.pendingSync = null;
++    }
++
++    /**
++     * Sync skill mastery to server after BKT updates
++     * Debounced to avoid excessive API calls
++     * @param {Object} skillsMap - Map of skill names to BKT model objects
++     */
++    async syncSkillMastery(skillsMap) {
++        if (!storageService.isAuthenticated()) {
++            console.debug('User not authenticated, skipping server sync');
++            return { success: false, reason: 'not_authenticated' };
++        }
++
++        // Convert skillsMap to array format
++        const skills = Object.entries(skillsMap).map(([skillName, model]) => ({
++            skillName,
++            probMastery: model.probMastery,
++            probSlip: model.probSlip,
++            probGuess: model.probGuess,
++            probTransit: model.probTransit
++        }));
++
++        if (skills.length === 0) {
++            console.debug('No skills to sync');
++            return { success: false, reason: 'no_skills' };
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.post(
++                `${API_BASE_URL}/progress/mastery/update`,
++                { skills },
++                {
++                    headers: { 'x-auth-token': token },
++                    timeout: 10000
++                }
++            );
++
++            console.debug(`Skill mastery synced to server (${skills.length} skills)`);
++            return { success: true, count: skills.length };
++        } catch (error) {
++            console.error('Failed to sync skill mastery:', error.message);
++            // Don't throw - app should continue with local storage
++            return { success: false, error: error.message };
++        }
++    }
++
++    /**
++     * Load skill mastery from server (on login or page load)
++     * @returns {Object|null} Map of skill names to BKT models
++     */
++    async loadSkillMastery() {
++        if (!storageService.isAuthenticated()) {
++            return null;
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.get(
++                `${API_BASE_URL}/progress/mastery`,
++                {
++                    headers: { 'x-auth-token': token },
++                    timeout: 10000
++                }
++            );
++
++            if (response.data.success && response.data.skills) {
++                // Convert array to map format expected by the app
++                const skillsMap = {};
++                response.data.skills.forEach(skill => {
++                    skillsMap[skill.skill_name] = {
++                        probMastery: parseFloat(skill.prob_mastery),
++                        probSlip: parseFloat(skill.prob_slip),
++                        probGuess: parseFloat(skill.prob_guess),
++                        probTransit: parseFloat(skill.prob_transit)
++                    };
++                });
++
++                console.debug(`Loaded ${Object.keys(skillsMap).length} skills from server`);
++                return skillsMap;
++            }
++        } catch (error) {
++            console.error('Failed to load skill mastery:', error.message);
++        }
++
++        return null;
++    }
++
++    /**
++     * Log a problem attempt to the server
++     */
++    async logProblemAttempt({
++                                problemId,
++                                stepId,
++                                skillName,
++                                isCorrect,
++                                timeSpentSeconds,
++                                hintCount = 0,
++                                attemptNumber = 1,
++                                sessionId,
++                                lessonId,
++                                courseName
++                            }) {
++        if (!storageService.isAuthenticated()) {
++            return { success: false, reason: 'not_authenticated' };
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.post(
++                `${API_BASE_URL}/progress/attempts`,
++                {
++                    problemId,
++                    stepId,
++                    skillName,
++                    isCorrect,
++                    timeSpentSeconds,
++                    hintCount,
++                    attemptNumber,
++                    sessionId,
++                    lessonId,
++                    courseName
++                },
++                {
++                    headers: { 'x-auth-token': token },
++                    timeout: 5000
++                }
++            );
++
++            return response.data;
++        } catch (error) {
++            console.error('Failed to log problem attempt:', error.message);
++            return { success: false, error: error.message };
++        }
++    }
++
++    /**
++     * Get user statistics
++     * @param {number} days - Number of days to look back
++     * @param {number} streakMinProblems - Minimum problems per day for streak
++     * @param {number} masteryThreshold - Threshold for considering a skill mastered
++     */
++    async getUserStats(days = 7, streakMinProblems = 1, masteryThreshold = 0.95) {
++        if (!storageService.isAuthenticated()) {
++            return null;
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.get(
++                `${API_BASE_URL}/progress/stats`,
++                {
++                    params: { days, streakMinProblems, masteryThreshold },
++                    headers: { 'x-auth-token': token },
++                    timeout: 10000
++                }
++            );
++
++            return response.data.success ? response.data.stats : null;
++        } catch (error) {
++            console.error('Failed to fetch user stats:', error.message);
++            return null;
++        }
++    }
++
++    /**
++     * Get detailed skill breakdown
++     * @param {number} masteryThreshold - Threshold for mastery categorization
++     */
++    async getSkillBreakdown(masteryThreshold = 0.95) {
++        if (!storageService.isAuthenticated()) {
++            return null;
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.get(
++                `${API_BASE_URL}/progress/skills/breakdown`,
++                {
++                    params: { masteryThreshold },
++                    headers: { 'x-auth-token': token },
++                    timeout: 10000
++                }
++            );
++
++            return response.data.success ? response.data.skills : null;
++        } catch (error) {
++            console.error('Failed to fetch skill breakdown:', error.message);
++            return null;
++        }
++    }
++
++    /**
++     * Get practice history for visualization
++     * @param {number} days - Number of days to retrieve
++     */
++    async getPracticeHistory(days = 30) {
++        if (!storageService.isAuthenticated()) {
++            return null;
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.get(
++                `${API_BASE_URL}/progress/practice-history`,
++                {
++                    params: { days },
++                    headers: { 'x-auth-token': token },
++                    timeout: 10000
++                }
++            );
++
++            return response.data.success ? response.data.history : null;
++        } catch (error) {
++            console.error('Failed to fetch practice history:', error.message);
++            return null;
++        }
++    }
++
++    /**
++     * Clear all progress data from the server
++     * WARNING: This is a destructive operation!
++     * @param {boolean} includeAttempts - Whether to also delete attempt history
++     * @returns {Promise<Object>} Result object with success status
++     */
++    async clearProgress(includeAttempts = false) {
++        if (!storageService.isAuthenticated()) {
++            return { success: false, reason: 'not_authenticated' };
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.delete(
++                `${API_BASE_URL}/progress/clear`,
++                {
++                    params: {
++                        confirm: 'true',
++                        includeAttempts: includeAttempts ? 'true' : 'false'
++                    },
++                    headers: { 'x-auth-token': token },
++                    timeout: 10000
++                }
++            );
++
++            if (response.data.success) {
++                console.log('Progress cleared from server:', response.data.deleted);
++                return {
++                    success: true,
++                    deleted: response.data.deleted
++                };
++            }
++
++            return { success: false, error: 'Server returned unsuccessful response' };
++        } catch (error) {
++            console.error('Failed to clear progress from server:', error.message);
++            return { success: false, error: error.message };
++        }
++    }
++
++    /**
++     * Get recent attempts
++     * @param {number} limit - Maximum number of attempts to retrieve
++     */
++    async getRecentAttempts(limit = 20) {
++        if (!storageService.isAuthenticated()) {
++            return null;
++        }
++
++        const token = storageService.getAuthToken();
++
++        try {
++            const response = await axios.get(
++                `${API_BASE_URL}/progress/attempts/recent`,
++                {
++                    params: { limit },
++                    headers: { 'x-auth-token': token },
++                    timeout: 10000
++                }
++            );
++
++            return response.data.success ? response.data.attempts : null;
++        } catch (error) {
++            console.error('Failed to fetch recent attempts:', error.message);
++            return null;
++        }
++    }
++}
++
++export default new ProgressService();
+\ No newline at end of file

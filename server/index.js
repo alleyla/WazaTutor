@@ -6,6 +6,8 @@ const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const accountRoutes = require('./routes/account');
+const userProgressRoutes = require('./routes/userProgress');
+
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3002;
@@ -42,6 +44,8 @@ app.use('/api/auth/login', authLimiter);
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/account', accountLimiter, accountRoutes);
+app.use('/api/progress', userProgressRoutes);
+
 
 // Health check
 app.get('/health', (req, res) => {

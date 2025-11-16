@@ -14,6 +14,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import storageService from '../services/storageService';
+import { Link } from 'react-router-dom';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -237,6 +239,17 @@ function Account() {
             >
               Back to Home
             </Button>
+              <Button
+                  component={Link}
+                  to="/dashboard"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<DashboardIcon />}
+                  fullWidth
+                  style={{ marginTop: 16 }}
+              >
+                  View My Dashboard
+              </Button>
             <Button
               fullWidth
               variant="outlined"

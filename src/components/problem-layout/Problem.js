@@ -18,6 +18,9 @@ import { NavLink } from "react-router-dom";
 import HelpOutlineOutlinedIcon from "@material-ui/icons/HelpOutlineOutlined";
 import FeedbackOutlinedIcon from "@material-ui/icons/FeedbackOutlined";
 import withTranslation from "../../util/withTranslation.js"
+import progressService from "../../services/progressService";
+import storageService from "../../services/storageService";
+
 
 import {
     CANVAS_WARNING_STORAGE_KEY,
@@ -45,12 +48,12 @@ class Problem extends React.Component {
         super(props);
 
         const { setLanguage } = props;
-        if (props.lesson.courseName == "Matematik 4") {
-            setLanguage('se')
-        }
 
         this.bktParams = context.bktParams;
         this.heuristic = context.heuristic;
+
+        this.stepStartTime = Date.now();
+        this.stepAttemptCounts = {}; // Track attempts per step
 
         const giveStuFeedback = this.props.lesson?.giveStuFeedback;
         const giveStuHints = this.props.lesson?.giveStuHints;
@@ -229,6 +232,7 @@ class Problem extends React.Component {
     answerMade = (cardIndex, kcArray, isCorrect) => {
         const { stepStates, firstAttempts } = this.state;
         const { lesson, problem } = this.props;
+        const step = problem.steps[cardIndex];
 
         console.debug(`answer made and is correct: ${isCorrect}`);
 
@@ -258,6 +262,36 @@ class Problem extends React.Component {
                 if (this.doMasteryUpdate && (firstAttempts[cardIndex] === undefined || firstAttempts[cardIndex] === false)) {
                     firstAttempts[cardIndex] = true;
                     update(this.bktParams[kc], isCorrect);
+
+                    // Log attempt to server for authenticated users
+                    if (storageService.isAuthenticated()) {
+                        const timeSpent = Math.floor((Date.now() - this.stepStartTime) / 1000);
+                        const attemptNum = (this.stepAttemptCounts[step.id] || 0) + 1;
+                        this.stepAttemptCounts[step.id] = attemptNum;
+
+                        // Get lesson info from props or context
+                        const lesson = this.props.lesson || this.context.lesson;
+                        const hintCount = this.state.hintsFinished?.[cardIndex]?.length || 0;
+
+                        progressService.logProblemAttempt({
+                            problemId: problem.id,
+                            stepId: step.id,
+                            skillName: kc,
+                            isCorrect,
+                            timeSpentSeconds: timeSpent,
+                            hintCount: hintCount,
+                            attemptNumber: attemptNum,
+                            sessionId: this.context.sessionId,
+                            lessonId: lesson?.id || this.props.lessonID || null,
+                            courseName: lesson?.courseName || null
+                        }).catch(err => {
+                            console.error('Failed to log attempt:', err);
+                            // Don't throw - allow problem to continue
+                        });
+
+                        // Reset step timer for next step
+                        this.stepStartTime = Date.now();
+                    }
                 }
             }
         }

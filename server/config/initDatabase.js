@@ -17,7 +17,6 @@ async function initDatabase() {
     await pool.query(sqlQuery);
 
     console.log('Database initialized successfully!');
-    console.log('Users table created.');
     process.exit(0);
   } catch (error) {
     console.error('Error initializing database:', error);
