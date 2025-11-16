@@ -291,10 +291,10 @@ class Platform extends React.Component {
         });
     };
 
-    _nextProblem = (context) => {
+    _nextProblem = async (context) => {
         seed = Date.now().toString();
         this.setState({ seed: seed });
-        this.props.saveProgress();
+        await this.props.saveProgress();
 
         if (this.lesson && this.completedProbs.size > 0) {
             const problemsArray = Array.from(this.completedProbs);
@@ -447,7 +447,7 @@ class Platform extends React.Component {
                 console.error('Failed to save lesson progress:', err);
             });
         }
-        this._nextProblem(context);
+        await this._nextProblem(context);
     };
 
     displayMastery = (mastery) => {

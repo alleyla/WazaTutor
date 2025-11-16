@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS user_practice_sessions CASCADE;
 DROP TABLE IF EXISTS user_problem_attempts CASCADE;
 DROP TABLE IF EXISTS user_skill_mastery CASCADE;
+DROP TABLE IF EXISTS user_current_lesson CASCADE;
+DROP TABLE IF EXISTS user_lesson_progress CASCADE;
 
 -- Create the users table
 CREATE TABLE users (
@@ -95,14 +97,14 @@ CREATE INDEX idx_practice_sessions_user_date ON user_practice_sessions(user_id, 
 
 
 -- Table for tracking user's current/last active lesson
-CREATE TABLE IF NOT EXISTS user_current_lesson (
+CREATE TABLE user_current_lesson (
     user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     lesson_id VARCHAR(255) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Table for tracking lesson-level progress (overall completion %, completed problems, etc.)
-CREATE TABLE IF NOT EXISTS user_lesson_progress (
+CREATE TABLE user_lesson_progress (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     lesson_id VARCHAR(255) NOT NULL,

@@ -229,6 +229,28 @@ class Problem extends React.Component {
         }
     };
 
+    /**
+     * Immediately sync BKT mastery to server after update
+     */
+    syncBktMasteryToServer = async () => {
+        if (!storageService.isAuthenticated()) {
+            return;
+        }
+        try {
+            // Sync to server immediately
+            const result = await progressService.syncSkillMastery(this.bktParams);
+
+            if (result.success) {
+                console.debug(`BKT mastery synced: ${result.count} skills`);
+            } else {
+                console.warn('Failed to sync BKT mastery:', result.reason || result.error);
+            }
+        } catch (error) {
+            console.error('Error syncing BKT mastery:', error);
+            // Don't throw - this is a background sync, don't block the UI
+        }
+    };
+
     answerMade = (cardIndex, kcArray, isCorrect) => {
         const { stepStates, firstAttempts } = this.state;
         const { lesson, problem } = this.props;
@@ -265,6 +287,13 @@ class Problem extends React.Component {
 
                     // Log attempt to server for authenticated users
                     if (storageService.isAuthenticated()) {
+
+                        // Immediately sync mastery to server after BKT update
+                        // Fire-and-forget - don't await, don't block UI
+                        this.syncBktMasteryToServer().catch(err => {
+                            console.error('Failed to sync BKT mastery after answer:', err);
+                            // Don't throw - allow problem to continue
+                        });
                         const timeSpent = Math.floor((Date.now() - this.stepStartTime) / 1000);
                         const attemptNum = (this.stepAttemptCounts[step.id] || 0) + 1;
                         this.stepAttemptCounts[step.id] = attemptNum;

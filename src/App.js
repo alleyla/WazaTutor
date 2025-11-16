@@ -108,7 +108,6 @@ class App extends React.Component {
 
         this.state = {
             additionalContext: {},
-            skillMasteryLoaded: false,
             sessionId: this.generateSessionId(),
         };
 
@@ -202,10 +201,19 @@ class App extends React.Component {
 
     async componentDidMount() {
         this.mounted = true;
+
+        console.log('🔍 [DEBUG] App.componentDidMount');
+        console.log('🔍 [DEBUG] isAuthenticated:', storageService.isAuthenticated());
+        console.log('🔍 [DEBUG] authToken:', storageService.getAuthToken());
+
         // Load skill mastery from server if authenticated
         if (storageService.isAuthenticated()) {
+            console.log('🔍 [DEBUG] Loading skill mastery from server...');
             await this.loadSkillMasteryFromServer();
+            console.log('🔍 [DEBUG] Server load complete');
             await this.restoreLastLesson();
+        } else {
+            console.log('⚠️ [DEBUG] Not authenticated - skipping server load');
         }
     }
 
@@ -230,43 +238,58 @@ class App extends React.Component {
     }
 
     /**
-     * Load skill mastery from server and merge with local data
-     * Server data takes precedence for authenticated users
+     * Load skill mastery from server (optimistic)
      */
     async loadSkillMasteryFromServer() {
+        console.log('🚀 [DEBUG] loadSkillMasteryFromServer CALLED!');
+        console.log('🚀 [DEBUG] Current bktParams count:', Object.keys(this.bktParams).length);
+
+        const { getByKey } = this.browserStorage;
+
+        console.log('🔍 [DEBUG] Starting loadSkillMasteryFromServer');
+        console.log('🔍 [DEBUG] Initial bktParams sample:', {
+            skill: Object.keys(this.bktParams)[0],
+            value: this.bktParams[Object.keys(this.bktParams)[0]]?.probMastery
+        });
+
+        // Only load from localStorage if not authenticated
+        if (!storageService.isAuthenticated()) {
+            const localProgress = await getByKey(PROGRESS_STORAGE_KEY).catch(() => null);
+            if (localProgress && typeof localProgress === "object" && Object.keys(localProgress).length > 0) {
+                Object.assign(this.bktParams, cleanObjectKeys(localProgress));
+            }
+        }
+
+        // Fetch from server
         try {
+            console.log('Fetching from server...');
             const serverMastery = await progressService.loadSkillMastery();
 
             if (serverMastery && Object.keys(serverMastery).length > 0) {
-                console.log(`Loaded ${Object.keys(serverMastery).length} skills from server`);
-
-                // Merge server mastery with current bktParams
-                // Server data takes precedence over local data
-                Object.keys(serverMastery).forEach(skillName => {
-                    if (!this.bktParams[skillName]) {
-                        // Skill exists on server but not locally - add it
-                        this.bktParams[skillName] = serverMastery[skillName];
-                    } else {
-                        // Skill exists in both places - use server data (it's the source of truth)
-                        this.bktParams[skillName] = {
-                            ...this.bktParams[skillName],
-                            ...serverMastery[skillName]
-                        };
-                    }
+                console.log(`Server returned ${Object.keys(serverMastery).length} skills`);
+                console.log('[DEBUG] Sample server value:', {
+                    skill: Object.keys(serverMastery)[0],
+                    value: serverMastery[Object.keys(serverMastery)[0]]?.probMastery
                 });
 
-                this.setState({ skillMasteryLoaded: true });
+                // Replace with server data
+                Object.keys(serverMastery).forEach(skillName => {
+                    this.bktParams[skillName] = serverMastery[skillName];
+                });
 
-                console.log('Successfully merged server skill mastery');
+                console.log('[DEBUG] After server merge:', {
+                    skill: Object.keys(this.bktParams)[0],
+                    value: this.bktParams[Object.keys(this.bktParams)[0]]?.probMastery,
+                    totalSkills: Object.keys(this.bktParams).length
+                });
             } else {
-                console.log('No skill mastery data on server, using local/default');
-                this.setState({ skillMasteryLoaded: true });
+                console.log('No server data returned');
             }
         } catch (error) {
-            console.error('Error loading skill mastery from server:', error);
-            // Continue with local data if server fails
-            this.setState({ skillMasteryLoaded: true });
+            console.error('Server load failed:', error);
         }
+
+        console.log('[DEBUG] loadSkillMasteryFromServer complete');
     }
 
     getTreatment = () => {
@@ -348,13 +371,13 @@ class App extends React.Component {
     };
 
     /**
-     * Save progress to both local storage and server (if authenticated)
+     * Save progress TO server and localStorage
+     * This happens AFTER bktParams are updated locally
      */
     saveProgress = async () => {
         console.debug("saving progress");
 
         const progressedBktParams = Object.fromEntries(
-            // only add to db if it is not the same as originally provided bkt params
             Object.entries(this.bktParams || {}).filter(([key, val]) => {
                 return (
                     this.originalBktParams[key]?.probMastery !== val.probMastery
@@ -362,30 +385,24 @@ class App extends React.Component {
             })
         );
 
-        // ✅ FIXED: Use promise-based approach instead of mixing await with callback
+        // Save to localStorage
         const { setByKey } = this.browserStorage;
         try {
             await setByKey(PROGRESS_STORAGE_KEY, progressedBktParams);
-            console.debug("saved progress to local storage successfully");
+            console.debug("Saved to localStorage");
         } catch (err) {
-            console.debug("save progress error: ", err);
-            toast.warn("Unable to save mastery progress :(", {
-                toastId: "unable_to_save_progress",
-            });
+            console.debug("Save to localStorage error: ", err);
         }
 
-        // Sync to server if authenticated
+        // Sync TO server (one-way: local → server)
         if (storageService.isAuthenticated()) {
             try {
                 const result = await progressService.syncSkillMastery(this.bktParams);
                 if (result.success) {
-                    console.debug(`Synced ${result.count} skills to server`);
-                } else {
-                    console.warn('Failed to sync to server:', result.reason || result.error);
+                    console.debug(`Synced ${result.count} skills TO server`);
                 }
             } catch (error) {
-                console.error('Error syncing mastery to server:', error);
-                // Don't show error to user - local save still succeeded
+                console.error('Error syncing to server:', error);
             }
         }
     };
@@ -396,12 +413,14 @@ class App extends React.Component {
      * and takes precedence
      */
     loadBktProgress = async () => {
-        // If authenticated and server data already loaded, skip local loading
-        if (storageService.isAuthenticated() && this.state.skillMasteryLoaded) {
-            console.debug('Using server mastery data, skipping local load');
+        // For authenticated users, server is the source of truth - NEVER load from localStorage
+        if (storageService.isAuthenticated()) {
+            console.debug('Authenticated user - skipping localStorage, using server data');
             return;
         }
 
+        // Only anonymous users should load from localStorage
+        console.debug('Loading BKT progress from localStorage (anonymous user)');
         const { getByKey } = this.browserStorage;
         const progress = await getByKey(PROGRESS_STORAGE_KEY).catch((_e) => {
             console.debug("error with getting previous progress", _e);
