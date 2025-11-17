@@ -10,6 +10,8 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import PrintIcon from '@material-ui/icons/Print';
 import worksheetService from '../services/worksheetService';
+import { ThemeContext } from '../config/config';
+import { renderText, chooseVariables } from '../platform-logic/renderText';
 
 const styles = (theme) => ({
     printContainer: {
@@ -72,6 +74,8 @@ const styles = (theme) => ({
 });
 
 class PrintWorksheet extends Component {
+    static contextType = ThemeContext;
+
     constructor(props) {
         super(props);
 
@@ -80,12 +84,30 @@ class PrintWorksheet extends Component {
         this.state = {
             worksheetId,
             worksheet: null,
+            problemsData: [],
             loading: true,
             error: null
         };
+
+        this.problemIndex = null;
     }
 
     async componentDidMount() {
+        // Load problem pool (same as GenerateWorksheet does)
+        try {
+            const problemPoolModule = await import(`@generated/processed-content-pool/${this.context.CONTENT_SOURCE || 'wazatutor'}.json`);
+            this.problemIndex = {
+                problems: problemPoolModule.default || problemPoolModule
+            };
+        } catch (error) {
+            console.error('Error loading problem pool:', error);
+            this.setState({
+                error: 'Failed to load problem pool',
+                loading: false
+            });
+            return;
+        }
+
         await this.loadWorksheet();
     }
 
@@ -103,8 +125,28 @@ class PrintWorksheet extends Component {
                 return;
             }
 
+            // Match worksheet problems with full problem data from problem pool
+            const problemsData = worksheet.problems.map(worksheetProblem => {
+                const fullProblem = this.problemIndex.problems.find(
+                    p => p.id === worksheetProblem.problem_id
+                );
+
+                if (!fullProblem) {
+                    console.warn(`Problem ${worksheetProblem.problem_id} not found in problem pool`);
+                    return null;
+                }
+
+                return {
+                    ...worksheetProblem,
+                    problemData: fullProblem,
+                    // Use consistent seed for reproducible problem generation
+                    seed: `worksheet-${this.state.worksheetId}-${worksheetProblem.problem_order}`
+                };
+            }).filter(Boolean); // Remove any null entries
+
             this.setState({
                 worksheet,
+                problemsData,
                 loading: false
             });
         } catch (error) {
@@ -126,7 +168,7 @@ class PrintWorksheet extends Component {
 
     render() {
         const { classes } = this.props;
-        const { worksheet, loading, error } = this.state;
+        const { worksheet, problemsData, loading, error } = this.state;
 
         if (loading) {
             return (
@@ -196,34 +238,57 @@ class PrintWorksheet extends Component {
                     </Box>
 
                     {/* Problems */}
-                    {worksheet.problems.map((problem) => (
-                        <Paper key={problem.problem_order} className={classes.problemItem} elevation={1}>
-                            <Typography className={classes.problemNumber}>
-                                Problem {problem.problem_order}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary" gutterBottom>
-                                Problem ID: {problem.problem_id}
-                            </Typography>
-                            {problem.skill_name && (
-                                <Typography variant="body2" color="textSecondary" gutterBottom>
-                                    Skill: {problem.skill_name}
-                                </Typography>
-                            )}
+                    {problemsData.map((problemItem) => {
+                        const { problemData, seed, problem_order } = problemItem;
+                        const vars = chooseVariables(problemData.variabilization, seed);
 
-                            {/* TODO: Render actual problem content here */}
-                            <Box style={{ margin: '20px 0' }}>
-                                <Typography variant="body1">
-                                    [Problem content will be rendered here - integrate with your problem rendering logic]
+                        return (
+                            <Paper key={problem_order} className={classes.problemItem} elevation={1}>
+                                <Typography className={classes.problemNumber}>
+                                    Problem {problem_order}
                                 </Typography>
-                            </Box>
 
-                            <Box className={classes.answerSpace}>
-                                <Typography variant="body2" color="textSecondary">
-                                    Answer:
-                                </Typography>
-                            </Box>
-                        </Paper>
-                    ))}
+                                {/* Problem Title */}
+                                {problemData.title && (
+                                    <Box className={classes.problemContent}>
+                                        <Typography variant="h6" style={{ marginBottom: 8 }}>
+                                            {renderText(problemData.title, problemData.id, vars, this.context)}
+                                        </Typography>
+                                    </Box>
+                                )}
+
+                                {/* Problem Body/Instructions */}
+                                {problemData.body && (
+                                    <Box className={classes.problemContent}>
+                                        {renderText(problemData.body, problemData.id, vars, this.context)}
+                                    </Box>
+                                )}
+
+                                {/* Problem Steps */}
+                                {problemData.steps && problemData.steps.length > 0 && (
+                                    <Box className={classes.problemContent}>
+                                        {problemData.steps.map((step, stepIdx) => (
+                                            <Box key={stepIdx} style={{ marginBottom: 12 }}>
+                                                {renderText(
+                                                    step.stepTitle + " : " + step.stepBody,
+                                                    `${problemData.id}-${step.id}`,
+                                                    vars,
+                                                    this.context
+                                                )}
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                )}
+
+                                {/* Answer Space */}
+                                <Box className={classes.answerSpace}>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Answer:
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        );
+                    })}
 
                     {/* Footer */}
                     <Box className={classes.printOnly} style={{ marginTop: 40, textAlign: 'center' }}>

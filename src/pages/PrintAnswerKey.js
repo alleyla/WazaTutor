@@ -53,6 +53,24 @@ const styles = (theme) => ({
         border: '1px solid #4caf50',
         borderRadius: 4
     },
+    answerLabel: {
+        fontSize: '0.75rem',
+        color: '#666',
+        marginBottom: theme.spacing(0.5),
+        fontWeight: 600,
+        textTransform: 'uppercase'
+    },
+    mathDisplay: {
+        display: 'inline-block',
+        fontSize: '1.4rem',
+        '& math-field': {
+            border: 'none',
+            padding: '4px 8px',
+            minHeight: 'auto',
+            fontSize: 'inherit',
+            backgroundColor: 'transparent'
+        }
+    },
     loading: {
         display: 'flex',
         justifyContent: 'center',
@@ -118,6 +136,27 @@ class PrintAnswerKey extends Component {
 
     handleBack = () => {
         this.props.history.goBack();
+    };
+
+    // Render LaTeX as math using MathLive
+    renderMath = (latex) => {
+        if (!latex) return <span>—</span>;
+
+        const cleanLatex = latex.replace(/\$\$/g, '').trim();
+
+        return (
+            <math-field
+                read-only
+                style={{
+                    border: 'none',
+                    padding: '4px 8px',
+                    fontSize: '1.4rem',
+                    backgroundColor: 'transparent'
+                }}
+            >
+                {cleanLatex}
+            </math-field>
+        );
     };
 
     render() {
@@ -195,42 +234,28 @@ class PrintAnswerKey extends Component {
                                 <Typography className={classes.problemNumber}>
                                     Problem {problem.problem_order}
                                 </Typography>
-                                {problem.is_correct !== null && (
-                                    <Chip
-                                        size="small"
-                                        icon={<CheckCircleIcon />}
-                                        label={problem.is_correct ? 'Correct' : 'Incorrect'}
-                                        color={problem.is_correct ? 'primary' : 'secondary'}
-                                    />
-                                )}
                             </Box>
-
-                            <Typography variant="body2" color="textSecondary" gutterBottom>
-                                Problem ID: {problem.problem_id}
-                            </Typography>
-
-                            <Box className={classes.answerBox}>
-                                <Typography variant="body2" color="textSecondary">
-                                    <strong>Correct Answer:</strong>
-                                </Typography>
-                                <Typography variant="body1" style={{ marginTop: 4 }}>
-                                    {problem.correct_answer}
-                                </Typography>
-                            </Box>
-
-                            {problem.user_answer && (
-                                <Box style={{ marginTop: 8 }}>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Your Answer: {problem.user_answer}
-                                    </Typography>
-                                </Box>
-                            )}
 
                             {problem.skill_name && (
                                 <Typography variant="caption" color="textSecondary" style={{ marginTop: 8, display: 'block' }}>
                                     Skill: {problem.skill_name}
                                 </Typography>
                             )}
+
+                            <Typography variant="caption" color="textSecondary" gutterBottom>
+                                Problem id: {problem.problem_id}
+                            </Typography>
+
+                            <Box className={classes.answerBox}>
+                                <Typography variant="caption" className={classes.answerLabel}>
+                                    Answer
+                                </Typography>
+                                <Box className={classes.mathDisplay}>
+                                    {this.renderMath(problem.correct_answer)}
+                                </Box>
+                            </Box>
+
+
                         </Paper>
                     ))}
                 </Container>

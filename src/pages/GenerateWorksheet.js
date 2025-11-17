@@ -202,6 +202,8 @@ class GenerateWorksheet extends Component {
         // Format for worksheet
         return selectedProblems.map(problem => ({
             id: problem.id,
+            skillName: problem.steps?.[0]?.knowledgeComponents?.[0] || 'unknown',
+            correctAnswer: problem.steps?.[0]?.stepAnswer[0] || '',
             problemData: problem
         }));
     };

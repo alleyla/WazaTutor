@@ -3,7 +3,6 @@ import {
     Card,
     CardContent,
     Typography,
-    TextField,
     Button,
     Box,
     Chip
@@ -11,6 +10,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { checkAnswer } from "../../platform-logic/checkAnswer.js";
 
 const styles = (theme) => ({
     card: {
@@ -31,12 +31,36 @@ const styles = (theme) => ({
     },
     inputSection: {
         marginTop: theme.spacing(2),
-        display: 'flex',
-        gap: theme.spacing(2),
-        alignItems: 'flex-start'
+        marginBottom: theme.spacing(2)
     },
-    textField: {
-        flex: 1
+    mathFieldLabel: {
+        marginBottom: theme.spacing(1),
+        display: 'block',
+        fontWeight: 500,
+        fontSize: '0.95rem'
+    },
+    mathFieldWrapper: {
+        marginBottom: theme.spacing(2),
+        '& math-field': {
+            display: 'block',
+            width: '100%',
+            minHeight: '56px',
+            fontSize: '20px',
+            padding: '12px',
+            border: '2px solid #ccc',
+            borderRadius: '4px',
+            backgroundColor: '#fff',
+            fontFamily: 'inherit',
+            '&:focus': {
+                borderColor: theme.palette.primary.main,
+                outline: 'none',
+                boxShadow: `0 0 0 3px ${theme.palette.primary.main}33`
+            }
+        }
+    },
+    submitButton: {
+        width: '100%',
+        padding: theme.spacing(1.5)
     },
     feedbackBox: {
         marginTop: theme.spacing(2),
@@ -46,44 +70,131 @@ const styles = (theme) => ({
     feedbackIcon: {
         verticalAlign: 'middle',
         marginRight: theme.spacing(1)
+    },
+    answerDisplay: {
+        fontFamily: 'monospace',
+        padding: theme.spacing(0.5, 1),
+        backgroundColor: '#f5f5f5',
+        borderRadius: 4,
+        display: 'inline-block'
     }
 });
 
 class WorksheetProblemCard extends Component {
     constructor(props) {
         super(props);
+        this.mathFieldRef = React.createRef();
         this.state = {
             userAnswer: props.problem.user_answer || '',
-            submitting: false
+            submitting: false,
+            mathLiveReady: false
         };
     }
 
-    handleAnswerChange = (event) => {
-        this.setState({ userAnswer: event.target.value });
+    componentDidMount() {
+        // Wait for MathLive to load
+        this.checkMathLiveReady();
+    }
+
+    checkMathLiveReady = () => {
+        if (typeof window !== 'undefined' && window.MathfieldElement) {
+            this.setState({ mathLiveReady: true });
+            this.initializeMathField();
+        } else {
+            // Try again in 100ms
+            setTimeout(this.checkMathLiveReady, 100);
+        }
     };
 
-    /**
-     * Check if answer is correct using basic comparison
-     * TODO: Integrate with your existing checkAnswer utility for production
-     */
-    checkAnswerCorrectness = (userAnswer, correctAnswer) => {
-        if (!userAnswer || !correctAnswer) return false;
+    initializeMathField = () => {
+        if (this.mathFieldRef.current) {
+            const mathField = this.mathFieldRef.current;
 
-        const userStr = String(userAnswer).trim().toLowerCase();
-        const correctStr = String(correctAnswer).trim().toLowerCase();
+            // Set initial value
+            if (this.state.userAnswer) {
+                mathField.value = this.state.userAnswer;
+            }
 
-        // Exact match
-        if (userStr === correctStr) return true;
+            // Configure virtual keyboard
+            if (window.mathVirtualKeyboard) {
+                try {
+                    window.mathVirtualKeyboard.layouts = ["numeric", "symbols", "alphabetic"];
+                } catch (e) {
+                    console.warn('Could not set keyboard layout:', e);
+                }
+            }
+        }
+    };
 
-        // Numeric comparison
-        const userNum = parseFloat(userStr);
-        const correctNum = parseFloat(correctStr);
+    handleInput = (evt) => {
+        const mathField = evt.target;
+        const latexValue = mathField.value;
+        console.log('MathField input:', latexValue);
+        this.setState({ userAnswer: latexValue });
+    };
 
-        if (!isNaN(userNum) && !isNaN(correctNum)) {
-            return Math.abs(userNum - correctNum) < 0.0001;
+    checkAnswerCorrectness = (userAnswer, problem) => {
+        if (!userAnswer || !problem.correct_answer) {
+            return false;
         }
 
-        return false;
+        try {
+            // Clean the correct answer from database (remove $$ delimiters)
+            const correctAnswer = problem.correct_answer.replace(/\$\$/g, '').trim();
+
+            console.log('Checking answer:', {
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                problemId: problem.problem_id
+            });
+
+            // Use the existing checkAnswer utility (same as ProblemCard.js)
+            const [parsed, isCorrect, reason] = checkAnswer({
+                attempt: userAnswer.trim(),
+                actual: correctAnswer,
+                answerType: 'math',
+                precision: 3,
+                variabilization: {},
+                questionText: problem.problem_id || ''
+            });
+
+            console.log('Answer check result:', {
+                parsed,
+                isCorrect,
+                reason,
+                userSubmitted: userAnswer,
+                expectedAnswer: correctAnswer
+            });
+
+            return isCorrect;
+
+        } catch (error) {
+            console.error('Error checking answer:', error);
+
+            // Fallback: normalize both answers
+            const normalizeLatex = (str) => {
+                return str
+                    .replace(/\$\$/g, '')
+                    .replace(/\s+/g, '')
+                    .replace(/\\left/g, '')
+                    .replace(/\\right/g, '')
+                    .replace(/\{/g, '')
+                    .replace(/\}/g, '')
+                    .toLowerCase()
+                    .trim();
+            };
+
+            const userNormalized = normalizeLatex(userAnswer);
+            const correctNormalized = normalizeLatex(problem.correct_answer);
+
+            console.log('Fallback comparison:', {
+                original: { user: userAnswer, correct: problem.correct_answer },
+                normalized: { user: userNormalized, correct: correctNormalized },
+                match: userNormalized === correctNormalized
+            });
+
+            return userNormalized === correctNormalized;
+        }
     };
 
     handleSubmit = async () => {
@@ -97,29 +208,60 @@ class WorksheetProblemCard extends Component {
         this.setState({ submitting: true });
 
         try {
-            // Check correctness on frontend
-            const isCorrect = this.checkAnswerCorrectness(userAnswer, problem.correct_answer);
+            const isCorrect = this.checkAnswerCorrectness(userAnswer, problem);
 
-            // Submit with correctness determination
+            console.log('Submitting answer:', {
+                problemOrder: problem.problem_order,
+                userAnswer,
+                isCorrect
+            });
+
             await onSubmit(problem.problem_order, userAnswer, problem, isCorrect);
+        } catch (error) {
+            console.error('Error submitting answer:', error);
         } finally {
             this.setState({ submitting: false });
         }
     };
 
+    handleKeyPress = (evt) => {
+        if (evt.key === 'Enter' && !evt.shiftKey) {
+            evt.preventDefault();
+            this.handleSubmit();
+        }
+    };
+
+    // NEW METHOD: Render LaTeX as math
+    renderMath = (latex) => {
+        // Remove $$ delimiters if present
+        const cleanLatex = latex.replace(/\$\$/g, '').trim();
+
+        return (
+            <math-field
+                read-only
+                style={{
+                    border: 'none',
+                    padding: '4px 8px',
+                    fontSize: '1.2rem',
+                    backgroundColor: 'transparent'
+                }}
+            >
+                {cleanLatex}
+            </math-field>
+        );
+    };
+
     render() {
         const { classes, problem } = this.props;
-        const { userAnswer, submitting } = this.state;
+        const { userAnswer, submitting, mathLiveReady } = this.state;
 
         const isChecked = problem.status === 'checked';
         const isCorrect = problem.is_correct;
 
-        // Dynamic card border style
         const cardStyle = isChecked ? {
             borderLeft: `4px solid ${isCorrect ? '#4caf50' : '#f44336'}`
         } : {};
 
-        // Dynamic feedback background
         const feedbackStyle = isChecked ? {
             backgroundColor: isCorrect ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)'
         } : {};
@@ -142,67 +284,103 @@ class WorksheetProblemCard extends Component {
                         )}
                     </Box>
 
-                    {/* Problem Info */}
-                    <Typography variant="body2" color="textSecondary" gutterBottom>
-                        Problem ID: {problem.problem_id}
-                    </Typography>
                     {problem.skill_name && (
                         <Typography variant="body2" color="textSecondary" gutterBottom>
                             Skill: {problem.skill_name}
                         </Typography>
                     )}
 
+                    {/* Problem Info */}
+                    <Typography variant="body2" color="textSecondary" gutterBottom>
+                        Problem ID: {problem.problem_id}
+                    </Typography>
+
+
                     {/* Answer Input */}
                     {!isChecked && (
                         <Box className={classes.inputSection}>
-                            <TextField
-                                className={classes.textField}
-                                label="Your Answer"
-                                variant="outlined"
-                                value={userAnswer}
-                                onChange={this.handleAnswerChange}
-                                disabled={submitting}
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter') {
-                                        this.handleSubmit();
-                                    }
-                                }}
-                            />
+                            <Typography variant="body2" className={classes.mathFieldLabel}>
+                                Enter your answer:
+                            </Typography>
+                            {mathLiveReady ? (
+                                <Box className={classes.mathFieldWrapper}>
+                                    <math-field
+                                        ref={this.mathFieldRef}
+                                        virtual-keyboard-mode="onfocus"
+                                        onInput={this.handleInput}
+                                        onKeyPress={this.handleKeyPress}
+                                    />
+                                </Box>
+                            ) : (
+                                <Typography variant="body2" color="textSecondary">
+                                    Loading math input...
+                                </Typography>
+                            )}
                             <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={this.handleSubmit}
-                                disabled={!userAnswer.trim() || submitting}
+                                disabled={!userAnswer.trim() || submitting || !mathLiveReady}
+                                className={classes.submitButton}
+                                size="large"
                             >
-                                {submitting ? 'Submitting...' : 'Submit'}
+                                {submitting ? 'Submitting...' : 'Submit Answer'}
                             </Button>
                         </Box>
                     )}
 
-                    {/* Feedback */}
+                    {/* Feedback - UPDATED TO RENDER MATH */}
                     {isChecked && (
                         <Box className={classes.feedbackBox} style={feedbackStyle}>
-                            <Typography variant="body1">
-                                {isCorrect ? (
-                                    <>
+                            {isCorrect ? (
+                                <>
+                                    <Box display="flex" alignItems="center" mb={1}>
                                         <CheckCircleIcon
                                             className={classes.feedbackIcon}
-                                            style={{ color: '#4caf50' }}
+                                            style={{ color: '#4caf50', fontSize: 24 }}
                                         />
-                                        Correct! Your answer: <strong>{problem.user_answer}</strong>
-                                    </>
-                                ) : (
-                                    <>
+                                        <Typography variant="body1" component="span">
+                                            <strong>Correct!</strong>
+                                        </Typography>
+                                    </Box>
+                                    <Box mt={1} display="flex" alignItems="center">
+                                        <Typography variant="body2" component="span" style={{ marginRight: 8 }}>
+                                            Your answer:
+                                        </Typography>
+                                        <Box className={classes.mathDisplay}>
+                                            {this.renderMath(problem.user_answer)}
+                                        </Box>
+                                    </Box>
+                                </>
+                            ) : (
+                                <>
+                                    <Box display="flex" alignItems="center" mb={1}>
                                         <CancelIcon
                                             className={classes.feedbackIcon}
-                                            style={{ color: '#f44336' }}
+                                            style={{ color: '#f44336', fontSize: 24 }}
                                         />
-                                        Incorrect. Your answer: <strong>{problem.user_answer}</strong>
-                                        <br />
-                                        Correct answer: <strong>{problem.correct_answer}</strong>
-                                    </>
-                                )}
-                            </Typography>
+                                        <Typography variant="body1" component="span">
+                                            <strong>Incorrect</strong>
+                                        </Typography>
+                                    </Box>
+                                    <Box mt={1} display="flex" alignItems="center" mb={1}>
+                                        <Typography variant="body2" component="span" style={{ marginRight: 8 }}>
+                                            Your answer:
+                                        </Typography>
+                                        <Box className={classes.mathDisplay}>
+                                            {this.renderMath(problem.user_answer)}
+                                        </Box>
+                                    </Box>
+                                    <Box display="flex" alignItems="center">
+                                        <Typography variant="body2" component="span" style={{ marginRight: 8 }}>
+                                            Correct answer:
+                                        </Typography>
+                                        <Box className={classes.mathDisplay}>
+                                            {this.renderMath(problem.correct_answer)}
+                                        </Box>
+                                    </Box>
+                                </>
+                            )}
                         </Box>
                     )}
                 </CardContent>

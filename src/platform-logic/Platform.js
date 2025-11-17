@@ -471,24 +471,23 @@ class Platform extends React.Component {
     };
 
     checkForCheckpoint = async () => {
-        const { problemsCompletedThisSession, checkpointReached } = this.state;
+        const { problemsCompletedInSession, checkpointReached } = this.state;
 
-        // Only show once per session
-        if (checkpointReached) return;
-
-        // Only for authenticated users
-        if (!storageService.isAuthenticated()) return;
+        if (checkpointReached || !storageService.isAuthenticated()) return;
 
         // Check if checkpoint reached
-        if (problemsCompletedThisSession >= WORKSHEET_CONFIG.CHECKPOINT_PROBLEM_COUNT) {
-            // Don't show if user already has pending worksheet
-            const pending = await worksheetService.checkPendingWorksheet();
-
-            if (!pending) {
-                this.setState({
-                    showCheckpointModal: true,
-                    checkpointReached: true
-                });
+        if (problemsCompletedInSession >= WORKSHEET_CONFIG.CHECKPOINT_PROBLEM_COUNT) {
+            try {
+                const pending = await worksheetService.checkPendingWorksheet();
+                if (!pending) {
+                    this.setState({
+                        showCheckpointModal: true,
+                        checkpointReached: true
+                    });
+                }
+            } catch (error) {
+                console.error('Error checking for pending worksheet:', error);
+                // Don't block user - just skip checkpoint modal
             }
         }
     };
@@ -566,7 +565,7 @@ class Platform extends React.Component {
         this.studentNameDisplay = this.context.studentName
         ? decodeURIComponent(this.context.studentName) + " | "
         : " ";
-        const { showCheckpointModal, problemsCompletedThisSession } = this.state; // or destructure from state
+        const { showCheckpointModal, problemsCompletedInSession } = this.state; // or destructure from state
         const { lessonID } = this.props;
 
         return (
@@ -693,7 +692,7 @@ class Platform extends React.Component {
                 )}
                 <CheckpointModal
                     open={showCheckpointModal}
-                    problemsCompleted={problemsCompletedThisSession}
+                    problemsCompleted={problemsCompletedInSession}
                     onContinueDigital={this.handleContinueDigital} // or {handleContinueDigital} for functional
                     onStartPaper={this.handleStartPaper} // or {handleStartPaper} for functional
                 />

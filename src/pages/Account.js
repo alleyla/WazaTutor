@@ -232,24 +232,25 @@ function Account() {
               {loading ? <CircularProgress size={24} /> : 'Update Account'}
             </Button>
             <Button
-              fullWidth
-              variant="outlined"
-              onClick={handleBack}
-              className={classes.backButton}
-            >
-              Back to Home
-            </Button>
-              <Button
                   component={Link}
                   to="/dashboard"
                   variant="contained"
                   color="primary"
                   startIcon={<DashboardIcon />}
                   fullWidth
-                  style={{ marginTop: 16 }}
+                  style={{ margin: '16px 0' }}
               >
                   View My Dashboard
-              </Button>
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleBack}
+              className={classes.backButton}
+            >
+              Back to Lessons
+            </Button>
+
             <Button
               fullWidth
               variant="outlined"
