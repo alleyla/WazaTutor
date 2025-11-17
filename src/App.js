@@ -521,24 +521,10 @@ class App extends React.Component {
                         <Router>
                             <div className="Router">
                                 <Switch>
-                                    <Route
+                                    <ProtectedRoute
                                         exact
                                         path="/"
-                                        render={(props) => (
-                                            <Platform
-                                                key={Date.now()}
-                                                saveProgress={() =>
-                                                    this.saveProgress()
-                                                }
-                                                loadBktProgress={
-                                                    this.loadBktProgress
-                                                }
-                                                removeProgress={
-                                                    this.removeProgress
-                                                }
-                                                {...props}
-                                            />
-                                        )}
+                                        component={Platform}
                                     />
                                     <Route
                                         path="/courses/:courseNum"
