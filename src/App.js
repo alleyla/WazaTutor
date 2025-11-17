@@ -42,6 +42,10 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
 import Dashboard from "./pages/Dashboard";
+import EnterWorksheetAnswers from './pages/EnterWorksheetAnswers';
+import GenerateWorksheet from './pages/GenerateWorksheet';
+import PrintWorksheet from './pages/PrintWorksheet';
+import PrintAnswerKey from './pages/PrintAnswerKey';
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 
@@ -654,6 +658,27 @@ class App extends React.Component {
                                         exact
                                         path="/dashboard"
                                         component={Dashboard}
+                                    />
+                                    {/* Worksheet Routes */}
+                                    <ProtectedRoute
+                                        exact
+                                        path="/worksheets/:worksheetId/enter-answers"
+                                        component={EnterWorksheetAnswers}
+                                    />
+                                    <ProtectedRoute
+                                        exact
+                                        path="/lessons/:lessonId/generate-worksheet"
+                                        component={GenerateWorksheet}
+                                    />
+                                    <ProtectedRoute
+                                        exact
+                                        path="/worksheets/:worksheetId/print"
+                                        component={PrintWorksheet}
+                                    />
+                                    <ProtectedRoute
+                                        exact
+                                        path="/worksheets/:worksheetId/print-answers"
+                                        component={PrintAnswerKey}
                                     />
                                     {/* Guest Routes - Only accessible when NOT logged in */}
                                     <GuestRoute

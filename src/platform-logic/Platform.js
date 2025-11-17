@@ -6,6 +6,10 @@ import LessonSelectionWrapper from "@components/problem-layout/LessonSelectionWr
 import { withRouter } from "react-router-dom";
 import progressService from '../services/progressService';
 import storageService from '../services/storageService';
+import CheckpointModal from '../components/worksheets/CheckpointModal';
+import PaperPracticeButton from '../components/worksheets/PaperPracticeButton';
+import { WORKSHEET_CONFIG } from '../config/config';
+import worksheetService from '../services/worksheetService';
 
 import {
     coursePlans,
@@ -65,12 +69,18 @@ class Platform extends React.Component {
                 currProblem: null,
                 status: "courseSelection",
                 seed: seed,
+                showCheckpointModal: false,
+                checkpointReached: false,
+                problemsCompletedInSession: 0
             };
         } else {
             this.state = {
                 currProblem: null,
                 status: "courseSelection",
                 seed: seed,
+                showCheckpointModal: false,
+                checkpointReached: false,
+                problemsCompletedInSession: 0
             };
         }
 
@@ -447,7 +457,50 @@ class Platform extends React.Component {
                 console.error('Failed to save lesson progress:', err);
             });
         }
+        // Increment problems completed in this session
+        this.setState(
+            prevState => ({
+                problemsCompletedInSession: prevState.problemsCompletedInSession + 1
+            }),
+            () => {
+                // Check for checkpoint after state update
+                this.checkForCheckpoint();
+            }
+        );
         await this._nextProblem(context);
+    };
+
+    checkForCheckpoint = async () => {
+        const { problemsCompletedThisSession, checkpointReached } = this.state;
+
+        // Only show once per session
+        if (checkpointReached) return;
+
+        // Only for authenticated users
+        if (!storageService.isAuthenticated()) return;
+
+        // Check if checkpoint reached
+        if (problemsCompletedThisSession >= WORKSHEET_CONFIG.CHECKPOINT_PROBLEM_COUNT) {
+            // Don't show if user already has pending worksheet
+            const pending = await worksheetService.checkPendingWorksheet();
+
+            if (!pending) {
+                this.setState({
+                    showCheckpointModal: true,
+                    checkpointReached: true
+                });
+            }
+        }
+    };
+
+    handleContinueDigital = () => {
+        this.setState({ showCheckpointModal: false });
+    };
+
+    handleStartPaper = () => {
+        const lessonID = this.props.lessonID;
+        this.setState({ showCheckpointModal: false });
+        this.props.history.push(`/lessons/${lessonID}/generate-worksheet`);
     };
 
     displayMastery = (mastery) => {
@@ -512,7 +565,10 @@ class Platform extends React.Component {
         const { translate } = this.props;
         this.studentNameDisplay = this.context.studentName
         ? decodeURIComponent(this.context.studentName) + " | "
-        : translate('platform.LoggedIn') + " | ";
+        : " ";
+        const { showCheckpointModal, problemsCompletedThisSession } = this.state; // or destructure from state
+        const { lessonID } = this.props;
+
         return (
             <div
                 style={{
@@ -632,6 +688,15 @@ class Platform extends React.Component {
                 ) : (
                     ""
                 )}
+                {storageService.isAuthenticated() && lessonID && (
+                    <PaperPracticeButton lessonId={lessonID} />
+                )}
+                <CheckpointModal
+                    open={showCheckpointModal}
+                    problemsCompleted={problemsCompletedThisSession}
+                    onContinueDigital={this.handleContinueDigital} // or {handleContinueDigital} for functional
+                    onStartPaper={this.handleStartPaper} // or {handleStartPaper} for functional
+                />
             </div>
         );
     }

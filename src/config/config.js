@@ -82,6 +82,15 @@ const CURRENT_LESSON_STORAGE_KEY = `${_SHORT_SITE_NAME}-current-lesson`;
 export const LESSON_PROGRESS_STORAGE_KEY = (lessonId) =>
     `${PROGRESS_STORAGE_KEY}-${lessonId}`;
 
+// Paper Practice Worksheet Configuration
+export const WORKSHEET_CONFIG = {
+    // Number of problems to complete before showing checkpoint
+    CHECKPOINT_PROBLEM_COUNT: 1,
+    // Maximum problems per worksheet
+    MAX_WORKSHEET_PROBLEMS: 10,
+    // Default number of worksheet problems if not specified
+    DEFAULT_WORKSHEET_PROBLEMS: 2
+};
 
 const CANVAS_WARNING_STORAGE_KEY = `${_SHORT_SITE_NAME}-canvas-warning-dismissed`;
 

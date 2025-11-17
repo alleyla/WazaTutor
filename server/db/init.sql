@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS user_problem_attempts CASCADE;
 DROP TABLE IF EXISTS user_skill_mastery CASCADE;
 DROP TABLE IF EXISTS user_current_lesson CASCADE;
 DROP TABLE IF EXISTS user_lesson_progress CASCADE;
+DROP TABLE IF EXISTS user_worksheets CASCADE;
+DROP TABLE IF EXISTS user_worksheet_problems CASCADE;
 
 -- Create the users table
 CREATE TABLE users (
@@ -121,3 +123,42 @@ CREATE INDEX idx_user_lesson_progress_user ON user_lesson_progress(user_id);
 CREATE INDEX idx_user_lesson_progress_lesson ON user_lesson_progress(lesson_id);
 CREATE INDEX idx_user_current_lesson_user ON user_current_lesson(user_id);
 
+
+-- ==================== PAPER PRACTICE WORKSHEETS ====================
+
+-- Main worksheet table
+CREATE TABLE user_worksheets (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    lesson_id VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'pending', -- 'pending', 'completed'
+    total_problems INTEGER NOT NULL DEFAULT 0,
+    problems_checked INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP
+);
+
+-- Worksheet problems (ordered list)
+CREATE TABLE user_worksheet_problems (
+    id SERIAL PRIMARY KEY,
+    worksheet_id INTEGER NOT NULL REFERENCES user_worksheets(id) ON DELETE CASCADE,
+    problem_id VARCHAR(255) NOT NULL,
+    problem_order INTEGER NOT NULL, -- 1, 2, 3, etc.
+    skill_name VARCHAR(255),
+    correct_answer TEXT,
+    user_answer TEXT,
+    is_correct BOOLEAN,
+    status VARCHAR(50) NOT NULL DEFAULT 'unchecked', -- 'unchecked', 'checked'
+    checked_at TIMESTAMP,
+    CONSTRAINT unique_worksheet_problem UNIQUE (worksheet_id, problem_order)
+);
+
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_worksheets_user_status ON user_worksheets(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_worksheets_user_lesson ON user_worksheets(user_id, lesson_id);
+CREATE INDEX IF NOT EXISTS idx_worksheet_problems_worksheet ON user_worksheet_problems(worksheet_id);
+
+-- Partial unique index for pending worksheets (PostgreSQL 9.5+)
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_pending_worksheet 
+    ON user_worksheets(user_id, lesson_id) 
+    WHERE status = 'pending';

@@ -13,6 +13,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import storageService from '../services/storageService';
+import worksheetService from '../services/worksheetService';
+import PendingWorksheetModal from '../components/worksheets/PendingWorksheetModal';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,6 +58,8 @@ function Login() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showWorksheetModal, setShowWorksheetModal] = useState(false);
+  const [pendingWorksheet, setPendingWorksheet] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -81,9 +85,18 @@ function Login() {
         );
       
       toast.success('Login successful!');
-      
-      // Redirect to home page
-      history.push('/');
+
+      // Check for pending worksheet
+      const pending = await worksheetService.checkPendingWorksheet();
+
+      if (pending) {
+            setPendingWorksheet(pending);
+            setShowWorksheetModal(true);
+            setLoading(false);
+      } else {
+            // No pending worksheet, go to home/dashboard
+            history.push('/');
+      }
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'An error occurred during login';
       setError(errorMsg);
@@ -93,8 +106,20 @@ function Login() {
     }
   };
 
+  const handleEnterWorksheetAnswers = () => {
+    if (pendingWorksheet) {
+        history.push(`/worksheets/${pendingWorksheet.id}/enter-answers`);
+    }
+  };
+
+  const handleDismissWorksheetModal = () => {
+      setShowWorksheetModal(false);
+      history.push('/');
+  };
+
   return (
-    <Container component="main" maxWidth="xs">
+      <>
+        <Container component="main" maxWidth="xs">
       <div className={classes.container}> 
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h5">
@@ -154,6 +179,14 @@ function Login() {
         </Paper>
       </div>
     </Container>
+        {/* ADD THIS MODAL AT THE END */}
+        <PendingWorksheetModal
+          open={showWorksheetModal}
+          worksheet={pendingWorksheet}
+          onEnterAnswers={handleEnterWorksheetAnswers}
+          onDismiss={handleDismissWorksheetModal}
+        />
+      </>
   );
 }
 
