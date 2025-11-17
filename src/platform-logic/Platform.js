@@ -687,9 +687,6 @@ class Platform extends React.Component {
                 ) : (
                     ""
                 )}
-                {storageService.isAuthenticated() && lessonID && (
-                    <PaperPracticeButton lessonId={lessonID} />
-                )}
                 <CheckpointModal
                     open={showCheckpointModal}
                     problemsCompleted={problemsCompletedInSession}

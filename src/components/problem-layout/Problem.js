@@ -20,7 +20,7 @@ import FeedbackOutlinedIcon from "@material-ui/icons/FeedbackOutlined";
 import withTranslation from "../../util/withTranslation.js"
 import progressService from "../../services/progressService";
 import storageService from "../../services/storageService";
-
+import PaperPracticeButton from '../worksheets/PaperPracticeButton';
 
 import {
     CANVAS_WARNING_STORAGE_KEY,
@@ -618,27 +618,43 @@ class Problem extends React.Component {
                                 <Grid item xs={2} key={4} />
                             </Grid>
                         ) : (
-                            
-                            <Grid container spacing={0}>
-                                <Grid item xs={3} sm={3} md={5} key={1} />
-                                <Grid item xs={6} sm={6} md={2} key={2}>
-                                    <Button
-                                        className={classes.button}
-                                        style={{ width: "100%" }}
-                                        size="small"
-                                        onClick={this.clickNextProblem}
-                                        disabled={
-                                            !(
-                                                this.state.problemFinished ||
-                                                this.state.feedbackSubmitted
-                                            )
-                                        }
-                                    >
-                                        {translate('problem.NextProblem')}
-                                    </Button>
+                            <>
+                                <Grid container spacing={0}>
+                                    <Grid item xs={3} sm={3} md={5} key={1} />
+                                    <Grid item xs={6} sm={6} md={2} key={2}>
+                                        <Button
+                                            className={classes.button}
+                                            style={{ width: "100%" }}
+                                            size="small"
+                                            onClick={this.clickNextProblem}
+                                            disabled={
+                                                !(
+                                                    this.state.problemFinished ||
+                                                    this.state.feedbackSubmitted
+                                                )
+                                            }
+                                        >
+                                            {translate('problem.NextProblem')}
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={3} sm={3} md={5} key={3} />
                                 </Grid>
-                                <Grid item xs={3} sm={3} md={5} key={3} />
-                            </Grid>
+
+                                {/* Paper Practice Button */}
+                                {storageService.isAuthenticated() && this.props.lessonID && (
+                                    <Grid container spacing={0} style={{ marginTop: '12px' }}>
+                                        <Grid item xs={3} sm={3} md={5} key={1} />
+                                        <Grid item xs={6} sm={6} md={2} key={2}>
+                                            <PaperPracticeButton
+                                                lessonId={this.props.lessonID}
+                                                variant="contained"
+                                                color="primary"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={3} sm={3} md={5} key={3} />
+                                    </Grid>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
