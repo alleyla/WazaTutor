@@ -5,12 +5,15 @@ import {
     Typography,
     Button,
     Box,
-    Chip
+    Chip,
+    Divider
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { checkAnswer } from "../../platform-logic/checkAnswer.js";
+import { IS_STAGING_OR_DEVELOPMENT } from '../../util/getBuildType';
+
 
 const styles = (theme) => ({
     card: {
@@ -77,7 +80,13 @@ const styles = (theme) => ({
         backgroundColor: '#f5f5f5',
         borderRadius: 4,
         display: 'inline-block'
-    }
+    },
+    devScriptBody: {
+        fontSize: '0.875rem',
+        color: theme.palette.text.disabled,
+        fontFamily: 'monospace',
+        marginTop: theme.spacing(0.5),
+    },
 });
 
 class WorksheetProblemCard extends Component {
@@ -284,17 +293,13 @@ class WorksheetProblemCard extends Component {
                         )}
                     </Box>
 
-                    {problem.skill_name && (
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Skill: {problem.skill_name}
+                    {/* Problem ID (Dev Mode Only) */}
+                    {IS_STAGING_OR_DEVELOPMENT && (
+                        <Typography className={classes.devScriptBody}>
+                            Problem ID: {problem.problem_id}
                         </Typography>
                     )}
-
-                    {/* Problem Info */}
-                    <Typography variant="body2" color="textSecondary" gutterBottom>
-                        Problem ID: {problem.problem_id}
-                    </Typography>
-
+                    <Divider className={classes.divider} />
 
                     {/* Answer Input */}
                     {!isChecked && (

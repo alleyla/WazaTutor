@@ -24,6 +24,7 @@ import to from "await-to-js";
 import { toast } from "react-toastify";
 import ToastID from "../util/toastIds";
 import BrandLogoNav from "@components/BrandLogoNav";
+import LessonInfoBar from "@components/LessonInfoBar";
 import { cleanArray } from "../util/cleanObject";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { CONTENT_SOURCE } from "@common/global-config";
@@ -568,68 +569,38 @@ class Platform extends React.Component {
         const { showCheckpointModal, problemsCompletedInSession } = this.state; // or destructure from state
         const { lessonID } = this.props;
 
+        const lessonInfo = findLessonById(lessonID);
+        const showLessonInfo = this.state.status !== "courseSelection" &&
+            this.state.status !== "lessonSelection" &&
+            lessonInfo;
+        const showMastery = showLessonInfo &&
+            (this.lesson?.showStuMastery == null || this.lesson?.showStuMastery);
+
         return (
             <div
                 style={{
                     backgroundColor: "#F6F6F6",
-                    paddingBottom: 20,
+                    minHeight: "100vh",
                     display: "flex",
                     flexDirection: "column",
                 }}
             >
+                {/* Main Navigation Bar */}
                 <AppBar position="static">
                     <Toolbar>
-                        <Grid
-                            container
-                            spacing={0}
-                            role={"navigation"}
-                            alignItems={"center"}
-                        >
-                            <Grid item xs={3} key={1}>
-                                <BrandLogoNav
-                                    isPrivileged={this.isPrivileged}
-                                />
-                            </Grid>
-                            <Grid item xs={6} key={2}>
-                                <div
-                                    style={{
-                                        textAlign: "center",
-                                        textAlignVertical: "center",
-                                        paddingTop: "3px",
-                                    }}
-                                >
-                                    {Boolean(
-                                        findLessonById(this.props.lessonID)
-                                    )
-                                        ? findLessonById(this.props.lessonID)
-                                              .name +
-                                          " " +
-                                          findLessonById(this.props.lessonID)
-                                              .topics
-                                        : ""}
-                                </div>
-                            </Grid>
-                            <Grid item xs={3} key={3}>
-                                <div
-                                    style={{
-                                        textAlign: "right",
-                                        paddingTop: "3px",
-                                    }}
-                                >
-                                    {this.state.status !== "courseSelection" &&
-                                    this.state.status !== "lessonSelection" &&
-                                    (this.lesson.showStuMastery == null ||
-                                        this.lesson.showStuMastery)
-                                        ? this.studentNameDisplay +
-                                        translate('platform.Mastery') +
-                                          Math.round(this.state.mastery * 100) +
-                                          "%"
-                                        : ""}
-                                </div>
-                            </Grid>
-                        </Grid>
+                        <BrandLogoNav isPrivileged={this.isPrivileged} />
                     </Toolbar>
                 </AppBar>
+
+                {/* Secondary Lesson Info Bar */}
+                {showLessonInfo && (
+                    <LessonInfoBar
+                        lessonName={lessonInfo.name}
+                        lessonTopics={lessonInfo.topics}
+                        mastery={showMastery ? this.state.mastery : null}
+                    />
+                )}
+                <div style={{ flex: 1, paddingBottom: 20 }}>
                 {this.state.status === "courseSelection" ? (
                     <LessonSelectionWrapper
                         selectLesson={this.selectLesson}
@@ -687,6 +658,7 @@ class Platform extends React.Component {
                 ) : (
                     ""
                 )}
+                </div>
                 <CheckpointModal
                     open={showCheckpointModal}
                     problemsCompleted={problemsCompletedInSession}

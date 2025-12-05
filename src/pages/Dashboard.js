@@ -10,7 +10,9 @@ import {
     Box,
     Container,
     Grid,
-    Paper
+    Paper,
+    AppBar,
+    Toolbar
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
@@ -20,12 +22,12 @@ import TimerIcon from '@material-ui/icons/Timer';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import BrandLogoNav from '../components/BrandLogoNav';
+import storageService from '../services/storageService';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         minHeight: '100vh',
         backgroundColor: theme.palette.background.default,
-        paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
     },
     header: {
@@ -36,6 +38,17 @@ const useStyles = makeStyles((theme) => ({
     },
     dashboardGrid: {
         marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+    },
+    welcomeSection: {
+        padding: theme. spacing(4, 3, 3, 3),
+        backgroundColor: theme.palette.background.paper,
+        borderBottom: `1px solid ${theme. palette.divider}`,
+    },
+    welcomeText: {
+        fontSize: '1.75rem',
+        fontWeight: 500,
+        color: theme.palette.text.primary,
     },
     statCard: {
         height: '100%',
@@ -90,10 +103,7 @@ const useStyles = makeStyles((theme) => ({
     cardIcon: {
         color: theme.palette.primary.main,
         fontSize: '2rem',
-    },
-    backButton: {
-        marginBottom: theme.spacing(2),
-    },
+    }
 }));
 
 export default function Dashboard() {
@@ -103,6 +113,10 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [timeRange, setTimeRange] = useState(7);
     const [error, setError] = useState(null);
+
+    // Get user name from storage
+    const userName = storageService.getAuthUserName() || 'Learner';
+
 
     useEffect(() => {
         loadDashboard();
@@ -133,7 +147,17 @@ export default function Dashboard() {
     if (loading) {
         return (
             <div className={classes.root}>
-                <BrandLogoNav />
+                <AppBar position="static">
+                    <Toolbar>
+                        <BrandLogoNav />
+                    </Toolbar>
+                </AppBar>
+                {/* Welcome Section */}
+                <Box className={classes.welcomeSection}>
+                    <Typography className={classes. welcomeText}>
+                        Welcome, {userName}!
+                    </Typography>
+                </Box>
                 <Container maxWidth="lg">
                     <Box className={classes.loadingContainer}>
                         <CircularProgress size={60} />
@@ -146,10 +170,17 @@ export default function Dashboard() {
     if (error) {
         return (
             <div className={classes.root}>
-                <BrandLogoNav />
+                <AppBar position="static">
+                    <Toolbar>
+                        <BrandLogoNav />
+                    </Toolbar>
+                </AppBar>
                 <Container maxWidth="lg">
-                    <Box className={classes.header}>
-                        <Typography variant="h4">Your Progress Dashboard</Typography>
+                    {/* Welcome Section */}
+                    <Box className={classes.welcomeSection}>
+                        <Typography className={classes.welcomeText}>
+                            Welcome, {userName}!
+                        </Typography>
                     </Box>
                     <Paper style={{ padding: 24, textAlign: 'center' }}>
                         <Typography color="error" variant="h6">{error}</Typography>
@@ -170,10 +201,17 @@ export default function Dashboard() {
     if (!dashboardData) {
         return (
             <div className={classes.root}>
-                <BrandLogoNav />
+                <AppBar position="static">
+                    <Toolbar>
+                        <BrandLogoNav />
+                    </Toolbar>
+                </AppBar>
                 <Container maxWidth="lg">
-                    <Box className={classes.header}>
-                        <Typography variant="h4">Your Progress Dashboard</Typography>
+                    {/* Welcome Section */}
+                    <Box className={classes.welcomeSection}>
+                        <Typography className={classes.welcomeText}>
+                            Welcome, {userName}!
+                        </Typography>
                     </Box>
                     <Paper style={{ padding: 24, textAlign: 'center' }}>
                         <Typography variant="h6">
@@ -198,18 +236,18 @@ export default function Dashboard() {
 
     return (
         <div className={classes.root}>
-            <BrandLogoNav />
+            <AppBar position="static">
+                <Toolbar>
+                    <BrandLogoNav />
+                </Toolbar>
+            </AppBar>
             <Container maxWidth="lg">
-                <Box className={classes.header}>
-                    <Typography variant="h4">Your Progress Dashboard</Typography>
-                    <Button 
-                        variant="outlined"
-                        onClick={() => history.push('/')}
-                    >
-                        Back
-                    </Button>
+                {/* Welcome Section */}
+                <Box className={classes.welcomeSection}>
+                    <Typography className={classes.welcomeText}>
+                        Welcome, {userName}!
+                    </Typography>
                 </Box>
-
                 <Box className={classes.timeRangeSelector}>
                     <ButtonGroup color="primary" size="large">
                         <Button 

@@ -4,9 +4,9 @@
        "welcomeInstructor": "Welcome Instructor!",
        "welcomeTo": "Welcome to",
        "resetprogress": "Reset Progress",
-       "select": "Please select a",
-       "course": "course",
-       "lessonplan": "lesson plan",
+       "select": "Select a ",
+       "course": "Course",
+       "lessonplan": "Lesson",
        "onlyselect": "Select",
        "aresure": "Are you sure?",
        "reset": "Progress Reset!"

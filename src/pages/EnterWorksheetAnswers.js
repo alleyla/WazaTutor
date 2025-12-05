@@ -10,30 +10,74 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions
+    DialogActions,
+    AppBar,
+    Toolbar
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import PrintIcon from '@material-ui/icons/Print';
 import worksheetService from '../services/worksheetService';
 import progressService from '../services/progressService';
-import { ThemeContext } from '../config/config';
+import { ThemeContext, findLessonById } from '../config/config';
 import { toast } from 'react-toastify';
 import WorksheetProblemCard from '../components/worksheets/WorksheetProblemCard';
 import update from '../models/BKT/BKT-brain';
+import BrandLogoNav from '@components/BrandLogoNav';
+import { IS_STAGING_OR_DEVELOPMENT } from '../util/getBuildType';
 
 const styles = (theme) => ({
+    root: {
+        backgroundColor: '#F6F6F6',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    pageHeader: {
+        padding: theme.spacing(4, 3, 3, 3),
+        backgroundColor: theme.palette.background.paper,
+        borderBottom: `1px solid ${theme.palette.divider}`,
+    },
+    pageTitle: {
+        fontSize: '1.75rem',
+        fontWeight: 500,
+        color: theme.palette.text.primary,
+        textAlign: 'center',
+    },
     container: {
         padding: theme.spacing(4),
-        maxWidth: 1200
+        maxWidth: 900,
+        flex: 1,
     },
     header: {
         marginBottom: theme.spacing(4),
+    },
+    lessonInfo: {
+        marginBottom: theme.spacing(3),
+    },
+    lessonTitle: {
+        fontSize: '1.5rem',
+        fontWeight: 500,
+        color: theme.palette.text.primary,
+        marginBottom: theme.spacing(0.5),
+    },
+    lessonSubtitle: {
+        fontSize: '1rem',
+        color: theme.palette.text.secondary,
+    },
+    lessonId: {
+        fontSize: '0.875rem',
+        color: theme.palette.text.disabled,
+        fontFamily: 'monospace',
+        marginTop: theme.spacing(0.5),
+    },
+    actionButtons: {
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        gap: theme.spacing(2),
         flexWrap: 'wrap',
-        gap: theme.spacing(2)
+        justifyContent: 'flex-end',
     },
     progress: {
         marginBottom: theme.spacing(2)
@@ -46,10 +90,6 @@ const styles = (theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '50vh'
-    },
-    printButtons: {
-        display: 'flex',
-        gap: theme.spacing(2)
     },
     completionIcon: {
         fontSize: 80,
@@ -195,108 +235,156 @@ class EnterWorksheetAnswers extends Component {
         const { classes } = this.props;
         const { worksheet, loading, error, showCompletionDialog } = this.state;
 
+
         if (loading) {
             return (
-                <Container className={classes.loading}>
-                    <CircularProgress size={60} />
-                </Container>
+                <div className={classes.root}>
+                    {/* Navigation Bar */}
+                    <AppBar position="static">
+                        <Toolbar>
+                            <BrandLogoNav />
+                        </Toolbar>
+                    </AppBar>
+
+                    <Container className={classes.loading}>
+                        <CircularProgress size={60} />
+                    </Container>
+                </div>
             );
         }
 
-        if (error || !worksheet) {
+        if (error || ! worksheet) {
             return (
-                <Container className={classes.container}>
-                    <Typography variant="h5" color="error">
-                        {error || 'Worksheet not found'}
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.handleGoToDashboard}
-                        style={{ marginTop: 20 }}
-                    >
-                        Go to Dashboard
-                    </Button>
-                </Container>
+                <div className={classes.root}>
+                    {/* Navigation Bar */}
+                    <AppBar position="static">
+                        <Toolbar>
+                            <BrandLogoNav />
+                        </Toolbar>
+                    </AppBar>
+
+                    <Container className={classes.container}>
+                        <Typography variant="h5" color="error">
+                            {error || 'Worksheet not found'}
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.handleGoToDashboard}
+                            style={{ marginTop: 20 }}
+                        >
+                            Go to Dashboard
+                        </Button>
+                    </Container>
+                </div>
             );
         }
 
         const progress = (worksheet.problems_checked / worksheet.total_problems) * 100;
+        const lesson = findLessonById(worksheet.lesson_id);
 
         return (
-            <Container className={classes.container}>
-                {/* Header */}
-                <Box className={classes.header}>
-                    <div>
-                        <Typography variant="h4" gutterBottom>
-                            Enter Worksheet Answers
+            <div className={classes.root}>
+                {/* Navigation Bar */}
+                <AppBar position="static">
+                    <Toolbar>
+                        <BrandLogoNav />
+                    </Toolbar>
+                </AppBar>
+
+                {/* Page Header */}
+                <Box className={classes.pageHeader}>
+                    <Container maxWidth="lg">
+                        <Typography className={classes.pageTitle}>
+                            Enter Your Worksheet Answers
                         </Typography>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Lesson: {worksheet.lesson_id}
-                        </Typography>
-                    </div>
-                    <div className={classes.printButtons}>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            startIcon={<PrintIcon />}
-                            onClick={this.handlePrintWorksheet}
-                        >
-                            Print Worksheet
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            color="secondary"
-                            startIcon={<PrintIcon />}
-                            onClick={this.handlePrintAnswerKey}
-                        >
-                            Print Answer Key
-                        </Button>
-                        <Button
-                            onClick={this.handleGoToDashboard}
-                            color="primary"
-                            variant="contained"
-                            size="large"
-                        >
-                            Go to Dashboard
-                        </Button>
-                    </div>
+                    </Container>
                 </Box>
 
-                {/* Progress */}
-                <Paper className={classes.progress} elevation={2}>
-                    <Box p={2}>
-                        <Typography variant="body1" gutterBottom>
-                            Progress: {worksheet.problems_checked} / {worksheet.total_problems} problems checked
-                        </Typography>
-                        <Box
-                            width="100%"
-                            bgcolor="grey.300"
-                            borderRadius={5}
-                            height={10}
-                        >
-                            <Box
-                                width={`${progress}%`}
-                                bgcolor="primary.main"
-                                borderRadius={5}
-                                height="100%"
-                                style={{ transition: 'width 0.3s ease' }}
-                            />
+                {/* Content */}
+                <Container className={classes.container}>
+                    {/* Header with Lesson Info */}
+                    <Box className={classes.header}>
+                        <Box className={classes.lessonInfo}>
+                            {lesson ?  (
+                                <>
+                                    <Typography className={classes.lessonTitle}>
+                                        {lesson.name} - {lesson.topics}
+                                    </Typography>
+                                    {IS_STAGING_OR_DEVELOPMENT && (
+                                        <Typography className={classes.lessonId}>
+                                            Lesson ID: {worksheet.lesson_id}
+                                        </Typography>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <Typography className={classes.lessonTitle}>
+                                        Lesson: {worksheet.lesson_id}
+                                    </Typography>
+                                    {IS_STAGING_OR_DEVELOPMENT && (
+                                        <Typography className={classes.lessonId}>
+                                            (Lesson details not found)
+                                        </Typography>
+                                    )}
+                                </>
+                            )}
                         </Box>
+                        <div className={classes.actionButtons}>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                startIcon={<PrintIcon />}
+                                onClick={this.handlePrintWorksheet}
+                            >
+                                Print Worksheet
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                startIcon={<PrintIcon />}
+                                onClick={this.handlePrintAnswerKey}
+                            >
+                                Print Answer Key
+                            </Button>
+                        </div>
                     </Box>
-                </Paper>
 
-                {/* Problems Grid */}
-                <Grid container spacing={3} className={classes.problemsGrid}>
-                    {worksheet.problems.map((problem) => (
-                        <Grid item xs={12} key={problem.problem_order}>
-                            <WorksheetProblemCard
-                                problem={problem}
-                                onSubmit={this.handleSubmitAnswer}
-                            />
-                        </Grid>
-                    ))}
-                </Grid>
+                    {/* Progress */}
+                    <Paper className={classes.progress} elevation={2}>
+                        <Box p={2}>
+                            <Typography variant="body1" gutterBottom>
+                                Progress: {worksheet.problems_checked} / {worksheet.total_problems} problems checked
+                            </Typography>
+                            <Box
+                                width="100%"
+                                bgcolor="grey.300"
+                                borderRadius={5}
+                                height={10}
+                            >
+                                <Box
+                                    width={`${progress}%`}
+                                    bgcolor="primary.main"
+                                    borderRadius={5}
+                                    height="100%"
+                                    style={{ transition: 'width 0.3s ease' }}
+                                />
+                            </Box>
+                        </Box>
+                    </Paper>
+
+                    {/* Problems Grid */}
+                    <Grid container spacing={3} className={classes.problemsGrid}>
+                        {worksheet.problems.map((problem) => (
+                            <Grid item xs={12} key={problem.problem_order}>
+                                <WorksheetProblemCard
+                                    problem={problem}
+                                    onSubmit={this.handleSubmitAnswer}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
 
                 {/* Completion Dialog */}
                 <Dialog
@@ -305,16 +393,14 @@ class EnterWorksheetAnswers extends Component {
                     maxWidth="sm"
                     fullWidth
                 >
-                    <DialogTitle style={{ textAlign: 'center' }}>
-                        Congratulations!
-                    </DialogTitle>
                     <DialogContent style={{ textAlign: 'center', padding: '32px' }}>
-                        <CheckCircleIcon className={classes.completionIcon} />
-                        <Typography variant="h6" gutterBottom style={{ marginTop: 16 }}>
-                            Great job!
+                        <AssignmentTurnedInIcon className={classes.completionIcon} />
+                        <Typography variant="h6" gutterBottom style={{ marginTop: 26 }}>
+                            Practice Complete!
                         </Typography>
                         <Typography variant="body1" color="textSecondary">
-                            You have completed and successfully entered all your worksheet answers.
+                            Thanks for practicing and entering your answers.
+                            Your progress has been updated!
                         </Typography>
                     </DialogContent>
                     <DialogActions style={{ padding: '16px 24px', justifyContent: 'center' }}>
@@ -324,13 +410,13 @@ class EnterWorksheetAnswers extends Component {
                             variant="contained"
                             size="large"
                         >
-                            Go to Dashboard
+                            Check Your Progress
                         </Button>
                     </DialogActions>
                 </Dialog>
-            </Container>
+            </div>
         );
     }
 }
 
-export default withStyles(styles)(EnterWorksheetAnswers);
+export default withRouter(withStyles(styles)(EnterWorksheetAnswers));

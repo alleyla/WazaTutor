@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import {
   Container,
@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import storageService from '../services/storageService';
 import worksheetService from '../services/worksheetService';
 import PendingWorksheetModal from '../components/worksheets/PendingWorksheetModal';
+import { ThemeContext } from '../config/config';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -52,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 function Login() {
   const classes = useStyles();
   const history = useHistory();
+  const context = useContext(ThemeContext);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -86,6 +88,16 @@ function Login() {
       
       toast.success('Login successful!');
 
+        // For EXISTING users, reload their progress from server
+        if (context.reloadUserData) {
+            try {
+                await context.reloadUserData();
+            } catch (error) {
+                console.error('Failed to reload user data:', error);
+                // Continue anyway - user can still use the app
+            }
+        }
+
       // Check for pending worksheet
       const pending = await worksheetService.checkPendingWorksheet();
 
@@ -95,7 +107,7 @@ function Login() {
             setLoading(false);
       } else {
             // No pending worksheet, go to home/dashboard
-            history.push('/');
+            history.push('/dashboard');
       }
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'An error occurred during login';

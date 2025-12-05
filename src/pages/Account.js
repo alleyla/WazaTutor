@@ -8,6 +8,8 @@ import {
   Typography,
   Box,
   CircularProgress,
+  AppBar,
+  Toolbar,
   Grid
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,8 +18,13 @@ import { toast } from 'react-toastify';
 import storageService from '../services/storageService';
 import { Link } from 'react-router-dom';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import BrandLogoNav from '../components/BrandLogoNav';
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        minHeight: '100vh',
+        backgroundColor: theme.palette.background.default,
+    },
   container: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -167,103 +174,90 @@ function Account() {
 
   if (fetchLoading) {
     return (
-      <Container component="main" maxWidth="xs">
-        <Box display="flex" justifyContent="center" mt={8}>
-          <CircularProgress />
-        </Box>
-      </Container>
+        <div className={classes.root}>
+            {/* ADD NAVIGATION BAR */}
+            <AppBar position="static">
+                <Toolbar>
+                    <BrandLogoNav />
+                </Toolbar>
+            </AppBar>
+            <Container component="main" maxWidth="xs">
+                <Box display="flex" justifyContent="center" mt={8}>
+                    <CircularProgress />
+                </Box>
+            </Container>
+        </div>
     );
   }
 
   return (
-    <Container component="main" maxWidth="sm">
-      <div className={classes.container}>
-        <Paper className={classes.paper}>
-          <Typography component="h1" variant="h5">
-            Account Settings
-          </Typography>
-          <form className={classes.form} onSubmit={handleSubmit}>
-            {error && (
-              <Typography className={classes.errorText}>
-                {error}
+      <div className={classes.root}>
+        {/* ADD NAVIGATION BAR */}
+        <AppBar position="static">
+            <Toolbar>
+                <BrandLogoNav />
+            </Toolbar>
+        </AppBar>
+        <Container component="main" maxWidth="sm">
+          <div className={classes.container}>
+            <Paper className={classes.paper}>
+              <Typography component="h1" variant="h5">
+                Account Settings
               </Typography>
-            )}
-            {success && (
-              <Typography className={classes.successText}>
-                {success}
-              </Typography>
-            )}
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
+              <form className={classes.form} onSubmit={handleSubmit}>
+                {error && (
+                  <Typography className={classes.errorText}>
+                    {error}
+                  </Typography>
+                )}
+                {success && (
+                  <Typography className={classes.successText}>
+                    {success}
+                  </Typography>
+                )}
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="name"
+                      label="Name"
+                      name="name"
+                      autoComplete="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
                   fullWidth
-                  id="name"
-                  label="Name"
-                  name="name"
-                  autoComplete="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              disabled={loading}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Update Account'}
-            </Button>
-            <Button
-                  component={Link}
-                  to="/dashboard"
                   variant="contained"
                   color="primary"
-                  startIcon={<DashboardIcon />}
-                  fullWidth
-                  style={{ margin: '16px 0' }}
-              >
-                  View My Dashboard
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={handleBack}
-              className={classes.backButton}
-            >
-              Back to Lessons
-            </Button>
-
-            <Button
-              fullWidth
-              variant="outlined"
-              color="secondary"
-              onClick={handleLogout}
-              style={{ marginTop: '8px' }}
-            >
-              Logout
-            </Button>
-          </form>
-        </Paper>
+                  className={classes.submit}
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress size={24} /> : 'Save Settings'}
+                </Button>
+              </form>
+            </Paper>
+          </div>
+        </Container>
       </div>
-    </Container>
   );
 }
 

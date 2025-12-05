@@ -94,13 +94,12 @@ function Register() {
       
       // Redirect to home page after a short delay
       setTimeout(() => {
-        history.push('/');
-      }, 1500);
+         history.push('/dashboard');
+      }, 800);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'An error occurred during registration';
       setError(errorMsg);
       toast.error(errorMsg);
-    } finally {
       setLoading(false);
     }
   };

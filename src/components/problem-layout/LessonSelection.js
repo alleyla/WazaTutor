@@ -16,7 +16,93 @@ import BuildTimeIndicator from "@components/BuildTimeIndicator";
 import withTranslation from "../../util/withTranslation.js";
 import Popup from '../Popup/Popup.js';
 import About from '../../pages/Posts/About.js';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import ListIcon from '@material-ui/icons/List';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
+
+const customStyles = (theme) => ({
+        ... styles(theme),
+        pathContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: theme.spacing(3),
+            maxWidth: 600,
+            margin: '0 auto',
+            padding: theme.spacing(3),
+        },
+        pathItem: {
+            width: '100%',
+            padding: theme.spacing(3),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+                transform: 'translateX(8px)',
+                boxShadow: theme.shadows[4],
+            },
+        },
+        pathItemContent: {
+            flex: 1,
+            textAlign: 'left',
+        },
+        pathItemTitle: {
+            fontSize: '1.25rem',
+            fontWeight: 600,
+            marginBottom: theme.spacing(1.5),
+        color: theme.palette.text.primary,
+        },
+        pathItemActions: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme.spacing(0.5),
+            marginTop: theme.spacing(0.5),
+        },
+        actionIconButton: {
+            padding: theme.spacing(0.75),
+            color: theme.palette.primary.main,
+            '&:hover': {
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.primary. contrastText,
+            },
+        },
+        actionIcon: {
+            fontSize: '1.4rem',
+        },
+
+        linkIcon: {
+            fontSize: '1.1rem',
+        },
+        pathItemMeta: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme.spacing(0.5),
+            fontSize: '0.9rem',
+            color: theme.palette.text.secondary,
+            marginTop: theme.spacing(0.5),
+        },
+        metaIcon: {
+            fontSize: '1.1rem',
+        },
+        pathItemIcon: {
+            color: theme.palette.primary.main,
+            fontSize: '2rem',
+        },
+        pathConnector: {
+            width: 2,
+            height: 24,
+            backgroundColor: theme.palette.divider,
+            margin: '0 auto',
+        },
+        rightActions: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme.spacing(1),
+        },
+    });
 
 class LessonSelection extends React.Component {
     static contextType = ThemeContext;
@@ -27,8 +113,8 @@ class LessonSelection extends React.Component {
 
         if (courseNum == 6) {
             setLanguage('se')
-        } 
-        
+        }
+
         if (props.history.location.pathname == '/') {
             const defaultLocale = localStorage.getItem('defaultLocale');
             setLanguage(defaultLocale)
@@ -50,10 +136,10 @@ class LessonSelection extends React.Component {
     togglePopup = () => {
         console.log("Toggling popup visibility");
         this.setState((prevState) => ({
-          showPopup: !prevState.showPopup,
+            showPopup: !prevState.showPopup,
         }));
-      };
-      
+    };
+
     removeProgress = () => {
         this.setState({ removedProgress: true });
         this.props.removeProgress();
@@ -63,15 +149,23 @@ class LessonSelection extends React.Component {
         this.setState({ preparedRemoveProgress: true });
     }
 
+    // Helper function to get textbook URL for a lesson
+    getTextbookUrl = (lesson) => {
+        // You can customize this based on the lesson's course or other properties
+        // For now, returning a default OpenStax PreAlgebra link
+        // You might want to make this more dynamic based on lesson.courseOER or other fields
+        return lesson.courseOER || 'https://openstax.org/details/books/prealgebra-2e';
+    }
+
     render() {
         const { translate } = this.props;
         const { classes, courseNum } = this.props;
-        const selectionMode = courseNum == null ? "course" : "lesson"
+        const selectionMode = courseNum == null ?  "course" : "lesson"
         const { showPopup } = this.state;
 
         if (selectionMode === "lesson" && courseNum >= this.coursePlans.length) {
             return <Box width={'100%'} textAlign={'center'} pt={4} pb={4}>
-                <Typography variant={'h3'}>Course <code>{courseNum}</code> is not valid!</Typography>
+                <Typography variant={'h3'}>Course <code>{courseNum}</code> is not valid! </Typography>
             </Box>
         }
 
@@ -85,98 +179,121 @@ class LessonSelection extends React.Component {
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Box width="75%" maxWidth={1500} role={"main"}>
-                            <center>
-                                {this.isPrivileged
-                                    ? <h1>{translate('lessonSelection.welcomeInstructor')}</h1>
-                                    : <h1>{translate('lessonSelection.welcomeTo')} {SITE_NAME.replace(/\s/, "")}!</h1>
-                                }
+                        <Box width="90%" maxWidth={1200} role={"main"}>
+                            <div>
+                                <center>
+                                    <h2>{translate('lessonSelection.select')} {selectionMode === "course" ? translate('lessonSelection.course') : translate('lessonSelection.lessonplan')}</h2>
+                                </center>
+                                <Divider/>
+                                <Spacer/>
+                            </div>
 
-                                <h2>{translate('lessonSelection.select')} {selectionMode === "course" ? translate('lessonSelection.course') : translate('lessonSelection.lessonplan')}</h2>
-                                {this.isPrivileged
-                                    && <h4>(for {this.user.resource_link_title})</h4>
-                                }
-                                {
-                                    IS_STAGING_OR_DEVELOPMENT && <BuildTimeIndicator/>
-                                }
-                            </center>
-                            <Divider/>
-                            <Spacer/>
-                            <Grid container spacing={3}>
+                            {IS_STAGING_OR_DEVELOPMENT && (
+                                <center>
+                                    <BuildTimeIndicator/>
+                                    <Spacer/>
+                                </center>
+                            )}
+
+                            {/* Path-style layout */}
+                            <div className={classes.pathContainer}>
                                 {selectionMode === "course"
-                                    ? this.coursePlans
-                                        .map((course, i) =>
-                                            <Grid item xs={12} sm={6} md={4} key={course.courseName}>
-                                                <center>
-                                                    <Paper className={classes.paper}>
-                                                        <h2 style={{
-                                                            marginTop: "5px",
-                                                            marginBottom: "10px"
-                                                        }}>{course.courseName}</h2>
-                                                        <IconButton aria-label={`View Course ${i}`}
-                                                            aria-roledescription={`Navigate to course ${i}'s page to view available lessons`}
-                                                            role={"link"}
-                                                            onClick={() => {
-                                                                this.props.history.push(`/courses/${i}`)
-                                                            }}>
-                                                            <img
-                                                                src={`${process.env.PUBLIC_URL}/static/images/icons/folder.png`}
-                                                                width="64px"
-                                                                alt="folderIcon"/>
-                                                        </IconButton>
-                                                    </Paper>
-                                                </center>
-                                            </Grid>
-                                        )
+                                    ? this.coursePlans.map((course, i) => (
+                                        <Fragment key={course.courseName}>
+                                            <Paper
+                                                className={classes.pathItem}
+                                                onClick={() => {
+                                                    this.props.history.push(`/courses/${i}`)
+                                                }}
+                                                elevation={2}
+                                            >
+                                                <div className={classes.pathItemContent}>
+                                                    <div className={classes.pathItemTitle}>
+                                                        {course.courseName}
+                                                    </div>
+                                                    <div className={classes.pathItemMeta}>
+                                                        <LibraryBooksIcon className={classes.metaIcon} />
+                                                        <span>{course.lessons?.length || 0} lessons</span>
+                                                    </div>
+                                                </div>
+                                                <ArrowForwardIcon className={classes.pathItemIcon} />
+                                            </Paper>
+                                            {i < this.coursePlans.length - 1 && (
+                                                <div className={classes.pathConnector} />
+                                            )}
+                                        </Fragment>
+                                    ))
                                     : this.coursePlans[this.props.courseNum].lessons.map((lesson, i) => {
+                                        const textbookUrl = this.getTextbookUrl(lesson);
+
                                         return (
-                                            <Grid item xs={12} sm={6} md={4} key={i}>
-    <center>
-      <Paper className={classes.paper} style={{ position: 'relative' }}>
-        {/* top-right “view all problems” button */}
-        <IconButton
-          size="small"
-          style={{ position: 'absolute', top: 8, right: 8 }}
-          aria-label={`View all problems for lesson ${lesson.id}`}
-          onClick={() => this.props.history.push(`/lessons/${lesson.id}/problems`)}
-        >
-          <MenuBookIcon fontSize="small" />
-        </IconButton>
-
-        <h2 style={{ marginTop: 5, marginBottom: 10 }}>
-          {lesson.name.replace(/##/g, "")}
-        </h2>
-        <h3 style={{ marginTop: 5 }}>{lesson.topics}</h3>
-
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={() => this.props.history.push(`/lessons/${lesson.id}`)}
-        >
-          {translate('lessonSelection.onlyselect')}
-        </Button>
-      </Paper>
-    </center>
-  </Grid>
-                                        )
+                                            <Fragment key={lesson.id}>
+                                                <Paper
+                                                    className={classes.pathItem}
+                                                    onClick={() => this.props.history.push(`/lessons/${lesson.id}`)}
+                                                    elevation={2}
+                                                >
+                                                    <div className={classes.pathItemContent}>
+                                                        <div className={classes.pathItemTitle}>
+                                                            {lesson.name.replace(/##/g, "")} - {lesson.topics}
+                                                        </div>
+                                                        <div className={classes.pathItemActions}>
+                                                            <IconButton
+                                                                className={classes. actionIconButton}
+                                                                size="small"
+                                                                aria-label="View all problems"
+                                                                title="View all problems"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    this.props.history.push(`/lessons/${lesson.id}/problems`);
+                                                                }}
+                                                            >
+                                                                <ListIcon className={classes.actionIcon} />
+                                                            </IconButton>
+                                                            <IconButton
+                                                                className={classes.actionIconButton}
+                                                                size="small"
+                                                                component="a"
+                                                                href={textbookUrl}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                aria-label="Learn from textbook"
+                                                                title="Learn from textbook"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                }}
+                                                            >
+                                                                <MenuBookIcon className={classes.actionIcon} />
+                                                            </IconButton>
+                                                        </div>
+                                                    </div>
+                                                    <div className={classes.rightActions}>
+                                                        <ArrowForwardIcon className={classes.pathItemIcon} />
+                                                    </div>
+                                                </Paper>
+                                                {i < this.coursePlans[this.props.courseNum].lessons.length - 1 && (
+                                                    <div className={classes.pathConnector} />
+                                                )}
+                                            </Fragment>
+                                        );
                                     })
                                 }
-                            </Grid>
+                            </div>
+
                             <Spacer/>
                         </Box>
                     </Grid>
                     <Spacer/>
                     <Grid container spacing={0}>
                         <Grid item xs={3} sm={3} md={5} key={1}/>
-                        {!this.isPrivileged && <Grid item xs={6} sm={6} md={2} key={2}>
+                        {! this.isPrivileged && <Grid item xs={6} sm={6} md={2} key={2}>
                             {this.state.preparedRemoveProgress ?
                                 <Button className={classes.button} style={{ width: "100%" }} size="small"
-                                    onClick={this.removeProgress}
-                                    disabled={this.state.removedProgress}>{this.state.removedProgress ? translate('lessonSelection.reset') : translate('lessonSelection.aresure')}</Button> :
+                                        onClick={this.removeProgress}
+                                        disabled={this.state.removedProgress}>{this.state.removedProgress ? translate('lessonSelection.reset') : translate('lessonSelection.aresure')}</Button> :
                                 <Button className={classes.button} style={{ width: "100%" }} size="small"
-                                    onClick={this.prepareRemoveProgress}
-                                    disabled={this.state.preparedRemoveProgress}>{translate('lessonSelection.resetprogress')}</Button>}
+                                        onClick={this.prepareRemoveProgress}
+                                        disabled={this.state.preparedRemoveProgress}>{translate('lessonSelection.resetprogress')}</Button>}
                         </Grid>}
                         <Grid item xs={3} sm={3} md={4} key={3}/>
                     </Grid>
@@ -189,7 +306,7 @@ class LessonSelection extends React.Component {
                         </div>
                         <div style={{ display: "flex", flexGrow: 1, marginRight: 20, justifyContent: "flex-end" }}>
                             <IconButton aria-label="about" title={`About ${SITE_NAME}`}
-                                onClick={this.togglePopup}>
+                                        onClick={this.togglePopup}>
                                 <HelpOutlineOutlinedIcon htmlColor={"#000"} style={{
                                     fontSize: 36,
                                     margin: -2
@@ -206,4 +323,4 @@ class LessonSelection extends React.Component {
     }
 }
 
-export default withStyles(styles)(withTranslation(LessonSelection));
+export default withStyles(customStyles)(withTranslation(LessonSelection));

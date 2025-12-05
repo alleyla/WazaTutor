@@ -9,7 +9,7 @@ import {
     AB_TEST_MODE
 } from "./config/config.js";
 
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "@components/NotFound.js";
 
 import {
@@ -42,6 +42,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
 import Dashboard from "./pages/Dashboard";
+import Lessons from "./pages/Lessons";
 import EnterWorksheetAnswers from './pages/EnterWorksheetAnswers';
 import GenerateWorksheet from './pages/GenerateWorksheet';
 import PrintWorksheet from './pages/PrintWorksheet';
@@ -198,6 +199,7 @@ class App extends React.Component {
         this.browserStorage = new BrowserStorage(this);
 
         this.saveProgress = this.saveProgress.bind(this);
+        this.reloadUserData = this.reloadUserData.bind(this);
     }
 
     generateSessionId() {
@@ -213,17 +215,55 @@ class App extends React.Component {
 
         // Load skill mastery from server if authenticated
         if (storageService.isAuthenticated()) {
+            // Update userID if it changed (e.g., after registration)
+            const currentUserId = storageService.getCurrentUserId();
+            if (currentUserId && currentUserId !== this.userID) {
+                console.log('🔄 [DEBUG] UserID changed, updating from', this.userID, 'to', currentUserId);
+                this.userID = currentUserId;
+            }
             console.log('🔍 [DEBUG] Loading skill mastery from server...');
             await this.loadSkillMasteryFromServer();
             console.log('🔍 [DEBUG] Server load complete');
             await this.restoreLastLesson();
         } else {
             console.log('⚠️ [DEBUG] Not authenticated - skipping server load');
+            this.setState({ serverDataReady: true });
         }
     }
 
     componentWillUnmount() {
         this.mounted = false;
+    }
+
+    /**
+     * Reload user data after authentication change
+     * Called after login/register to load server data without page reload
+     */
+    async reloadUserData() {
+        console.log('🔄 [RELOAD] Reloading user data...');
+
+        // Update user ID
+        const userId = storageService.getCurrentUserId();
+        if (userId) {
+            this.userID = userId;
+        }
+
+        // If authenticated, load from server
+        if (storageService.isAuthenticated()) {
+            this.setState({ serverDataReady: false }); // Show loading
+
+            await this.loadSkillMasteryFromServer();
+            await this.restoreLastLesson();
+
+            console.log('✅ [RELOAD] User data reloaded successfully');
+        } else {
+            // Reset to anonymous state
+            const anonymousId = generateRandomInt(). toString();
+            storageService.setAnonymousUserId(anonymousId);
+            this.userID = anonymousId;
+            this.bktParams = this.getTreatmentObject(treatmentMapping.bktParams);
+            this.setState({ serverDataReady: true });
+        }
     }
 
     /**
@@ -514,6 +554,7 @@ class App extends React.Component {
                         ...this.state.additionalContext,
                         sessionId: this.state.sessionId,
                         browserStorage: this.browserStorage,
+                        reloadUserData: this.reloadUserData,
                     }}
                 >
                 <LocalizationProvider>
@@ -521,10 +562,21 @@ class App extends React.Component {
                         <Router>
                             <div className="Router">
                                 <Switch>
-                                    <ProtectedRoute
+                                    <Route
                                         exact
                                         path="/"
-                                        component={Platform}
+                                        render={() => {
+                                            if (storageService.isAuthenticated()) {
+                                                return <Redirect to="/dashboard" />;
+                                            }
+                                            return <Redirect to="/register" />;
+                                        }}
+                                    />
+                                    {/* Lessons page route */}
+                                    <ProtectedRoute
+                                        exact
+                                        path="/lessons"
+                                        component={Lessons}
                                     />
                                     <Route
                                         path="/courses/:courseNum"

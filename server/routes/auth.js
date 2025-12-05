@@ -25,9 +25,23 @@ router.post('/register', authLimiter, validate(registerSchema), async (req, res)
         // Create new user
         const newUser = await User.create(name, email, password_hash);
 
+        // Generate token
+        const payload = {
+            user: {
+                id: newUser.id,
+            },
+        };
+        const token = generateToken(payload);
+
+        // Return token with response
         res.status(201).json({
             message: 'User registered successfully.',
-            user: newUser,
+            token,
+            user: {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email
+            },
         });
     } catch (error) {
         console.error('Registration error:', error);
