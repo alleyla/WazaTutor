@@ -358,7 +358,7 @@ class ProgressService {
     /**
      * Save lesson progress to server
      */
-    async saveLessonProgress(lessonId, completedProblems, totalProblems, completionPercentage, lastProblemId) {
+    async saveLessonProgress(lessonId, completedProblems, lastProblemId) {
         if (!storageService.isAuthenticated()) {
             return { success: false, reason: 'not_authenticated' };
         }
@@ -371,8 +371,6 @@ class ProgressService {
                 {
                     lessonId,
                     completedProblems,
-                    totalProblems,
-                    completionPercentage,
                     lastProblemId
                 },
                 {

@@ -17,7 +17,6 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import TimerIcon from '@material-ui/icons/Timer';
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -26,7 +25,10 @@ import BrandLogoNav from '../components/BrandLogoNav';
 import storageService from '../services/storageService';
 import worksheetService from '../services/worksheetService';
 import PendingWorksheetModal from '../components/worksheets/PendingWorksheetModal';
-
+import lessonService from '../services/lessonService';
+import withTranslation from '../util/withTranslation';
+import SchoolIcon from '@material-ui/icons/School';
+import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -114,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     timeRangeButtonActive: {
-        backgroundColor: theme. palette.primary.main,
+        backgroundColor: theme.palette.primary.main,
         color: theme.palette.primary.contrastText,
         '&:hover': {
             backgroundColor: theme.palette.primary.dark,
@@ -123,17 +125,24 @@ const useStyles = makeStyles((theme) => ({
     neonProgressBar: {
         backgroundColor: '#00f0ff ! important',
     },
+    worksheetButton: {
+        backgroundColor: '#ff9800 !important',
+        color: 'white',
+        '&:hover': {
+            backgroundColor: '#ffb74d !important',
+            color: 'white',
+        },
+    },
 }));
 
-export default function Dashboard() {
-    const classes = useStyles();
+function Dashboard({ translate }) {    const classes = useStyles();
     const history = useHistory();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [timeRange, setTimeRange] = useState(7);
     const [error, setError] = useState(null);
     const [showWorksheetModal, setShowWorksheetModal] = useState(false);
-    const [pendingWorksheet, setPendingWorksheet] = useState(null);
+    const [setPendingWorksheet] = useState(null);
     // Track if the modal has been dismissed during this session
     const modalDismissedRef = useRef(false);
     // Get user name from storage
@@ -151,20 +160,19 @@ export default function Dashboard() {
     // Extract current lesson data from dashboardData
     const currentLesson = dashboardData?.currentLesson;
     const currentLessonWorksheet = dashboardData?.pendingWorksheet;
+    // Get actual lesson details from lesson config
+    const lesson = currentLesson ?  lessonService.getLessonById(currentLesson.lessonId) : null;
 
     // Calculate completion percentage and worksheet progress
-    const completionPercentage = currentLesson?.completionPercentage || 0;
     const worksheetProgress = currentLessonWorksheet
         ? (currentLessonWorksheet.problems_checked / currentLessonWorksheet.total_problems) * 100
         : 0;
 
-    // You'll need to get lesson details (name, topics) from your lesson data
-    // This depends on how you're loading lesson metadata
-    const lesson = currentLesson ?  {
-        id: currentLesson.lessonId,
-        name: 'Lesson Name', // You'll need to look this up from your lesson data
-        topics: 'Lesson Topics' // You'll need to look this up from your lesson data
-    } : null;
+    const totalProblems = currentLesson ? lessonService.getTotalProblemsForLesson(currentLesson.lessonId) : 0;
+    const completedProblemsCount = currentLesson?completedProblems?.length || 0;
+    const completionPercentage = currentLesson
+        ? lessonService.calculateCompletionPercentage(currentLesson.completedProblems, currentLesson.lessonId)
+        : 0;
 
     const checkPendingWorksheet = async () => {
         try {
@@ -184,7 +192,10 @@ export default function Dashboard() {
         
         try {
             const data = await progressService.getUserStats(timeRange, 1, 0.95);
+
             setDashboardData(data);
+            console.log('📊 Dashboard data:', data);
+            console.log('📝 Pending worksheet:', data?pendingWorksheet);
 
         } catch (err) {
             setError('Failed to load dashboard');
@@ -195,8 +206,8 @@ export default function Dashboard() {
     };
 
     const handleEnterWorksheetAnswers = () => {
-        if (pendingWorksheet) {
-            history.push(`/worksheets/${pendingWorksheet.id}/enter-answers`);
+        if (currentLessonWorksheet) {
+            history.push(`/worksheets/${currentLessonWorksheet.id}/enter-answers`);
         }
     };
 
@@ -327,14 +338,17 @@ export default function Dashboard() {
                     {/* LEFT COLUMN - Continue Learning */}
                     <Grid item xs={12} md={6}>
                         <Paper elevation={0} style={{ padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center'}} >
-                            <Typography variant="h5" gutterBottom>
-                                You Are Currently Learning
-                            </Typography>
+                            <Box display="flex" alignItems="center" gap={1} mb={2}>
+                                <SchoolIcon style={{ color: '#073755', fontSize: '2rem', marginRight: 8 }} />
+                                <Typography variant="h5" style={{ textAlign: 'center' }}>
+                                    Your Current Lesson
+                                </Typography>
+                            </Box>
 
                             {currentLesson && lesson ? (
                                 <>
                                     {/* Current Lesson Info */}
-                                    <Box mt={3} maxWidth={400} minWidth={400}>
+                                    <Box mt={3} maxWidth={400} minWidth={400} style={{ textAlign: 'center' }}>
                                         <Typography variant="h6" color="primary">
                                             {lesson.name}
                                         </Typography>
@@ -347,12 +361,95 @@ export default function Dashboard() {
                                                 variant="determinate"
                                                 value={completionPercentage}
                                                 style={{ height: 24, borderRadius: 10 }}
+                                                classes={{
+                                                    bar: classes.neonProgressBar
+                                                }}
                                             />
                                         </Box>
 
                                         <Typography variant="body2" color="textSecondary" gutterBottom>
-                                            {currentLesson.completedProblems?. length || 0} of {currentLesson.totalProblems} problems completed ({completionPercentage.toFixed(0)}%)
+                                            {completedProblemsCount} of {totalProblems} problems completed ({completionPercentage.toFixed(0)}%)
                                         </Typography>
+
+                                        <>
+                                            {/* Mastery Progress Cards */}
+                                            <Box mt={4} maxWidth={400} minWidth={400}>
+                                                <Typography variant="subtitle1" color="textPrimary" gutterBottom style={{ textAlign: 'center' }}>
+                                                    Skill Mastery Progress
+                                                </Typography>
+
+                                                <Grid container spacing={2} style={{ marginTop: 8 }}>
+                                                    {lesson.learningObjectives && Object.entries(lesson.learningObjectives).map(([skillName, threshold]) => {
+                                                        // Get mastery from dashboardData or calculate from BKT params
+                                                        const skillMastery = dashboardData?.skillMasteryByName?.[skillName] || 0;
+                                                        const masteryPercent = Math.round(skillMastery * 100);
+
+                                                        return (
+                                                            <Grid item xs={4} key={skillName}>
+                                                                <Card
+                                                                    elevation={2}
+                                                                    style={{
+                                                                        padding: 10,
+                                                                        textAlign: 'center',
+                                                                        minHeight: 100,
+                                                                        display: 'flex',
+                                                                        flexDirection: 'column',
+                                                                        justifyContent: 'center'
+                                                                    }}
+                                                                >
+                                                                    <Typography
+                                                                        variant="caption"
+                                                                        color="textSecondary"
+                                                                        style={{
+                                                                            fontSize: '0.7rem',
+                                                                            marginBottom: 8,
+                                                                            fontWeight: 500
+                                                                        }}
+                                                                    >
+                                                                        {lessonService.getSkillDisplayName(skillName, translate)}
+                                                                    </Typography>
+
+                                                                    <Box position="relative" display="inline-flex" justifyContent="center">
+                                                                        <CircularProgress
+                                                                            variant="determinate"
+                                                                            value={masteryPercent}
+                                                                            size={60}
+                                                                            thickness={5}
+                                                                            style={{
+                                                                                color: masteryPercent >= 95 ? '#28A745' :
+                                                                                    masteryPercent >= 70 ? '#00f0ff' :
+                                                                                        '#ff9800'
+                                                                            }}
+                                                                        />
+                                                                        <Box
+                                                                            top={0}
+                                                                            left={0}
+                                                                            bottom={0}
+                                                                            right={0}
+                                                                            position="absolute"
+                                                                            display="flex"
+                                                                            alignItems="center"
+                                                                            justifyContent="center"
+                                                                        >
+                                                                            <Typography
+                                                                                variant="caption"
+                                                                                component="div"
+                                                                                style={{
+                                                                                    fontWeight: 'bold',
+                                                                                    fontSize: '0.9rem'
+                                                                                }}
+                                                                            >
+                                                                                {masteryPercent}%
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    </Box>
+                                                                </Card>
+                                                            </Grid>
+                                                        );
+                                                    })}
+                                                </Grid>
+                                            </Box>
+                                        </>
 
                                         <Box mt={2}>
                                             <Button
@@ -372,25 +469,36 @@ export default function Dashboard() {
                                     <Typography variant="body1" color="textSecondary">
                                         No active lesson.  Start a new lesson to begin learning!
                                     </Typography>
+                                    <Box mt={2}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            fullWidth
+                                            onClick={() => history.push(`/lessons/`)}
+                                        >
+                                            Start Learning
+                                        </Button>
+                                    </Box>
                                 </Box>
                             )}
 
                             {/* Divider for Pending Worksheet */}
                             {currentLessonWorksheet && (
                                 <>
-                                    <Box mt={3} maxWidth={400} minWidth={400}>
+                                    <Box mt={3} maxWidth={400} minWidth={400} style={{ textAlign: 'center' }}>
                                         <hr style={{
                                             border: 'none',
                                             borderTop: '2px dashed #ccc',
-                                            margin: '24px 0'
+                                            margin: '14px 0'
                                         }} />
                                     </Box>
 
                                     {/* Pending Worksheet Info */}
-                                    <Box mt={3} maxWidth={400} minWidth={400}>
-                                        <Box display="flex" alignItems="center" mb={1}>
+                                    <Box mt={3} maxWidth={400} minWidth={400} style={{ textAlign: 'center' }}>
+                                        <Box display="flex"calignItems="center" justifyContent="center" >
                                             <AssignmentIcon style={{ color: '#ff9800', marginRight: 8 }} />
-                                            <Typography variant="h6" style={{ color: '#ff9800' }}>
+                                            <Typography variant="h6" style={{ color: '#ff9800', textAlign: 'center' }}>
                                                 You Have a Pending Worksheet
                                             </Typography>
                                         </Box>
@@ -414,7 +522,7 @@ export default function Dashboard() {
                                         </Box>
 
                                         <Typography variant="body2" color="textSecondary" gutterBottom>
-                                            {currentLessonWorksheet.problems_checked} of {currentLessonWorksheet. total_problems} answers entered ({worksheetProgress.toFixed(0)}%)
+                                            {currentLessonWorksheet.problems_checked} of {currentLessonWorksheet.total_problems} answers entered ({worksheetProgress.toFixed(0)}%)
                                         </Typography>
 
                                         <Box mt={2}>
@@ -422,10 +530,7 @@ export default function Dashboard() {
                                                 variant="contained"
                                                 size="large"
                                                 fullWidth
-                                                style={{
-                                                    backgroundColor: '#ff9800',
-                                                    color: 'white'
-                                                }}
+                                                className={classes.worksheetButton}
                                                 onClick={() => history.push(`/worksheets/${currentLessonWorksheet.id}/enter-answers`)}
                                             >
                                                 Enter Worksheet Answers
@@ -440,9 +545,12 @@ export default function Dashboard() {
                     {/* RIGHT COLUMN - Your Progress */}
                     <Grid xs={12} md={6}>
                       <Paper elevation={5} style={{ padding: 14, textAlign: 'center' }}>
-                        <Typography variant="h5" >
-                            Your Achievements
-                        </Typography>
+                          <Box display="flex" alignItems="center" justifyContent="center" gap={1} mb={1}>
+                              <EmojiEventsIcon style={{ color: '#FFD700', fontSize: '2rem' }} />
+                              <Typography variant="h5">
+                                  Your Achievements
+                              </Typography>
+                          </Box>
                         {/* Motivational Message */}
                         {dashboardData.practiceStreak.currentStreak > 0 && (
                             <Paper style={{ marginTop: 10, padding: 10, textAlign: 'center' }}>
@@ -590,10 +698,12 @@ export default function Dashboard() {
             {/* Pending Worksheet Modal */}
             <PendingWorksheetModal
                 open={showWorksheetModal}
-                worksheet={pendingWorksheet}
+                worksheet={currentLessonWorksheet}
                 onEnterAnswers={handleEnterWorksheetAnswers}
                 onDismiss={handleDismissWorksheetModal}
             />
         </div>
     );
 }
+
+export default withTranslation(Dashboard);

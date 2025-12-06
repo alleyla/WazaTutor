@@ -225,13 +225,13 @@ router.get('/current-lesson', auth, async (req, res) => {
 });
 
 /**
- * Save/Update lesson progress (completed problems, completion %)
+ * Save/Update lesson progress (completed problems)
  * POST /api/progress/lesson
- * Body: { lessonId, completedProblems, totalProblems, completionPercentage, lastProblemId }
+ * Body: { lessonId, completedProblems, lastProblemId }
  */
 router.post('/lesson', auth, async (req, res) => {
     const userId = req.user.id;
-    const { lessonId, completedProblems, totalProblems, completionPercentage, lastProblemId } = req.body;
+    const { lessonId, completedProblems, lastProblemId } = req.body;
 
     if (!lessonId || typeof lessonId !== 'string') {
         return res.status(400).json({ error: 'Valid lessonId is required' });
@@ -244,23 +244,19 @@ router.post('/lesson', auth, async (req, res) => {
     // Sanitize inputs
     const sanitizedLessonId = lessonId.substring(0, 255);
     const sanitizedProblems = completedProblems.slice(0, 1000).map(p => String(p).substring(0, 255));
-    const validatedTotalProblems = validateInteger(totalProblems, 0, 0, 10000);
-    const validatedCompletion = validateFloat(completionPercentage, 0, 0, 100);
     const sanitizedLastProblemId = lastProblemId ? String(lastProblemId).substring(0, 255) : null;
 
     try {
         await pool.query(`
             INSERT INTO user_lesson_progress 
-                (user_id, lesson_id, completed_problems, total_problems, completion_percentage, last_problem_id, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, NOW())
+                (user_id, lesson_id, completed_problems, last_problem_id, updated_at)
+            VALUES ($1, $2, $3, $4, NOW())
             ON CONFLICT (user_id, lesson_id)
             DO UPDATE SET
                 completed_problems = EXCLUDED.completed_problems,
-                total_problems = EXCLUDED.total_problems,
-                completion_percentage = EXCLUDED.completion_percentage,
                 last_problem_id = EXCLUDED.last_problem_id,
                 updated_at = NOW()
-        `, [userId, sanitizedLessonId, sanitizedProblems, validatedTotalProblems, validatedCompletion, sanitizedLastProblemId]);
+        `, [userId, sanitizedLessonId, sanitizedProblems, sanitizedLastProblemId]);
 
         res.json({ success: true, message: 'Lesson progress updated' });
     } catch (error) {
@@ -279,7 +275,7 @@ router.get('/lesson/:lessonId', auth, async (req, res) => {
 
     try {
         const result = await pool.query(
-            `SELECT lesson_id, completed_problems, total_problems, completion_percentage, 
+            `SELECT lesson_id, completed_problems, 
                     last_problem_id, started_at, updated_at
              FROM user_lesson_progress 
              WHERE user_id = $1 AND lesson_id = $2`,
@@ -309,7 +305,7 @@ router.get('/lessons', auth, async (req, res) => {
 
     try {
         const result = await pool.query(
-            `SELECT lesson_id, completed_problems, total_problems, completion_percentage,
+            `SELECT lesson_id, completed_problems,
                     last_problem_id, started_at, updated_at
              FROM user_lesson_progress
              WHERE user_id = $1
@@ -539,14 +535,12 @@ router.get('/stats', auth, async (req, res) => {
             WHERE break_group = 0 AND met_threshold = true
         `, [userId, streakMinProblems]);
 
-        // ===== NEW: Get current lesson information =====
+        // ===== Get current lesson information =====
         const currentLessonResult = await pool.query(`
             SELECT 
                 ucl.lesson_id,
                 ulp.completed_problems,
-                ulp.total_problems,
-                ulp.completion_percentage,
-                ulp. last_problem_id,
+                ulp.last_problem_id,
                 ulp.updated_at
             FROM user_current_lesson ucl
             LEFT JOIN user_lesson_progress ulp 
@@ -554,7 +548,25 @@ router.get('/stats', auth, async (req, res) => {
             WHERE ucl.user_id = $1
         `, [userId]);
 
-        // ===== NEW: Get pending worksheet for current lesson =====
+        // Get skill mastery for current lesson
+        let skillMasteryByName = {};
+        if (currentLessonResult. rows.length > 0) {
+            const lessonId = currentLessonResult.rows[0].lesson_id;
+
+            // You'd need to know which skills belong to this lesson
+            // For now, get all skills and filter on frontend
+            const skillsResult = await pool.query(`
+                SELECT skill_name, prob_mastery
+                FROM user_skill_mastery
+                WHERE user_id = $1
+            `, [userId]);
+
+            skillsResult.rows.forEach(row => {
+                skillMasteryByName[row. skill_name] = parseFloat(row.prob_mastery);
+            });
+        }
+
+        // ===== Get pending worksheet for current lesson =====
         let pendingWorksheet = null;
         if (currentLessonResult.rows.length > 0) {
             const lessonId = currentLessonResult.rows[0].lesson_id;
@@ -601,13 +613,11 @@ router.get('/stats', auth, async (req, res) => {
                 currentLesson: currentLessonResult.rows.length > 0 ? {
                     lessonId: currentLessonResult.rows[0].lesson_id,
                     completedProblems: currentLessonResult.rows[0].completed_problems || [],
-                    totalProblems: currentLessonResult.rows[0].total_problems || 0,
-                    completionPercentage: parseFloat(currentLessonResult.rows[0].completion_percentage) || 0,
                     lastProblemId: currentLessonResult.rows[0].last_problem_id,
                     updatedAt: currentLessonResult.rows[0].updated_at
                 } : null,
-                // ===== NEW: Pending worksheet for current lesson =====
-                pendingWorksheet: pendingWorksheet
+                pendingWorksheet: pendingWorksheet,
+                skillMasteryByName: skillMasteryByName
             }
         });
     } catch (error) {

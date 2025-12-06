@@ -111,8 +111,6 @@ CREATE TABLE user_lesson_progress (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     lesson_id VARCHAR(255) NOT NULL,
     completed_problems TEXT[], -- Array of completed problem IDs
-    total_problems INTEGER DEFAULT 0,
-    completion_percentage DECIMAL(5,2) DEFAULT 0.00,
     last_problem_id VARCHAR(255),
     started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

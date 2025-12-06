@@ -63,7 +63,7 @@ router.post('/login', authLimiter, validate(loginSchema), async (req, res) => {
         const user = await User.findByEmail(email);
 
         if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials:email.' });
+            return res.status(401).json({ message: 'Invalid email or password: user not found.' });
         }
 
         // Check password

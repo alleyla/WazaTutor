@@ -309,15 +309,9 @@ class Platform extends React.Component {
 
         if (this.lesson && this.completedProbs.size > 0) {
             const problemsArray = Array.from(this.completedProbs);
-            const totalProblems = this.lesson.learningObjectives ?
-                Object.keys(this.lesson.learningObjectives).length : 0;
-            const completionPercentage = totalProblems > 0 ?
-                (problemsArray.length / totalProblems) * 100 : 0;
 
             this.saveLessonProgress(
                 problemsArray,
-                totalProblems,
-                completionPercentage,
                 this.state.currProblem?.id
             ).catch(err => {
                 console.error('Failed to save lesson progress:', err);
@@ -444,15 +438,9 @@ class Platform extends React.Component {
 
         if (this.lesson) {
             const problemsArray = Array.from(this.completedProbs);
-            const totalProblems = this.lesson.learningObjectives ?
-                Object.keys(this.lesson.learningObjectives).length : 0;
-            const completionPercentage = totalProblems > 0 ?
-                (problemsArray.length / totalProblems) * 100 : 0;
 
             await this.saveLessonProgress(
                 problemsArray,
-                totalProblems,
-                completionPercentage,
                 this.state.currProblem.id
             ).catch(err => {
                 console.error('Failed to save lesson progress:', err);
@@ -515,15 +503,13 @@ class Platform extends React.Component {
     /**
      * Save lesson progress to both localStorage and server
      */
-    saveLessonProgress = async (completedProblems, totalProblems, completionPercentage, lastProblemId) => {
+    saveLessonProgress = async (completedProblems, lastProblemId) => {
         if (!this.lesson) return;
 
         const lessonId = this.lesson.id;
 
         const progressData = {
             completedProblems,
-            totalProblems,
-            completionPercentage,
             lastProblemId,
             updatedAt: new Date().toISOString()
         };
@@ -536,8 +522,6 @@ class Platform extends React.Component {
             await progressService.saveLessonProgress(
                 lessonId,
                 completedProblems,
-                totalProblems,
-                completionPercentage,
                 lastProblemId
             ).catch(err => {
                 console.error('Failed to sync lesson progress to server:', err);

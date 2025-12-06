@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             opacity: 0.8,
         },
+        marginRight: theme.spacing(1),
     },
     logoImage: {
         height: 45,
@@ -64,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
             color: '#00F0FF',
         },
         padding: theme.spacing(2),
-        marginLeft: theme.spacing(1),
     },
     rightSection: {
         display: 'flex',
@@ -109,7 +109,7 @@ function BrandLogoNav({ isPrivileged = false, noLink = false }) {
     const handleLogout = () => {
         storageService.clearAuthUser();
         toast.success('Logged out successfully');
-        history. push('/login');
+        history.push('/login');
     };
 
     // If noLink or LMS student mode, show simple brand without full navigation
@@ -131,7 +131,7 @@ function BrandLogoNav({ isPrivileged = false, noLink = false }) {
                     tabIndex={0}
                     onClick={handleLogoClick}
                     onKeyDown={handleLogoClick}
-                    className={classes. logo}
+                    className={classes.logo}
                 >
                     <img
                         src={`${process.env.PUBLIC_URL}/static/images/logo.png`}
@@ -165,7 +165,7 @@ function BrandLogoNav({ isPrivileged = false, noLink = false }) {
             </Box>
 
             {/* Right Section: Auth Actions */}
-            <Box className={classes. rightSection}>
+            <Box className={classes.rightSection}>
                 {isAuthenticated ? (
                     <>
                         <IconButton
