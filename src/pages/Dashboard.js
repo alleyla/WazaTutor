@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import progressService from '../services/progressService';
 import { 
     Card, 
@@ -16,7 +16,6 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import TimerIcon from '@material-ui/icons/Timer';
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -120,36 +119,48 @@ export default function Dashboard() {
     const [showWorksheetModal, setShowWorksheetModal] = useState(false);
     const [pendingWorksheet, setPendingWorksheet] = useState(null);
 
+    // Track if the modal has been dismissed in the current session
+    const modalDismissedRef = useRef(false);
+
     // Get user name from storage
     const userName = storageService.getAuthUserName() || 'Learner';
 
+    const checkPendingWorksheet = useCallback(async () => {
+        try {
+            const pending = await worksheetService.checkPendingWorksheet();
+            if (pending && !modalDismissedRef.current) {
+                setPendingWorksheet(pending);
+                setShowWorksheetModal(true);
+            }
+        } catch (err) {
+            console.error('Failed to check pending worksheet:', err);
+        }
+    }, []);
 
-    useEffect(() => {
-        loadDashboard();
-    }, [timeRange]);
-
-    const loadDashboard = async () => {
+    const loadDashboard = useCallback(async () => {
         setLoading(true);
         setError(null);
         
         try {
             const data = await progressService.getUserStats(timeRange, 1, 0.95);
             setDashboardData(data);
-
-            // Check for pending worksheet after dashboard loads
-            // Check for pending worksheet after dashboard loads
-            const pending = await worksheetService.checkPendingWorksheet();
-            if (pending) {
-                setPendingWorksheet(pending);
-                setShowWorksheetModal(true);
-            }
         } catch (err) {
             setError('Failed to load dashboard');
             console.error(err);
         } finally {
             setLoading(false);
         }
-    };
+    }, [timeRange]);
+
+    // Check for pending worksheet only on initial mount
+    useEffect(() => {
+        checkPendingWorksheet();
+    }, [checkPendingWorksheet]);
+
+    // Load dashboard data when timeRange changes
+    useEffect(() => {
+        loadDashboard();
+    }, [loadDashboard]);
 
     const handleEnterWorksheetAnswers = () => {
         if (pendingWorksheet) {
@@ -160,6 +171,7 @@ export default function Dashboard() {
     const handleDismissWorksheetModal = () => {
         setShowWorksheetModal(false);
         setPendingWorksheet(null);
+        modalDismissedRef.current = true;
     };
 
     const getStreakEmoji = (streak) => {
@@ -233,7 +245,7 @@ export default function Dashboard() {
                         <BrandLogoNav />
                     </Toolbar>
                 </AppBar>
-                <Box className={classes. welcomeSection}>
+                <Box className={classes.welcomeSection}>
                     <Container maxWidth="lg">
                         <Typography className={classes.welcomeText}>
                             Welcome, {userName}!
@@ -269,7 +281,7 @@ export default function Dashboard() {
                     <BrandLogoNav />
                 </Toolbar>
             </AppBar>
-            <Box className={classes. welcomeSection}>
+            <Box className={classes.welcomeSection}>
                 <Container maxWidth="lg">
                     <Typography className={classes.welcomeText}>
                         Welcome, {userName}!
