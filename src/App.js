@@ -49,6 +49,7 @@ import PrintWorksheet from './pages/PrintWorksheet';
 import PrintAnswerKey from './pages/PrintAnswerKey';
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
+import AboutButton from './components/AboutButton';
 
 // ### BEGIN CUSTOMIZABLE IMPORTS ###
 import config from "./config/firebaseConfig.js";
@@ -878,6 +879,8 @@ class App extends React.Component {
                         />
                     </GlobalErrorBoundary>
                     </LocalizationProvider>
+                    {/* Global About Button - appears on all pages */}
+                    <AboutButton />
                 </ThemeContext.Provider>
             </ThemeProvider>
         );

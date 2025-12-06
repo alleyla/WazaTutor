@@ -339,6 +339,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
                                 <Typography variant="h5" style={{ textAlign: 'center' }}>
                                     Your Current Lesson
                                 </Typography>
+                                <SchoolIcon style={{ color: '#073755', fontSize: '2rem', marginLeft: 8 }} />
                             </Box>
 
                             {currentLesson && lesson ? (
@@ -546,6 +547,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
                               <Typography variant="h5">
                                   Your Achievements
                               </Typography>
+                              <EmojiEventsIcon style={{ color: '#FFD700', fontSize: '2rem' , marginLeft: 8}} />
                           </Box>
                         {/* Motivational Message */}
                         {dashboardData.practiceStreak.currentStreak > 0 && (

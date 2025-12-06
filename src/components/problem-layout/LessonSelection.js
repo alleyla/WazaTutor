@@ -34,7 +34,7 @@ const customStyles = (theme) => ({
             display: 'flex',
             flexDirection: 'column',
             gap: theme.spacing(0),
-            maxWidth: 800,
+            maxWidth: 600,
             margin: '0 auto',
         },
         pathItem: {
@@ -328,7 +328,7 @@ class LessonSelection extends React.Component {
                         </Box>
                     </Grid>
                     <Spacer/>
-                    {IS_STAGING_OR_DEVELOPMENT && (
+                    {IS_STAGING_OR_DEVELOPMENT && selectionMode !== "course" &&(
                         <>
                             <Grid container spacing={0}>
                                 <Grid item xs={3} sm={3} md={5} key={1}/>
