@@ -142,16 +142,17 @@ function Dashboard({ translate }) {    const classes = useStyles();
     const [timeRange, setTimeRange] = useState(7);
     const [error, setError] = useState(null);
     const [showWorksheetModal, setShowWorksheetModal] = useState(false);
-    const [setPendingWorksheet] = useState(null);
+    //const [setPendingWorksheet] = useState(null);
     // Track if the modal has been dismissed during this session
     const modalDismissedRef = useRef(false);
     // Get user name from storage
     const userName = storageService.getAuthUserName() || 'Learner';
 
-    // Check for pending worksheet only on initial mount
     useEffect(() => {
-        checkPendingWorksheet();
-    }, []); // Empty dependency array - runs once on mount
+        if (dashboardData) {
+            checkPendingWorksheet();
+        }
+    }, [dashboardData]); // Trigger when dashboardData changes
 
     useEffect(() => {
         loadDashboard();
@@ -169,20 +170,16 @@ function Dashboard({ translate }) {    const classes = useStyles();
         : 0;
 
     const totalProblems = currentLesson ? lessonService.getTotalProblemsForLesson(currentLesson.lessonId) : 0;
-    const completedProblemsCount = currentLesson?completedProblems?.length || 0;
+    const completedProblemsCount = currentLesson?.completedProblems?.length || 0;
     const completionPercentage = currentLesson
         ? lessonService.calculateCompletionPercentage(currentLesson.completedProblems, currentLesson.lessonId)
         : 0;
 
-    const checkPendingWorksheet = async () => {
-        try {
-            const pending = await worksheetService.checkPendingWorksheet();
-            if (pending && !modalDismissedRef.current) {
-                setPendingWorksheet(pending);
-                setShowWorksheetModal(true);
-            }
-        } catch (err) {
-            console.error('Failed to check pending worksheet:', err);
+    // Update checkPendingWorksheet to use data from dashboardData (lines 177-187):
+    const checkPendingWorksheet = () => {
+        // Only show modal if there's a worksheet and it hasn't been dismissed
+        if (currentLessonWorksheet && !modalDismissedRef.current) {
+            setShowWorksheetModal(true);
         }
     };
 
@@ -195,7 +192,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
 
             setDashboardData(data);
             console.log('📊 Dashboard data:', data);
-            console.log('📝 Pending worksheet:', data?pendingWorksheet);
+            console.log('📝 Pending worksheet:', data?. pendingWorksheet);
 
         } catch (err) {
             setError('Failed to load dashboard');
@@ -213,7 +210,6 @@ function Dashboard({ translate }) {    const classes = useStyles();
 
     const handleDismissWorksheetModal = () => {
         setShowWorksheetModal(false);
-        setPendingWorksheet(null);
         // Mark the modal as dismissed for this session
         modalDismissedRef.current = true;
     };
@@ -350,7 +346,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
                                     {/* Current Lesson Info */}
                                     <Box mt={3} maxWidth={400} minWidth={400} style={{ textAlign: 'center' }}>
                                         <Typography variant="h6" color="primary">
-                                            {lesson.name}
+                                            {lesson.courseName} - {lesson.name}
                                         </Typography>
                                         <Typography variant="body2" color="textSecondary" gutterBottom>
                                             {lesson.topics}
@@ -496,7 +492,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
 
                                     {/* Pending Worksheet Info */}
                                     <Box mt={3} maxWidth={400} minWidth={400} style={{ textAlign: 'center' }}>
-                                        <Box display="flex"calignItems="center" justifyContent="center" >
+                                        <Box display="flex" alignItems="center" justifyContent="center" >
                                             <AssignmentIcon style={{ color: '#ff9800', marginRight: 8 }} />
                                             <Typography variant="h6" style={{ color: '#ff9800', textAlign: 'center' }}>
                                                 You Have a Pending Worksheet
@@ -546,14 +542,14 @@ function Dashboard({ translate }) {    const classes = useStyles();
                     <Grid xs={12} md={6}>
                       <Paper elevation={5} style={{ padding: 14, textAlign: 'center' }}>
                           <Box display="flex" alignItems="center" justifyContent="center" gap={1} mb={1}>
-                              <EmojiEventsIcon style={{ color: '#FFD700', fontSize: '2rem' }} />
+                              <EmojiEventsIcon style={{ color: '#FFD700', fontSize: '2rem' , marginRight: 8}} />
                               <Typography variant="h5">
                                   Your Achievements
                               </Typography>
                           </Box>
                         {/* Motivational Message */}
                         {dashboardData.practiceStreak.currentStreak > 0 && (
-                            <Paper style={{ marginTop: 10, padding: 10, textAlign: 'center' }}>
+                            <Paper style={{ marginTop: 20, padding: 10, textAlign: 'center' }}>
                                 <Typography variant="h6" color="primary">
                                     🎉 Keep up the great work! 🎉
                                 </Typography>

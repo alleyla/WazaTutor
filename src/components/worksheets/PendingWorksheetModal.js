@@ -54,14 +54,15 @@ const PendingWorksheetModal = ({ open, worksheet, onEnterAnswers, onDismiss }) =
                     </>
                 )}
             </DialogContent>
-            <DialogActions style={{ padding: '16px 24px', justifyContent: 'center' }}>
-                <Button onClick={onDismiss} color="default">
-                    No, Go to Dashboard
+            <DialogActions style={{ padding: '24px', justifyContent: 'center' }}>
+                <Button onClick={onDismiss} color="default" style={{ padding: '10px', justifyContent: 'center' }}>
+                    Not Now
                 </Button>
                 <Button
                     onClick={onEnterAnswers}
                     color="primary"
                     variant="contained"
+                    style={{ padding: '10px', justifyContent: 'center' }}
                     autoFocus
                 >
                     Yes, Enter Answers
