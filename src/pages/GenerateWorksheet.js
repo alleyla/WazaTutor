@@ -9,7 +9,10 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    AppBar,
+    Toolbar,
+    Divider
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import PrintIcon from '@material-ui/icons/Print';
@@ -19,6 +22,9 @@ import { ThemeContext } from '../config/config';
 import { WORKSHEET_CONFIG } from '../config/config';
 import { toast } from 'react-toastify';
 import { findLessonById } from '../config/config';
+import PrintableWorksheet from '../components/worksheets/PrintableWorksheet';
+import PrintableAnswerKey from '../components/worksheets/PrintableAnswerKey';
+import BrandLogoNav from '@components/BrandLogoNav';
 
 const styles = (theme) => ({
     container: {
@@ -53,7 +59,29 @@ const styles = (theme) => ({
     centerContent: {
         textAlign: 'center',
         marginBottom: theme.spacing(3)
-    }
+    },
+    printOnly: {
+        display: 'none',
+        '@media print': {
+            display: 'block'
+        }
+    },
+    noPrint: {
+        '@media print': {
+            display: 'none'
+        }
+    },
+    pageHeader: {
+        padding: theme.spacing(4, 3, 3, 3),
+        backgroundColor: theme.palette.background.paper,
+        borderBottom: `1px solid ${theme.palette.divider}`,
+    },
+    pageTitle: {
+        fontSize: '1.75rem',
+        fontWeight: 500,
+        color: theme.palette.text.primary,
+        textAlign: 'center',
+    },
 });
 
 class GenerateWorksheet extends Component {
@@ -69,6 +97,8 @@ class GenerateWorksheet extends Component {
             generating: false,
             generatedWorksheet: null,
             error: null,
+            problemsData: [],
+            printMode: null,
             loading: true  // loading state
         };
 
@@ -129,10 +159,26 @@ class GenerateWorksheet extends Component {
                 return;
             }
 
-            //toast.success('Worksheet generated successfully!');
+            // Map problems with full data for printing
+            const problemsData = (result.worksheet && result.worksheet.problems && this.problemIndex)
+                ? result.worksheet.problems.map(worksheetProblem => {
+                    const fullProblem = this.problemIndex.problems.find(
+                        p => p.id === worksheetProblem.problem_id
+                    );
+
+                    return {
+                        ...worksheetProblem,
+                        problemData: fullProblem || null,
+                        seed: `worksheet-${result.worksheet.id}-${worksheetProblem.problem_order}`
+                    };
+                })
+                : [];  // Return empty array if any required data is missing
+
+
             this.setState({
                 generating: false,
-                generatedWorksheet: result.worksheet
+                generatedWorksheet: result.worksheet,
+                problemsData
             });
         } catch (error) {
             console.error('Error generating worksheet:', error);
@@ -209,26 +255,35 @@ class GenerateWorksheet extends Component {
     };
 
     handlePrintWorksheet = () => {
-        const { generatedWorksheet } = this.state;
-        if (generatedWorksheet) {
-            this.props.history.push(`/worksheets/${generatedWorksheet.id}/print`);
-        }
+        this.setState({ printMode: 'worksheet' }, () => {
+            // Small delay to ensure render completes
+            setTimeout(() => {
+                window.print();
+                this.setState({ printMode: null });
+            }, 100);
+        });
     };
 
     handlePrintAnswerKey = () => {
+        this.setState({ printMode: 'answerKey' }, () => {
+            window.print();
+            this.setState({ printMode: null });
+        });
+    };
+    handleEnterAnswers = () => {
         const { generatedWorksheet } = this.state;
         if (generatedWorksheet) {
-            this.props.history.push(`/worksheets/${generatedWorksheet.id}/print-answers`);
+            this.props.history.push(`/worksheets/${generatedWorksheet.id}/enter-answers`);
         }
     };
 
-    handleGoToDashboard = () => {
-        this.props.history.push('/dashboard');
+    handleGoBack = () => {
+        this.props.history.goBack();
     };
 
     render() {
         const { classes } = this.props;
-        const { generating, generatedWorksheet, error, loading } = this.state;
+        const { loading, generating, generatedWorksheet, problemsData = [], printMode, error } = this.state;
 
         // Add loading check
         if (loading) {
@@ -252,93 +307,143 @@ class GenerateWorksheet extends Component {
         }
 
         return (
-            <Container className={classes.container}>
-                <Typography variant="h4" gutterBottom>
-                    Generate Paper Practice Worksheet
-                </Typography>
+            <div className={classes.root}>
+                {/* Screen Content */}
+                <div className={classes.noPrint}>
+                    {/* Navigation Bar */}
+                    <AppBar position="static">
+                        <Toolbar>
+                            <BrandLogoNav />
+                        </Toolbar>
+                    </AppBar>
+                    <Box className={classes.pageHeader}>
+                        <Container maxWidth="lg">
+                            <Typography className={classes.pageTitle}>
+                                Generate Paper Practice Worksheet
+                            </Typography>
+                        </Container>
+                    </Box>
 
-                {!generatedWorksheet ? (
-                    <Paper className={classes.paper}>
-                        <Box className={classes.centerContent}>
-                            <AssignmentIcon className={classes.icon} />
-                            <Typography variant="h6" gutterBottom>
-                                Ready for Paper Practice
-                            </Typography>
-                            <Typography variant="body1" color="textSecondary" paragraph>
-                                You're ready for some paper practice. Generate a new personalized worksheet?
-                            </Typography>
-                        </Box>
+                    <Container className={classes.container}>
 
-                        {error && (
-                            <Typography color="error" paragraph>
-                                {error}
-                            </Typography>
+                        {!generatedWorksheet ? (
+                            <Paper className={classes.paper}>
+                                <Box className={classes.centerContent}>
+                                    <AssignmentIcon className={classes.icon} />
+                                    <Typography variant="h4" gutterBottom>
+                                        Great work so far!
+                                    </Typography>
+                                    <Typography variant="h6" gutterBottom>
+                                        You're ready for some paper practice!
+                                    </Typography>
+                                    <Typography variant="body1" color="textSecondary" paragraph>
+                                        Generate a new personalized worksheet?
+                                    </Typography>
+                                </Box>
+
+                                {error && (
+                                    <Typography color="error" paragraph>
+                                        {error}
+                                    </Typography>
+                                )}
+
+                                <Box className={classes.buttonGroup}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={this.handleGoBack}
+                                    >
+                                        Not Now
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={this.handleGenerate}
+                                        size="large"
+                                    >
+                                        Yes, Generate Worksheet!
+                                    </Button>
+                                </Box>
+                            </Paper>
+                        ) : (
+                            <Paper className={classes.paper}>
+                                <Box className={classes.centerContent}>
+                                    <AssignmentIcon className={classes.icon} style={{ color: '#4caf50' }} />
+                                    <Typography variant="h6" gutterBottom>
+                                        Worksheet Ready!
+                                    </Typography>
+                                    <Typography variant="body1" color="textSecondary" paragraph>
+                                        Your worksheet has been generated with {generatedWorksheet.total_problems} problems.
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Print your worksheet and complete it offline. When you're ready,
+                                        log back in to enter your answers.
+                                    </Typography>
+                                </Box>
+
+                                <Box className={classes.buttonGroup}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<PrintIcon />}
+                                        onClick={this.handlePrintWorksheet}
+                                        size="large"
+                                    >
+                                        Print Worksheet
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        color="secondary"
+                                        startIcon={<PrintIcon />}
+                                        onClick={this.handlePrintAnswerKey}
+                                    >
+                                        Print Answer Key
+                                    </Button>
+                                </Box>
+                                <Divider style={{ margin: '24px 0' }} />
+
+                                <Box className={classes.buttonGroup}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={this.handleBackToLesson}
+                                        size="large"
+                                    >
+                                        Back to Lesson
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={this.handleEnterAnswers}
+                                        size="large"
+                                    >
+                                        Enter Answers Now
+                                    </Button>
+                                </Box>
+                            </Paper>
                         )}
+                    </Container>
 
-                        <Box className={classes.buttonGroup}>
-                            <Button
-                                variant="outlined"
-                                onClick={this.handleGoToDashboard}
-                            >
-                                Not Now
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={this.handleGenerate}
-                                size="large"
-                            >
-                                Yes, Generate Worksheet!
-                            </Button>
-                        </Box>
-                    </Paper>
-                ) : (
-                    <Paper className={classes.paper}>
-                        <Box className={classes.centerContent}>
-                            <AssignmentIcon className={classes.icon} style={{ color: '#4caf50' }} />
-                            <Typography variant="h6" gutterBottom>
-                                Worksheet Ready!
-                            </Typography>
-                            <Typography variant="body1" color="textSecondary" paragraph>
-                                Your worksheet has been generated with {generatedWorksheet.total_problems} problems.
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                Print your worksheet and complete it offline. When you're ready,
-                                log back in to enter your answers.
-                            </Typography>
-                        </Box>
+                </div>
 
-                        <Box className={classes.buttonGroup}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                startIcon={<PrintIcon />}
-                                onClick={this.handlePrintWorksheet}
-                                size="large"
-                            >
-                                Print Worksheet
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                color="secondary"
-                                startIcon={<PrintIcon />}
-                                onClick={this.handlePrintAnswerKey}
-                            >
-                                Print Answer Key
-                            </Button>
-                        </Box>
-
-                        <Box className={classes.buttonGroup}>
-                            <Button
-                                variant="text"
-                                onClick={this.handleGoToDashboard}
-                            >
-                                Go to Dashboard
-                            </Button>
-                        </Box>
-                    </Paper>
-                )}
-            </Container>
+                {/* Print-Only Content - ADD THIS ENTIRE SECTION */}
+                <div className={classes.printOnly}>
+                    {generatedWorksheet && problemsData && problemsData.length > 0 && (
+                        <>
+                            {printMode === 'worksheet' && (
+                                <PrintableWorksheet
+                                    worksheet={generatedWorksheet}
+                                    problemsData={problemsData}
+                                />
+                            )}
+                            {printMode === 'answerKey' && (
+                                <PrintableAnswerKey
+                                    worksheet={generatedWorksheet}
+                                    problemsData={problemsData}
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
         );
     }
 }

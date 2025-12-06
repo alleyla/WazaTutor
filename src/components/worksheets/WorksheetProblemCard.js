@@ -160,7 +160,7 @@ class WorksheetProblemCard extends Component {
             // Use the existing checkAnswer utility (same as ProblemCard.js)
             const [parsed, isCorrect, reason] = checkAnswer({
                 attempt: userAnswer.trim(),
-                actual: correctAnswer,
+                actual: [correctAnswer],
                 answerType: 'math',
                 precision: 3,
                 variabilization: {},

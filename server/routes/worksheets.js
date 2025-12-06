@@ -199,11 +199,34 @@ router.post('/generate', auth, async (req, res) => {
 
         await client.query('COMMIT');
 
+        // Fetch the complete worksheet with problems (like GET endpoint does)
+        const problemsResult = await client.query(`
+            SELECT
+                id,
+                problem_id,
+                problem_order,
+                skill_name,
+                correct_answer,
+                user_answer,
+                is_correct,
+                status,
+                checked_at
+            FROM user_worksheet_problems
+            WHERE worksheet_id = $1
+            ORDER BY problem_order ASC
+        `, [worksheetId]);
+
         res.json({
             success: true,
             message: 'Worksheet generated successfully',
-            worksheet: worksheetResult.rows[0]
+            worksheet: {
+                ... worksheetResult.rows[0],
+                status: 'pending',
+                problems_checked: 0,
+                problems: problemsResult.rows  // include full problems array
+            }
         });
+
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error generating worksheet:', error);

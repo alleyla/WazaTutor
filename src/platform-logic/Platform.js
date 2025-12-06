@@ -598,6 +598,7 @@ class Platform extends React.Component {
                         lessonName={lessonInfo.name}
                         lessonTopics={lessonInfo.topics}
                         mastery={showMastery ? this.state.mastery : null}
+                        lessonId={this.props.lessonID}
                     />
                 )}
                 <div style={{ flex: 1, paddingBottom: 20 }}>

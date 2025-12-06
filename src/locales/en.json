@@ -13,9 +13,10 @@
     },
     "problem":
     {
-        "NextProblem": "Next Problem",
+        "NextProblem": "Continue",
         "PreviousProblem": "Previous Problem",
         "Submit": "Submit",
+        "Check": "Check",
         "Feedback": "Feedback",
         "Response": "Response",
         "Thanks": "Thank you for your feedback!",

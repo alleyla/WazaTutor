@@ -5,13 +5,15 @@ import {
     CircularProgress,
     Box,
     Paper,
-    Button
+    Button,
+    Divider
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import PrintIcon from '@material-ui/icons/Print';
 import worksheetService from '../services/worksheetService';
-import { ThemeContext } from '../config/config';
+import { ThemeContext, findLessonById } from '../config/config';
 import { renderText, chooseVariables } from '../platform-logic/renderText';
+import { IS_STAGING_OR_DEVELOPMENT } from '../util/getBuildType';
 
 const styles = (theme) => ({
     printContainer: {
@@ -40,6 +42,22 @@ const styles = (theme) => ({
         paddingBottom: theme.spacing(2),
         borderBottom: '2px solid #333'
     },
+    lessonTitle: {
+        fontSize: '1.5rem',
+        fontWeight: 600,
+        marginBottom: theme.spacing(0.5),
+    },
+    lessonSubtitle: {
+        fontSize: '1rem',
+        color: '#666',
+        marginBottom: theme.spacing(0.5),
+    },
+    lessonId: {
+        fontSize: '0.75rem',
+        color: '#999',
+        fontFamily: 'monospace',
+        marginTop: theme.spacing(0.5),
+    },
     problemItem: {
         marginBottom: theme.spacing(4),
         padding: theme.spacing(2),
@@ -52,12 +70,48 @@ const styles = (theme) => ({
         fontSize: '1.2rem',
         marginBottom: theme.spacing(1)
     },
+    problemId: {
+        fontSize: '0.7rem',
+        color: '#999',
+        fontFamily: 'monospace',
+        marginBottom: theme.spacing(1),
+    },
+    problemContent: {
+        marginBottom: theme.spacing(2),
+        '& img': {
+            maxWidth: '100%',
+            height: 'auto',
+            display: 'block',
+            margin: '8px 0'
+        }
+    },
+    workSpace: {
+        marginTop: theme.spacing(2),
+        padding: theme.spacing(2),
+        backgroundColor: '#fafafa',
+        border: '1px solid #ddd',
+        borderRadius: 4,
+        minHeight: 200
+    },
+    workSpaceLabel: {
+        fontSize: '0.75rem',
+        color: '#888',
+        fontStyle: 'italic',
+        marginBottom: theme.spacing(1)
+    },
     answerSpace: {
         marginTop: theme.spacing(2),
         padding: theme.spacing(2),
-        backgroundColor: '#f9f9f9',
-        border: '1px dashed #ccc',
+        backgroundColor: '#fff',
+        border: '2px dashed #999',
+        borderRadius: 4,
         minHeight: 60
+    },
+    answerLabel: {
+        fontSize: '0.875rem',
+        fontWeight: 600,
+        color: '#333',
+        marginBottom: theme.spacing(0.5)
     },
     loading: {
         display: 'flex',
@@ -196,6 +250,8 @@ class PrintWorksheet extends Component {
             );
         }
 
+        const lesson = findLessonById(worksheet.lesson_id);
+
         return (
             <>
                 {/* Print Controls (hidden when printing) */}
@@ -226,20 +282,36 @@ class PrintWorksheet extends Component {
                         <Typography variant="h4" gutterBottom>
                             Paper Practice Worksheet
                         </Typography>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Lesson: {worksheet.lesson_id}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
+                        {lesson ?  (
+                            <>
+                                <Typography className={classes.lessonTitle}>
+                                    {lesson.name}
+                                </Typography>
+                                <Typography className={classes.lessonSubtitle}>
+                                    {lesson.topics}
+                                </Typography>
+                                {IS_STAGING_OR_DEVELOPMENT && (
+                                    <Typography className={classes.lessonId}>
+                                        Lesson ID: {worksheet.lesson_id}
+                                    </Typography>
+                                )}
+                            </>
+                        ) : (
+                            <Typography variant="subtitle1" color="textSecondary">
+                                Lesson: {worksheet.lesson_id}
+                            </Typography>
+                        )}
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: 10 }}>
                             Total Problems: {worksheet.total_problems}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" style={{ marginTop: 8 }}>
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: 10 }}>
                             Name: _____________________________ Date: ______________
                         </Typography>
                     </Box>
 
                     {/* Problems */}
                     {problemsData.map((problemItem) => {
-                        const { problemData, seed, problem_order } = problemItem;
+                        const { problemData, seed, problem_order, problem_id } = problemItem;
                         const vars = chooseVariables(problemData.variabilization, seed);
 
                         return (
@@ -248,19 +320,26 @@ class PrintWorksheet extends Component {
                                     Problem {problem_order}
                                 </Typography>
 
+                                {/* Problem ID (Dev Mode Only) */}
+                                {IS_STAGING_OR_DEVELOPMENT && (
+                                    <Typography className={classes.problemId}>
+                                        Problem ID: {problem_id}
+                                    </Typography>
+                                )}
+
                                 {/* Problem Title */}
                                 {problemData.title && (
                                     <Box className={classes.problemContent}>
                                         <Typography variant="h6" style={{ marginBottom: 8 }}>
-                                            {renderText(problemData.title, problemData.id, vars, this.context)}
+                                            {renderText(problemData.title, problem_id, vars, this.context)}
                                         </Typography>
                                     </Box>
                                 )}
 
-                                {/* Problem Body/Instructions */}
+                                {/* Problem Body/Instructions with Images */}
                                 {problemData.body && (
                                     <Box className={classes.problemContent}>
-                                        {renderText(problemData.body, problemData.id, vars, this.context)}
+                                        {renderText(problemData.body, problem_id, vars, this.context)}
                                     </Box>
                                 )}
 
@@ -271,7 +350,7 @@ class PrintWorksheet extends Component {
                                             <Box key={stepIdx} style={{ marginBottom: 12 }}>
                                                 {renderText(
                                                     step.stepTitle + " : " + step.stepBody,
-                                                    `${problemData.id}-${step.id}`,
+                                                    `${problem_id}`,
                                                     vars,
                                                     this.context
                                                 )}
@@ -280,10 +359,17 @@ class PrintWorksheet extends Component {
                                     </Box>
                                 )}
 
+                                {/* Work Space */}
+                                <Box className={classes.workSpace}>
+                                    <Typography className={classes.workSpaceLabel}>
+                                        Show your work here:
+                                    </Typography>
+                                </Box>
+
                                 {/* Answer Space */}
                                 <Box className={classes.answerSpace}>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Answer:
+                                    <Typography className={classes.answerLabel}>
+                                        Your Answer:
                                     </Typography>
                                 </Box>
                             </Paper>
@@ -293,7 +379,7 @@ class PrintWorksheet extends Component {
                     {/* Footer */}
                     <Box className={classes.printOnly} style={{ marginTop: 40, textAlign: 'center' }}>
                         <Typography variant="body2" color="textSecondary">
-                            When completed, log back in to enter your answers and check your work.
+                            When completed, log back in to WazaTutor to enter your answers and check your work.
                         </Typography>
                     </Box>
                 </Container>

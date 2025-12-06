@@ -126,7 +126,7 @@ function Login() {
 
   const handleDismissWorksheetModal = () => {
       setShowWorksheetModal(false);
-      history.push('/');
+      history.push('/dashboard');
   };
 
   return (
@@ -191,7 +191,6 @@ function Login() {
         </Paper>
       </div>
     </Container>
-        {/* ADD THIS MODAL AT THE END */}
         <PendingWorksheetModal
           open={showWorksheetModal}
           worksheet={pendingWorksheet}

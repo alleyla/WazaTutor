@@ -769,7 +769,7 @@ class ProblemCard extends React.Component {
                                         "data-selenium-target": `submit-button-${this.props.index}`,
                                     })}
                                 >
-                                    {translate('problem.Submit')}
+                                    {translate('problem.Check')}
                                 </Button>
                             </center>
                         </Grid>
