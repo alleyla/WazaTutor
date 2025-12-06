@@ -8,6 +8,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import storageService from '../services/storageService';
 import { toast } from 'react-toastify';
+import { IS_STAGING_OR_DEVELOPMENT } from '../util/getBuildType';
 
 const useStyles = makeStyles((theme) => ({
     siteNavLink: {
@@ -26,33 +27,56 @@ const useStyles = makeStyles((theme) => ({
     leftSection: {
         display: 'flex',
         alignItems: 'center',
-        gap: theme.spacing(2),
+        gap: theme.spacing(1),
+        marginLeft: theme.spacing(1),
     },
     logo: {
         color: 'white',
         textDecoration: 'none',
-        fontSize: '1.1rem',
-        fontWeight: 500,
         cursor: 'pointer',
-        paddingTop: 3,
+        display: 'flex',
+        alignItems: 'center',
+        gap: theme.spacing(1),
         '&:hover': {
             opacity: 0.8,
         },
     },
+    logoImage: {
+        height: 45,
+        width: 'auto',
+        display: 'block',
+    },
+    logoText: {
+        fontSize: '1.2rem',
+        fontWeight: 600,
+        lineHeight: '32px',
+        display: 'block',
+        color:"#00F0FF"
+    },
     navButton: {
         color: 'white',
         textTransform: 'none',
+        fontSize: '1rem',
+        fontWeight: 600,
         '&:hover': {
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            opacity: 0.8,
+            color: '#00F0FF',
         },
+        padding: theme.spacing(2),
+        marginLeft: theme.spacing(1),
     },
     rightSection: {
         display: 'flex',
         alignItems: 'center',
-        gap: theme. spacing(1),
+        gap: theme.spacing(1),
     },
     iconButton: {
         color: 'white',
+        '&:hover': {
+            opacity: 0.8,
+            color: '#00F0FF',
+        },
     },
 }));
 
@@ -63,7 +87,9 @@ function BrandLogoNav({ isPrivileged = false, noLink = false }) {
     const classes = useStyles();
     const isAuthenticated = storageService.isAuthenticated();
 
-    const brandString = `${SITE_NAME} (v${SITE_VERSION})`;
+    const brandString = IS_STAGING_OR_DEVELOPMENT
+        ? `${SITE_NAME} (v${SITE_VERSION})`
+        : SITE_NAME;
 
     // Don't render navigation on login or register pages
     if (location.pathname === '/login' || location.pathname === '/register') {
@@ -105,9 +131,16 @@ function BrandLogoNav({ isPrivileged = false, noLink = false }) {
                     tabIndex={0}
                     onClick={handleLogoClick}
                     onKeyDown={handleLogoClick}
-                    className={classes.logo}
+                    className={classes. logo}
                 >
-                    {brandString}
+                    <img
+                        src={`${process.env.PUBLIC_URL}/static/images/logo.png`}
+                        alt="Logo"
+                        className={classes.logoImage}
+                    />
+                    <div className={classes.logoText}>
+                        {brandString}
+                    </div>
                 </div>
 
                 {/* Authenticated User Navigation */}
@@ -136,7 +169,7 @@ function BrandLogoNav({ isPrivileged = false, noLink = false }) {
                 {isAuthenticated ? (
                     <>
                         <IconButton
-                            className={classes.iconButton}
+                            className={classes.navButton}
                             onClick={() => history.push('/account')}
                             aria-label="Account"
                             title="Account"
@@ -144,7 +177,7 @@ function BrandLogoNav({ isPrivileged = false, noLink = false }) {
                             <AccountCircleIcon />
                         </IconButton>
                         <IconButton
-                            className={classes.iconButton}
+                            className={classes.navButton}
                             onClick={handleLogout}
                             aria-label="Logout"
                             title="Logout"

@@ -104,7 +104,6 @@ function Login() {
       if (pending) {
             setPendingWorksheet(pending);
             setShowWorksheetModal(true);
-            setLoading(false);
       } else {
             // No pending worksheet, go to home/dashboard
             history.push('/dashboard');

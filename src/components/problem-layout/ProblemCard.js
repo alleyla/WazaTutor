@@ -35,6 +35,7 @@ import {
 import { joinList } from "../../util/formListString";
 import withTranslation from "../../util/withTranslation.js"
 import CryptoJS from "crypto-js";
+import EmojiObjectsOutlinedIcon from '@material-ui/icons/EmojiObjectsOutlined';
 
 class ProblemCard extends React.Component {
     static contextType = ThemeContext;
@@ -730,6 +731,7 @@ class ProblemCard extends React.Component {
                             {this.showHints && (
                                 <center>
                                     <IconButton
+                                        className={classes.hintButton}
                                         aria-label="delete"
                                         onClick={this.toggleHints}
                                         title="View available hints"
@@ -741,15 +743,15 @@ class ProblemCard extends React.Component {
                                             "data-selenium-target": `hint-button-${this.props.index}`,
                                         })}
                                     >
-                                        <img
-                                            src={`${process.env.PUBLIC_URL}/static/images/icons/raise_hand.png`}
+                                        <EmojiObjectsOutlinedIcon
+                                            fontSize="large"
                                             className={
                                                 this.state.enableHintGeneration
-                                                    ? "image"
-                                                    : "image image-grayed-out"
+                                                    ? classes.hintIcon
+                                                    : classes.hintIconDisabled
                                             }
-                                            alt="hintToggle"
                                         />
+
                                     </IconButton>
                                 </center>
                             )}
@@ -814,7 +816,7 @@ class ProblemCard extends React.Component {
                                             style={{
                                                 opacity:
                                                     this.state.checkMarkOpacity,
-                                                width: "45%",
+                                                width: "45%"
                                             }}
                                             alt="Green Checkmark Icon"
                                             {...stagingProp({

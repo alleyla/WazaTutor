@@ -276,6 +276,10 @@ class GenerateWorksheet extends Component {
             this.props.history.push(`/worksheets/${generatedWorksheet.id}/enter-answers`);
         }
     };
+    handleBackToLesson = () => {
+        const { lessonId } = this.state;
+        this.props.history.push(`/lessons/${lessonId}`);
+    };
 
     handleGoBack = () => {
         this.props.history.goBack();

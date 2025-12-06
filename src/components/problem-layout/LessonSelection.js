@@ -1,16 +1,11 @@
 import React, { Fragment } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import Paper from '@material-ui/core/Paper';
+import { Grid, Box, Paper, Typography, Button, IconButton, Divider, Container } from '@material-ui/core';
+
 import { withStyles } from '@material-ui/core/styles';
 import styles from './common-styles.js';
-import IconButton from '@material-ui/core/IconButton';
 import { _coursePlansNoEditor, ThemeContext, SITE_NAME, SHOW_COPYRIGHT } from '../../config/config.js';
 import Spacer from "../Spacer";
 import HelpOutlineOutlinedIcon from "@material-ui/icons/HelpOutlineOutlined";
-import { Typography } from "@material-ui/core";
 import { IS_STAGING_OR_DEVELOPMENT } from "../../util/getBuildType";
 import BuildTimeIndicator from "@components/BuildTimeIndicator";
 import withTranslation from "../../util/withTranslation.js";
@@ -20,17 +15,27 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ListIcon from '@material-ui/icons/List';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 const customStyles = (theme) => ({
         ... styles(theme),
+        lessonInfoSection: {
+            padding: theme.spacing(3),
+            backgroundColor: theme.palette.background.paper,
+            borderBottom: `1px solid ${theme. palette.divider}`,
+        },
+        lessonTitle: {
+            fontSize: '1.5rem',
+            fontWeight: 600,
+            color: theme. palette.text.primary,
+            textAlign: 'center',
+        },
         pathContainer: {
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            gap: theme.spacing(3),
-            maxWidth: 600,
+            gap: theme.spacing(0),
+            maxWidth: 800,
             margin: '0 auto',
-            padding: theme.spacing(3),
         },
         pathItem: {
             width: '100%',
@@ -102,6 +107,25 @@ const customStyles = (theme) => ({
             alignItems: 'center',
             gap: theme.spacing(1),
         },
+        startButton: {
+            backgroundColor: '#00F0FF',
+            color: '#0F172A',
+            borderRadius: 24,
+            padding: theme.spacing(1, 3),
+            fontWeight: 600,
+            fontSize: '0.95rem',
+            textTransform: 'none',
+            boxShadow: '0 2px 8px rgba(0, 240, 255, 0.3)',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+                backgroundColor: '#00D4E0',
+                transform: 'scale(1.05)',
+                boxShadow: '0 4px 12px rgba(0, 240, 255, 0.5)',
+            },
+        },
+        startButtonIcon: {
+            fontSize: '1.2rem',
+        },
     });
 
 class LessonSelection extends React.Component {
@@ -171,6 +195,13 @@ class LessonSelection extends React.Component {
 
         return (
             <>
+                <Box className={classes.lessonInfoSection}>
+                    <Container maxWidth="lg">
+                        <Typography className={classes.lessonTitle}>
+                            {translate('lessonSelection.select')} {selectionMode === "course" ? translate('lessonSelection.course') : translate('lessonSelection.lessonplan')}
+                        </Typography>
+                    </Container>
+                </Box>
                 <div>
                     <Grid
                         container
@@ -179,14 +210,7 @@ class LessonSelection extends React.Component {
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Box width="90%" maxWidth={1200} role={"main"}>
-                            <div>
-                                <center>
-                                    <h2>{translate('lessonSelection.select')} {selectionMode === "course" ? translate('lessonSelection.course') : translate('lessonSelection.lessonplan')}</h2>
-                                </center>
-                                <Divider/>
-                                <Spacer/>
-                            </div>
+                        <Box width="90%" maxWidth="lg" role={"main"}>
 
                             {IS_STAGING_OR_DEVELOPMENT && (
                                 <center>
@@ -216,7 +240,18 @@ class LessonSelection extends React.Component {
                                                         <span>{course.lessons?.length || 0} lessons</span>
                                                     </div>
                                                 </div>
-                                                <ArrowForwardIcon className={classes.pathItemIcon} />
+                                                <div className={classes.rightActions}>
+                                                    <Button
+                                                        className={classes.startButton}
+                                                        startIcon={<PlayArrowIcon className={classes.startButtonIcon} />}
+                                                        onClick={(e) => {
+                                                            e. stopPropagation();
+                                                            this.props.history.push(`/courses/${i}`)
+                                                        }}
+                                                    >
+                                                        Start Course
+                                                    </Button>
+                                                </div>
                                             </Paper>
                                             {i < this.coursePlans.length - 1 && (
                                                 <div className={classes.pathConnector} />
@@ -268,7 +303,16 @@ class LessonSelection extends React.Component {
                                                         </div>
                                                     </div>
                                                     <div className={classes.rightActions}>
-                                                        <ArrowForwardIcon className={classes.pathItemIcon} />
+                                                        <Button
+                                                            className={classes.startButton}
+                                                            startIcon={<PlayArrowIcon className={classes.startButtonIcon} />}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                this. props.history.push(`/lessons/${lesson.id}`)
+                                                            }}
+                                                        >
+                                                            Start Lesson
+                                                        </Button>
                                                     </div>
                                                 </Paper>
                                                 {i < this.coursePlans[this.props.courseNum].lessons.length - 1 && (
@@ -284,19 +328,24 @@ class LessonSelection extends React.Component {
                         </Box>
                     </Grid>
                     <Spacer/>
-                    <Grid container spacing={0}>
-                        <Grid item xs={3} sm={3} md={5} key={1}/>
-                        {! this.isPrivileged && <Grid item xs={6} sm={6} md={2} key={2}>
-                            {this.state.preparedRemoveProgress ?
-                                <Button className={classes.button} style={{ width: "100%" }} size="small"
-                                        onClick={this.removeProgress}
-                                        disabled={this.state.removedProgress}>{this.state.removedProgress ? translate('lessonSelection.reset') : translate('lessonSelection.aresure')}</Button> :
-                                <Button className={classes.button} style={{ width: "100%" }} size="small"
-                                        onClick={this.prepareRemoveProgress}
-                                        disabled={this.state.preparedRemoveProgress}>{translate('lessonSelection.resetprogress')}</Button>}
-                        </Grid>}
-                        <Grid item xs={3} sm={3} md={4} key={3}/>
-                    </Grid>
+                    {IS_STAGING_OR_DEVELOPMENT && (
+                        <>
+                            <Grid container spacing={0}>
+                                <Grid item xs={3} sm={3} md={5} key={1}/>
+                                {! this.isPrivileged && <Grid item xs={6} sm={6} md={2} key={2}>
+                                    {this.state.preparedRemoveProgress ?
+                                        <Button className={classes. button} style={{ width: "100%" }} size="small"
+                                                onClick={this.removeProgress}
+                                                disabled={this.state.removedProgress}>{this. state.removedProgress ? translate('lessonSelection.reset') : translate('lessonSelection.aresure')}</Button> :
+                                        <Button className={classes.button} style={{ width: "100%" }} size="small"
+                                                onClick={this.prepareRemoveProgress}
+                                                disabled={this. state.preparedRemoveProgress}>{translate('lessonSelection.resetprogress')}</Button>}
+                                </Grid>}
+                                <Grid item xs={3} sm={3} md={4} key={3}/>
+                            </Grid>
+                            <Spacer/>
+                        </>
+                    )}
                     <Spacer/>
                 </div>
                 <footer>

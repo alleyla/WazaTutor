@@ -29,9 +29,6 @@ const styles = (theme) => ({
         fontWeight: 'bold',
         color: theme.palette.primary.main
     },
-    statusChip: {
-        fontWeight: 'bold'
-    },
     inputSection: {
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2)
@@ -86,6 +83,26 @@ const styles = (theme) => ({
         color: theme.palette.text.disabled,
         fontFamily: 'monospace',
         marginTop: theme.spacing(0.5),
+    },
+    statusChip: {
+        fontWeight: 600,
+        '& .MuiChip-icon': {
+            color: '#FFFFFF !important',
+        }
+    },
+    correctChip: {
+        backgroundColor: theme.palette.success.main,
+        color: theme.palette.success.contrastText || '#FFFFFF',
+        '& .MuiChip-icon': {
+            color: '#FFFFFF !important',
+        }
+    },
+    incorrectChip: {
+        backgroundColor: theme.palette.error.main,
+        color: theme.palette.error.contrastText || '#FFFFFF',
+        '& .MuiChip-icon': {
+            color: '#FFFFFF !important',
+        }
     },
 });
 
@@ -287,8 +304,7 @@ class WorksheetProblemCard extends Component {
                             <Chip
                                 icon={isCorrect ? <CheckCircleIcon /> : <CancelIcon />}
                                 label={isCorrect ? 'Correct' : 'Incorrect'}
-                                color={isCorrect ? 'primary' : 'secondary'}
-                                className={classes.statusChip}
+                                className={`${classes.statusChip} ${isCorrect ? classes.correctChip : classes.incorrectChip}`}
                             />
                         )}
                     </Box>

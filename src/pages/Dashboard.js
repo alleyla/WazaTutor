@@ -23,6 +23,9 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import BrandLogoNav from '../components/BrandLogoNav';
 import storageService from '../services/storageService';
+import worksheetService from '../services/worksheetService';
+import PendingWorksheetModal from '../components/worksheets/PendingWorksheetModal';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,14 +44,15 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
     },
     welcomeSection: {
-        padding: theme. spacing(4, 3, 3, 3),
+        padding: theme.spacing(3),
         backgroundColor: theme.palette.background.paper,
-        borderBottom: `1px solid ${theme. palette.divider}`,
+        borderBottom: `1px solid ${theme.palette.divider}`,
     },
     welcomeText: {
-        fontSize: '1.75rem',
-        fontWeight: 500,
+        fontSize: '1.5rem',
+        fontWeight: 600,
         color: theme.palette.text.primary,
+        textAlign: 'center',
     },
     statCard: {
         height: '100%',
@@ -113,6 +117,8 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [timeRange, setTimeRange] = useState(7);
     const [error, setError] = useState(null);
+    const [showWorksheetModal, setShowWorksheetModal] = useState(false);
+    const [pendingWorksheet, setPendingWorksheet] = useState(null);
 
     // Get user name from storage
     const userName = storageService.getAuthUserName() || 'Learner';
@@ -129,12 +135,31 @@ export default function Dashboard() {
         try {
             const data = await progressService.getUserStats(timeRange, 1, 0.95);
             setDashboardData(data);
+
+            // Check for pending worksheet after dashboard loads
+            // Check for pending worksheet after dashboard loads
+            const pending = await worksheetService.checkPendingWorksheet();
+            if (pending) {
+                setPendingWorksheet(pending);
+                setShowWorksheetModal(true);
+            }
         } catch (err) {
             setError('Failed to load dashboard');
             console.error(err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEnterWorksheetAnswers = () => {
+        if (pendingWorksheet) {
+            history.push(`/worksheets/${pendingWorksheet.id}/enter-answers`);
+        }
+    };
+
+    const handleDismissWorksheetModal = () => {
+        setShowWorksheetModal(false);
+        setPendingWorksheet(null);
     };
 
     const getStreakEmoji = (streak) => {
@@ -154,7 +179,7 @@ export default function Dashboard() {
                 </AppBar>
                 {/* Welcome Section */}
                 <Box className={classes.welcomeSection}>
-                    <Typography className={classes. welcomeText}>
+                    <Typography className={classes.welcomeText}>
                         Welcome, {userName}!
                     </Typography>
                 </Box>
@@ -175,13 +200,15 @@ export default function Dashboard() {
                         <BrandLogoNav />
                     </Toolbar>
                 </AppBar>
-                <Container maxWidth="lg">
-                    {/* Welcome Section */}
-                    <Box className={classes.welcomeSection}>
+                <Box className={classes.welcomeSection}>
+                    <Container maxWidth="lg">
                         <Typography className={classes.welcomeText}>
                             Welcome, {userName}!
                         </Typography>
-                    </Box>
+                    </Container>
+                </Box>
+                <Container maxWidth="lg">
+                    {/* Welcome Section */}
                     <Paper style={{ padding: 24, textAlign: 'center' }}>
                         <Typography color="error" variant="h6">{error}</Typography>
                         <Button 
@@ -206,13 +233,14 @@ export default function Dashboard() {
                         <BrandLogoNav />
                     </Toolbar>
                 </AppBar>
-                <Container maxWidth="lg">
-                    {/* Welcome Section */}
-                    <Box className={classes.welcomeSection}>
+                <Box className={classes. welcomeSection}>
+                    <Container maxWidth="lg">
                         <Typography className={classes.welcomeText}>
                             Welcome, {userName}!
                         </Typography>
-                    </Box>
+                    </Container>
+                </Box>
+                <Container maxWidth="lg">
                     <Paper style={{ padding: 24, textAlign: 'center' }}>
                         <Typography variant="h6">
                             No data available yet.
@@ -241,13 +269,14 @@ export default function Dashboard() {
                     <BrandLogoNav />
                 </Toolbar>
             </AppBar>
-            <Container maxWidth="lg">
-                {/* Welcome Section */}
-                <Box className={classes.welcomeSection}>
+            <Box className={classes. welcomeSection}>
+                <Container maxWidth="lg">
                     <Typography className={classes.welcomeText}>
                         Welcome, {userName}!
                     </Typography>
-                </Box>
+                </Container>
+            </Box>
+            <Container maxWidth="lg">
                 <Box className={classes.timeRangeSelector}>
                     <ButtonGroup color="primary" size="large">
                         <Button 
@@ -383,6 +412,13 @@ export default function Dashboard() {
                     </Paper>
                 )}
             </Container>
+            {/* Pending Worksheet Modal */}
+            <PendingWorksheetModal
+                open={showWorksheetModal}
+                worksheet={pendingWorksheet}
+                onEnterAnswers={handleEnterWorksheetAnswers}
+                onDismiss={handleDismissWorksheetModal}
+            />
         </div>
     );
 }

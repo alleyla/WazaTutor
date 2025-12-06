@@ -28,11 +28,9 @@ const useStyles = makeStyles((theme) => ({
 const PendingWorksheetModal = ({ open, worksheet, onEnterAnswers, onDismiss }) => {
     const classes = useStyles();
 
-    if (!worksheet) return null;
-
     return (
         <Dialog
-            open={open}
+            open={open && !!worksheet}
             onClose={onDismiss}
             maxWidth="sm"
             fullWidth
@@ -45,14 +43,18 @@ const PendingWorksheetModal = ({ open, worksheet, onEnterAnswers, onDismiss }) =
                 <Typography variant="h6" gutterBottom>
                     You have a pending worksheet!
                 </Typography>
-                <Typography variant="body1" color="textSecondary" paragraph>
-                    You have {worksheet.problems_checked} of {worksheet.total_problems} problems checked.
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                    Would you like to enter your worksheet answers now?
-                </Typography>
+                {worksheet && (
+                    <>
+                        <Typography variant="body1" color="textSecondary" paragraph>
+                            You have {worksheet.problems_checked} of {worksheet.total_problems} problems checked.
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            Would you like to enter your worksheet answers now?
+                        </Typography>
+                    </>
+                )}
             </DialogContent>
-            <DialogActions style={{ padding: '16px 24px' }}>
+            <DialogActions style={{ padding: '16px 24px', justifyContent: 'center' }}>
                 <Button onClick={onDismiss} color="default">
                     No, Go to Dashboard
                 </Button>

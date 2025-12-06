@@ -6,7 +6,7 @@ import storageService from '../services/storageService';
 
 const useStyles = makeStyles((theme) => ({
     lessonInfoSection: {
-        padding: theme.spacing(4, 3, 3, 3),
+        padding: theme.spacing(3),
         backgroundColor: theme.palette.background.paper,
         borderBottom: `1px solid ${theme.palette.divider}`,
     },
@@ -21,13 +21,13 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
     },
     lessonTitle: {
-        fontSize: '1.75rem',
-        fontWeight: 500,
+        fontSize: '1.5rem',
+        fontWeight: 600,
         color: theme.palette.text.primary,
     },
     masteryText: {
         marginLeft: theme.spacing(2),
-        color: theme.palette.primary.main,
+        color: theme.palette.primary.light,
     },
     actionButtons: {
         position: 'absolute',

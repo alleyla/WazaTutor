@@ -24,12 +24,42 @@ const styles = theme => ({
     },
 
     button: {
-        backgroundColor: '#8c94ff',
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
         marginLeft: 'auto',
         marginRight: 'auto',
         paddingLeft: 10,
         paddingRight: 10,
-        width: "20%"
+        paddingTop: 8,
+        paddingBottom: 8,
+        minWidth: '120px',
+        fontSize: '0.95rem',
+        fontWeight: 600,
+        border: `2px solid ${theme.palette.secondary.main}`,
+        '&:hover': {
+            backgroundColor: theme.palette.secondary.main,
+            color: theme.palette.primary.main,
+        },
+        '&.Mui-disabled': {
+            backgroundColor: theme.palette.grey[400],
+            color: theme.palette.primary.contrastText,
+            opacity: 0.7,
+        }
+    },
+
+    hintButton: {
+        '&:hover': {
+            backgroundColor: `rgba(0, 240, 255, 0.1)`, // Neon blue with opacity
+        }
+    },
+    hintIcon: {
+        color: theme.palette.secondary.main, // Neon blue #00F0FF
+        transition: 'color 0.2s, opacity 0.2s',
+    },
+    hintIconDisabled: {
+        color: '#999',
+        opacity: 0.5,
+        transition: 'color 0.2s, opacity 0.2s',
     },
 
     stepHeader: {

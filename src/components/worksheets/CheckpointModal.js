@@ -55,8 +55,8 @@ const CheckpointModal = ({
             fullWidth
             onClose={handleClose}
         >
-            <DialogTitle className={classes.title}>
-                🎉 Checkpoint Reached!
+            <DialogTitle className={classes.title} style={{ marginTop: 28 }}>
+                🎉 Checkpoint Reached! 🎉
             </DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 <EmojiEventsIcon className={classes.icon} />
@@ -67,7 +67,7 @@ const CheckpointModal = ({
                     You've successfully completed <strong>{problemsCompleted}</strong> problems!
                 </Typography>
                 <Typography variant="body2" color="textSecondary" paragraph>
-                    You can now start your paper practice or continue with digital practice
+                    You can now start your paper practice or continue with online practice
                     to work toward 100% mastery.
                 </Typography>
             </DialogContent>
@@ -89,7 +89,7 @@ const CheckpointModal = ({
                     size="large"
                     fullWidth
                 >
-                    Continue Digital Practice
+                    Continue Online Practice
                 </Button>
             </DialogActions>
         </Dialog>

@@ -63,7 +63,125 @@ import progressService from './services/progressService';
 
 loadFirebaseEnvConfig(config);
 
-let theme = createTheme();
+let theme = createTheme({
+    typography: {
+        fontFamily: "'Montserrat', sans-serif",
+    },
+    palette: {
+        primary: {
+            main: '#073755',      // Deep Blue
+            dark: '#1b597a',      // Darker blue for hover
+            light: '#2d6d8f',     // Lighter blue
+            contrastText: '#FFFFFF',
+        },
+        secondary: {
+            main: '#00F0FF',      // Keep Waza Cat Cyan as accent
+            dark: '#00DBE8',
+            light: '#33f3ff',
+            contrastText: '#205575', // Deep blue text on cyan
+        },
+        error: {
+            main: '#DC3545',      // Bootstrap-style red
+            light: '#f8d7da',
+        },
+        success: {
+            main: '#28A745',      // Bootstrap-style green
+            light: '#d4edda',
+        },
+        background: {
+            default: '#FFFFFF',   // White body
+            paper: '#FFFFFF',     // White cards
+        },
+        text: {
+            primary: '#205575',   // Deep Blue
+            secondary: '#6C757D', // Grey for placeholders
+        },
+        divider: '#E9ECEF',
+    },
+    shape: {
+        borderRadius: 8,
+    },
+    shadows: [
+        'none',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0. 1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0. 1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0. 1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0. 1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0. 1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        '0px 4px 10px rgba(0, 0, 0, 0. 1)',
+        '0px 4px 10px rgba(0, 0, 0, 0.1)',
+    ],
+    overrides: {
+        MuiAppBar: {
+            colorPrimary: {
+                backgroundColor: '#012e4a', // Deep Blue header
+                color: '#FFFFFF',
+            },
+        },
+        MuiButton: {
+            root: {
+                borderRadius: 8,
+                textTransform: 'none', // Remove uppercase
+                fontWeight: 600,
+            },
+            contained: {
+                boxShadow: 'none',
+                '&:hover': {
+                    boxShadow: 'none',
+                    backgroundColor: '#18435a',
+                    color: '#00DBE8',
+                },
+            },
+        },
+        MuiPaper: {
+            root: {
+                backgroundColor: '#FFFFFF',
+            },
+            elevation1: {
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            },
+        },
+        MuiOutlinedInput: {
+            root: {
+                borderRadius: 8,
+                '& $notchedOutline': {
+                    borderColor: '#CED4DA',
+                },
+                '&:hover $notchedOutline': {
+                    borderColor: '#205575',
+                },
+                '&$focused $notchedOutline': {
+                    borderColor: '#205575',
+                },
+                '&$disabled': {
+                    backgroundColor: '#E9ECEF',
+                },
+            },
+        },
+        MuiInputBase: {
+            input: {
+                color: '#6C757D', // Input text color
+            },
+        },
+    },
+});
 theme = responsiveFontSizes(theme);
 
 const queryParamToContext = {
@@ -735,8 +853,8 @@ class App extends React.Component {
                             {DO_FOCUS_TRACKING && <TabFocusTrackerWrapper />}
                         </Router>
                         <ToastContainer
-                            position="top-right"
-                            autoClose={5000}
+                            position="bottom-center"
+                            autoClose={4000}
                             hideProgressBar={false}
                             newestOnTop={true}
                             closeOnClick={true}
@@ -745,6 +863,18 @@ class App extends React.Component {
                             draggable={true}
                             pauseOnHover={false}
                             theme="light"
+                            style={{
+                                bottom: '40px',
+                            }}
+                            toastStyle={{
+                                backgroundColor: '#073755',
+                                color: '#00F0FF',
+                                borderRadius: '12px',
+                                boxShadow: '0 4px 12px rgba(0, 240, 255, 0.3)',
+                                border: '1px solid #00F0FF',
+                                fontSize: '1rem',
+                                fontWeight: 600,
+                            }}
                         />
                     </GlobalErrorBoundary>
                     </LocalizationProvider>

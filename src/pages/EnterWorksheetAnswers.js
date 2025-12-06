@@ -48,13 +48,13 @@ const styles = (theme) => ({
         }
     },
     pageHeader: {
-        padding: theme.spacing(4, 3, 3, 3),
+        padding: theme.spacing(3),
         backgroundColor: theme.palette.background.paper,
         borderBottom: `1px solid ${theme.palette.divider}`,
     },
     pageTitle: {
-        fontSize: '1.75rem',
-        fontWeight: 500,
+        fontSize: '1.5rem',
+        fontWeight: 600,
         color: theme.palette.text.primary,
         textAlign: 'center',
     },
@@ -70,8 +70,8 @@ const styles = (theme) => ({
         marginBottom: theme.spacing(3),
     },
     lessonTitle: {
-        fontSize: '1.5rem',
-        fontWeight: 500,
+        fontSize: '1.3rem',
+        fontWeight: 600,
         color: theme.palette.text.primary,
         marginBottom: theme.spacing(0.5),
     },
