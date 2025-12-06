@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import progressService from '../services/progressService';
 import { 
     Card, 
@@ -12,7 +12,8 @@ import {
     Grid,
     Paper,
     AppBar,
-    Toolbar
+    Toolbar,
+    LinearProgress
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
@@ -59,10 +60,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         transition: 'transform 0.2s',
-        '&:hover': {
-            transform: 'translateY(-4px)',
-            boxShadow: theme.shadows[8],
-        },
+        boxShadow: theme.shadows[8]
     },
     statValue: {
         fontSize: '3rem',
@@ -73,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     },
     statLabel: {
         color: theme.palette.text.secondary,
-        fontSize: '0.875rem',
+        fontSize: '0.75rem',
         textTransform: 'uppercase',
         letterSpacing: 1,
     },
@@ -89,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
     },
     streakIcon: {
-        fontSize: '4rem',
+        fontSize: '3rem',
         marginTop: theme.spacing(1),
     },
     loadingContainer: {
@@ -107,7 +105,24 @@ const useStyles = makeStyles((theme) => ({
     cardIcon: {
         color: theme.palette.primary.main,
         fontSize: '2rem',
-    }
+    },
+
+    timeRangeButton: {
+        '&:hover': {
+            backgroundColor: theme.palette.primary.dark,
+            color: theme.palette.secondary.light,
+        },
+    },
+    timeRangeButtonActive: {
+        backgroundColor: theme. palette.primary.main,
+        color: theme.palette.primary.contrastText,
+        '&:hover': {
+            backgroundColor: theme.palette.primary.dark,
+        },
+    },
+    neonProgressBar: {
+        backgroundColor: '#00f0ff ! important',
+    },
 }));
 
 export default function Dashboard() {
@@ -119,14 +134,49 @@ export default function Dashboard() {
     const [error, setError] = useState(null);
     const [showWorksheetModal, setShowWorksheetModal] = useState(false);
     const [pendingWorksheet, setPendingWorksheet] = useState(null);
-
+    // Track if the modal has been dismissed during this session
+    const modalDismissedRef = useRef(false);
     // Get user name from storage
     const userName = storageService.getAuthUserName() || 'Learner';
 
+    // Check for pending worksheet only on initial mount
+    useEffect(() => {
+        checkPendingWorksheet();
+    }, []); // Empty dependency array - runs once on mount
 
     useEffect(() => {
         loadDashboard();
     }, [timeRange]);
+
+    // Extract current lesson data from dashboardData
+    const currentLesson = dashboardData?.currentLesson;
+    const currentLessonWorksheet = dashboardData?.pendingWorksheet;
+
+    // Calculate completion percentage and worksheet progress
+    const completionPercentage = currentLesson?.completionPercentage || 0;
+    const worksheetProgress = currentLessonWorksheet
+        ? (currentLessonWorksheet.problems_checked / currentLessonWorksheet.total_problems) * 100
+        : 0;
+
+    // You'll need to get lesson details (name, topics) from your lesson data
+    // This depends on how you're loading lesson metadata
+    const lesson = currentLesson ?  {
+        id: currentLesson.lessonId,
+        name: 'Lesson Name', // You'll need to look this up from your lesson data
+        topics: 'Lesson Topics' // You'll need to look this up from your lesson data
+    } : null;
+
+    const checkPendingWorksheet = async () => {
+        try {
+            const pending = await worksheetService.checkPendingWorksheet();
+            if (pending && !modalDismissedRef.current) {
+                setPendingWorksheet(pending);
+                setShowWorksheetModal(true);
+            }
+        } catch (err) {
+            console.error('Failed to check pending worksheet:', err);
+        }
+    };
 
     const loadDashboard = async () => {
         setLoading(true);
@@ -136,13 +186,6 @@ export default function Dashboard() {
             const data = await progressService.getUserStats(timeRange, 1, 0.95);
             setDashboardData(data);
 
-            // Check for pending worksheet after dashboard loads
-            // Check for pending worksheet after dashboard loads
-            const pending = await worksheetService.checkPendingWorksheet();
-            if (pending) {
-                setPendingWorksheet(pending);
-                setShowWorksheetModal(true);
-            }
         } catch (err) {
             setError('Failed to load dashboard');
             console.error(err);
@@ -160,6 +203,8 @@ export default function Dashboard() {
     const handleDismissWorksheetModal = () => {
         setShowWorksheetModal(false);
         setPendingWorksheet(null);
+        // Mark the modal as dismissed for this session
+        modalDismissedRef.current = true;
     };
 
     const getStreakEmoji = (streak) => {
@@ -233,7 +278,7 @@ export default function Dashboard() {
                         <BrandLogoNav />
                     </Toolbar>
                 </AppBar>
-                <Box className={classes. welcomeSection}>
+                <Box className={classes.welcomeSection}>
                     <Container maxWidth="lg">
                         <Typography className={classes.welcomeText}>
                             Welcome, {userName}!
@@ -269,149 +314,279 @@ export default function Dashboard() {
                     <BrandLogoNav />
                 </Toolbar>
             </AppBar>
-            <Box className={classes. welcomeSection}>
+            <Box className={classes.welcomeSection}>
                 <Container maxWidth="lg">
                     <Typography className={classes.welcomeText}>
                         Welcome, {userName}!
                     </Typography>
                 </Container>
             </Box>
-            <Container maxWidth="lg">
-                <Box className={classes.timeRangeSelector}>
-                    <ButtonGroup color="primary" size="large">
-                        <Button 
-                            onClick={() => setTimeRange(1)}
-                            variant={timeRange === 1 ? 'contained' : 'outlined'}
-                        >
-                            Today
-                        </Button>
-                        <Button 
-                            onClick={() => setTimeRange(7)}
-                            variant={timeRange === 7 ? 'contained' : 'outlined'}
-                        >
-                            7 Days
-                        </Button>
-                        <Button 
-                            onClick={() => setTimeRange(30)}
-                            variant={timeRange === 30 ? 'contained' : 'outlined'}
-                        >
-                            30 Days
-                        </Button>
-                        <Button 
-                            onClick={() => setTimeRange(365)}
-                            variant={timeRange === 365 ? 'contained' : 'outlined'}
-                        >
-                            Year
-                        </Button>
-                    </ButtonGroup>
-                </Box>
 
-                <Grid container spacing={3} className={classes.dashboardGrid}>
-                    {/* Skills Mastered */}
-                    <Grid item xs={12} sm={6} md={3}>
-                        <Card className={classes.statCard} elevation={3}>
-                            <CardContent>
-                                <div className={classes.iconHeader}>
-                                    <CheckCircleIcon className={classes.cardIcon} />
-                                    <Typography variant="h6">
-                                        Skills Mastered
+            <Container maxWidth="xl" style={{ marginTop: 24 }}>
+                <Grid container spacing={3}>
+                    {/* LEFT COLUMN - Continue Learning */}
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={0} style={{ padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center'}} >
+                            <Typography variant="h5" gutterBottom>
+                                You Are Currently Learning
+                            </Typography>
+
+                            {currentLesson && lesson ? (
+                                <>
+                                    {/* Current Lesson Info */}
+                                    <Box mt={3} maxWidth={400} minWidth={400}>
+                                        <Typography variant="h6" color="primary">
+                                            {lesson.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                                            {lesson.topics}
+                                        </Typography>
+
+                                        <Box mt={2} mb={1}>
+                                            <LinearProgress
+                                                variant="determinate"
+                                                value={completionPercentage}
+                                                style={{ height: 24, borderRadius: 10 }}
+                                            />
+                                        </Box>
+
+                                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                                            {currentLesson.completedProblems?. length || 0} of {currentLesson.totalProblems} problems completed ({completionPercentage.toFixed(0)}%)
+                                        </Typography>
+
+                                        <Box mt={2}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                size="large"
+                                                fullWidth
+                                                onClick={() => history.push(`/lessons/${currentLesson.lessonId}`)}
+                                            >
+                                                Continue This Lesson
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </>
+                            ) : (
+                                <Box mt={3}>
+                                    <Typography variant="body1" color="textSecondary">
+                                        No active lesson.  Start a new lesson to begin learning!
                                     </Typography>
-                                </div>
-                                <Typography className={classes.statValue}>
-                                    {dashboardData.skillsMastered}
-                                </Typography>
-                                <Typography className={classes.statDetail}>
-                                    out of {dashboardData.totalSkillsPracticed} practiced
-                                </Typography>
-                                <Typography className={classes.statDetail}>
-                                    Avg: {(dashboardData.averageMastery * 100).toFixed(1)}%
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                                </Box>
+                            )}
+
+                            {/* Divider for Pending Worksheet */}
+                            {currentLessonWorksheet && (
+                                <>
+                                    <Box mt={3} maxWidth={400} minWidth={400}>
+                                        <hr style={{
+                                            border: 'none',
+                                            borderTop: '2px dashed #ccc',
+                                            margin: '24px 0'
+                                        }} />
+                                    </Box>
+
+                                    {/* Pending Worksheet Info */}
+                                    <Box mt={3} maxWidth={400} minWidth={400}>
+                                        <Box display="flex" alignItems="center" mb={1}>
+                                            <AssignmentIcon style={{ color: '#ff9800', marginRight: 8 }} />
+                                            <Typography variant="h6" style={{ color: '#ff9800' }}>
+                                                You Have a Pending Worksheet
+                                            </Typography>
+                                        </Box>
+
+                                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                                            You have an incomplete worksheet for this lesson
+                                        </Typography>
+
+                                        <Box mt={2} mb={1}>
+                                            <LinearProgress
+                                                variant="determinate"
+                                                value={worksheetProgress}
+                                                style={{
+                                                    height: 24,
+                                                    borderRadius: 10,
+                                                }}
+                                                classes={{
+                                                    bar: classes.neonProgressBar
+                                                }}
+                                            />
+                                        </Box>
+
+                                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                                            {currentLessonWorksheet.problems_checked} of {currentLessonWorksheet. total_problems} answers entered ({worksheetProgress.toFixed(0)}%)
+                                        </Typography>
+
+                                        <Box mt={2}>
+                                            <Button
+                                                variant="contained"
+                                                size="large"
+                                                fullWidth
+                                                style={{
+                                                    backgroundColor: '#ff9800',
+                                                    color: 'white'
+                                                }}
+                                                onClick={() => history.push(`/worksheets/${currentLessonWorksheet.id}/enter-answers`)}
+                                            >
+                                                Enter Worksheet Answers
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </>
+                            )}
+                        </Paper>
                     </Grid>
 
-                    {/* Practice Streak */}
-                    <Grid item xs={12} sm={6} md={3}>
-                        <Card className={classes.statCard} elevation={3}>
-                            <CardContent>
-                                <div className={classes.iconHeader}>
-                                    <WhatshotIcon className={classes.cardIcon} />
-                                    <Typography variant="h6">
-                                        Practice Streak
-                                    </Typography>
-                                </div>
-                                <Typography className={classes.statValue}>
-                                    {dashboardData.practiceStreak.currentStreak}
+                    {/* RIGHT COLUMN - Your Progress */}
+                    <Grid xs={12} md={6}>
+                      <Paper elevation={5} style={{ padding: 14, textAlign: 'center' }}>
+                        <Typography variant="h5" >
+                            Your Achievements
+                        </Typography>
+                        {/* Motivational Message */}
+                        {dashboardData.practiceStreak.currentStreak > 0 && (
+                            <Paper style={{ marginTop: 10, padding: 10, textAlign: 'center' }}>
+                                <Typography variant="h6" color="primary">
+                                    🎉 Keep up the great work! 🎉
                                 </Typography>
-                                <Typography className={classes.statDetail}>
-                                    consecutive days
+                                <Typography color="textSecondary">
+                                    You're on a {dashboardData.practiceStreak.currentStreak}-day streak!
                                 </Typography>
-                                <div className={classes.streakIcon}>
-                                    {getStreakEmoji(dashboardData.practiceStreak.currentStreak)}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Grid>
+                            </Paper>
+                        )}
+                        {/* Time Range Selector */}
+                        <Box className={classes.timeRangeSelector}>
+                            <ButtonGroup color="primary" size="medium">
+                                <Button
+                                    className={timeRange === 1 ? classes.timeRangeButtonActive : classes.timeRangeButton}
+                                    variant={timeRange === 1 ? 'contained' : 'outlined'}
+                                    onClick={() => setTimeRange(1)}
+                                >
+                                    Today
+                                </Button>
+                                <Button
+                                    className={timeRange === 7 ? classes.timeRangeButtonActive : classes.timeRangeButton}
+                                    variant={timeRange === 7 ? 'contained' : 'outlined'}
+                                    onClick={() => setTimeRange(7)}
+                                >
+                                    7 Days
+                                </Button>
+                                <Button
+                                    className={timeRange === 30 ? classes.timeRangeButtonActive : classes.timeRangeButton}
+                                    variant={timeRange === 30 ? 'contained' : 'outlined'}
+                                    onClick={() => setTimeRange(30)}
+                                >
+                                    30 Days
+                                </Button>
+                                <Button
+                                    className={timeRange === 90 ? classes.timeRangeButtonActive : classes.timeRangeButton}
+                                    variant={timeRange === 90 ? 'contained' : 'outlined'}
+                                    onClick={() => setTimeRange(90)}
+                                >
+                                    90 Days
+                                </Button>
+                            </ButtonGroup>
+                        </Box>
 
-                    {/* Time on Task */}
-                    <Grid item xs={12} sm={6} md={3}>
-                        <Card className={classes.statCard} elevation={3}>
-                            <CardContent>
-                                <div className={classes.iconHeader}>
-                                    <TimerIcon className={classes.cardIcon} />
-                                    <Typography variant="h6">
-                                        Time Practiced
-                                    </Typography>
-                                </div>
-                                <Typography className={classes.statValue}>
-                                    {dashboardData.timeOnTask.totalMinutes}
-                                </Typography>
-                                <Typography className={classes.statDetail}>
-                                    minutes
-                                </Typography>
-                                <Typography className={classes.statDetail}>
-                                    in the last {dashboardData.timeOnTask.days} day{dashboardData.timeOnTask.days !== 1 ? 's' : ''}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
+                        {/* Existing stats cards */}
+                        <Grid container spacing={3} className={classes.dashboardGrid}>
+                            {/* Skills Mastered */}
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card className={classes.statCard} elevation={3}>
+                                    <CardContent>
+                                        <div className={classes.iconHeader}>
+                                            <CheckCircleIcon className={classes.cardIcon} />
+                                            <Typography variant="h8">
+                                                Skills Mastered
+                                            </Typography>
+                                        </div>
+                                        <Typography className={classes.statValue}>
+                                            {dashboardData.skillsMastered}
+                                        </Typography>
+                                        <Typography className={classes.statDetail}>
+                                            out of {dashboardData.totalSkillsPracticed} practiced
+                                        </Typography>
+                                        <Typography className={classes.statDetail}>
+                                            <div>Avg Mastery:</div> {(dashboardData.averageMastery * 100).toFixed(1)}%
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
 
-                    {/* Problems Solved */}
-                    <Grid item xs={12} sm={6} md={3}>
-                        <Card className={classes.statCard} elevation={3}>
-                            <CardContent>
-                                <div className={classes.iconHeader}>
-                                    <AssignmentIcon className={classes.cardIcon} />
-                                    <Typography variant="h6">
-                                        Problems Solved
-                                    </Typography>
-                                </div>
-                                <Typography className={classes.statValue}>
-                                    {dashboardData.problemsSolved.count}
-                                </Typography>
-                                <Typography className={classes.statDetail}>
-                                    problems completed
-                                </Typography>
-                                <Typography className={classes.statDetail}>
-                                    in the last {dashboardData.problemsSolved.days} day{dashboardData.problemsSolved.days !== 1 ? 's' : ''}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
+                            {/* Practice Streak */}
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card className={classes.statCard} elevation={3}>
+                                    <CardContent>
+                                        <div className={classes.iconHeader}>
+                                            <WhatshotIcon className={classes.cardIcon} />
+                                            <Typography variant="h8">
+                                                Practice Streak
+                                            </Typography>
+                                        </div>
+                                        <Typography className={classes.statValue}>
+                                            {dashboardData.practiceStreak.currentStreak}
+                                        </Typography>
+                                        <Typography className={classes.statDetail}>
+                                            consecutive days
+                                        </Typography>
+                                        <div className={classes.streakIcon}>
+                                            {getStreakEmoji(dashboardData.practiceStreak.currentStreak)}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+
+                            {/* Time on Task */}
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card className={classes.statCard} elevation={3}>
+                                    <CardContent>
+                                        <div className={classes.iconHeader}>
+                                            <TimerIcon className={classes.cardIcon} />
+                                            <Typography variant="h8">
+                                                Time Practiced
+                                            </Typography>
+                                        </div>
+                                        <Typography className={classes.statValue}>
+                                            {dashboardData.timeOnTask.totalMinutes}
+                                        </Typography>
+                                        <Typography className={classes.statDetail}>
+                                            minutes
+                                        </Typography>
+                                        <Typography className={classes.statDetail}>
+                                            in the last {dashboardData.timeOnTask.days} day{dashboardData.timeOnTask.days !== 1 ? 's' : ''}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+
+                            {/* Problems Solved */}
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card className={classes.statCard} elevation={3}>
+                                    <CardContent>
+                                        <div className={classes.iconHeader}>
+                                            <AssignmentIcon className={classes.cardIcon} />
+                                            <Typography variant="h8">
+                                                Problems Solved
+                                            </Typography>
+                                        </div>
+                                        <Typography className={classes.statValue}>
+                                            {dashboardData.problemsSolved.count}
+                                        </Typography>
+                                        <Typography className={classes.statDetail}>
+                                            problems completed
+                                        </Typography>
+                                        <Typography className={classes.statDetail}>
+                                            in the last {dashboardData.problemsSolved.days} day{dashboardData.problemsSolved.days !== 1 ? 's' : ''}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                      </Paper>
+                      </Grid>
                 </Grid>
-
-                {/* Motivational Message */}
-                {dashboardData.practiceStreak.currentStreak > 0 && (
-                    <Paper style={{ marginTop: 24, padding: 16, textAlign: 'center' }}>
-                        <Typography variant="h6" color="primary">
-                            🎉 Keep up the great work!
-                        </Typography>
-                        <Typography color="textSecondary">
-                            You're on a {dashboardData.practiceStreak.currentStreak}-day streak!
-                        </Typography>
-                    </Paper>
-                )}
             </Container>
+
             {/* Pending Worksheet Modal */}
             <PendingWorksheetModal
                 open={showWorksheetModal}

@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 600,
         lineHeight: '32px',
         display: 'block',
-        color:"#00F0FF"
+        color:"#83f3fa"
     },
     navButton: {
         color: 'white',

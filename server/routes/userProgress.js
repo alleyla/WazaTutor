@@ -483,7 +483,7 @@ router.get('/stats', auth, async (req, res) => {
         `, [userId, masteryThreshold]);
 
         // Calculate the interval for date queries
-        const daysInterval = days - 1; // Subtract 1 because CURRENT_DATE is inclusive
+        const daysInterval = days - 1;
 
         // Time on task (recent activity)
         const timeResult = await pool.query(`
@@ -539,6 +539,45 @@ router.get('/stats', auth, async (req, res) => {
             WHERE break_group = 0 AND met_threshold = true
         `, [userId, streakMinProblems]);
 
+        // ===== NEW: Get current lesson information =====
+        const currentLessonResult = await pool.query(`
+            SELECT 
+                ucl.lesson_id,
+                ulp.completed_problems,
+                ulp.total_problems,
+                ulp.completion_percentage,
+                ulp. last_problem_id,
+                ulp.updated_at
+            FROM user_current_lesson ucl
+            LEFT JOIN user_lesson_progress ulp 
+                ON ucl.user_id = ulp.user_id AND ucl.lesson_id = ulp.lesson_id
+            WHERE ucl.user_id = $1
+        `, [userId]);
+
+        // ===== NEW: Get pending worksheet for current lesson =====
+        let pendingWorksheet = null;
+        if (currentLessonResult.rows.length > 0) {
+            const lessonId = currentLessonResult.rows[0].lesson_id;
+            const worksheetResult = await pool.query(`
+                SELECT 
+                    id,
+                    lesson_id,
+                    total_problems,
+                    problems_checked,
+                    created_at
+                FROM user_worksheets
+                WHERE user_id = $1 
+                  AND lesson_id = $2 
+                  AND status = 'pending'
+                ORDER BY created_at DESC
+                LIMIT 1
+            `, [userId, lessonId]);
+
+            if (worksheetResult.rows.length > 0) {
+                pendingWorksheet = worksheetResult.rows[0];
+            }
+        }
+
         res.json({
             success: true,
             stats: {
@@ -557,7 +596,18 @@ router.get('/stats', auth, async (req, res) => {
                 practiceStreak: {
                     currentStreak: parseInt(streakResult.rows[0].streak_days) || 0,
                     minProblemsPerDay: streakMinProblems
-                }
+                },
+                // ===== NEW: Current lesson data =====
+                currentLesson: currentLessonResult.rows.length > 0 ? {
+                    lessonId: currentLessonResult.rows[0].lesson_id,
+                    completedProblems: currentLessonResult.rows[0].completed_problems || [],
+                    totalProblems: currentLessonResult.rows[0].total_problems || 0,
+                    completionPercentage: parseFloat(currentLessonResult.rows[0].completion_percentage) || 0,
+                    lastProblemId: currentLessonResult.rows[0].last_problem_id,
+                    updatedAt: currentLessonResult.rows[0].updated_at
+                } : null,
+                // ===== NEW: Pending worksheet for current lesson =====
+                pendingWorksheet: pendingWorksheet
             }
         });
     } catch (error) {

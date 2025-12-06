@@ -68,7 +68,7 @@ blockquote:before {
 /* Toast Success - Neon Cyan */
 . Toastify__toast--success {
     background-color: #073755 ! important;
-    color: #FFFFFF !important;
+    color: #00F0FF !important;
     border: 2px solid #00F0FF ! important;
     box-shadow: 0 4px 12px rgba(0, 240, 255, 0. 5) !important;
 }
@@ -80,7 +80,7 @@ blockquote:before {
 /* Toast Error - Neon Red/Pink */
 .Toastify__toast--error {
     background-color: #073755 ! important;
-    color: #FFFFFF !important;
+    color: #00F0FF !important;
     border: 2px solid #FF3B6D !important;
     box-shadow: 0 4px 12px rgba(255, 59, 109, 0.5) !important;
 }
@@ -92,7 +92,7 @@ blockquote:before {
 /* Toast Warning - Neon Yellow/Orange */
 .Toastify__toast--warning {
     background-color: #073755 !important;
-    color: #FFFFFF !important;
+    color: #00F0FF !important;
     border: 2px solid #FFB020 !important;
     box-shadow: 0 4px 12px rgba(255, 176, 32, 0.5) !important;
 }
