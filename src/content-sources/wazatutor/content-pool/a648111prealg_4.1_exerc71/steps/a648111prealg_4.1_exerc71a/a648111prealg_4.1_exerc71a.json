@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_exerc71a",
+    "stepAnswer": [
+        "<"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Exercise $$71$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$-4$$ $$___$$ $$\\frac{-23}{6}$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

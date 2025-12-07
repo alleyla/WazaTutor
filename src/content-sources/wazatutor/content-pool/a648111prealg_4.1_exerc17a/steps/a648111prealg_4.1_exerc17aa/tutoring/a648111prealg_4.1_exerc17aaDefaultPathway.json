@@ -1,0 +1,56 @@
+[
+    {
+        "id": "a648111prealg_4.1_exerc17aa-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$\\frac{5}{4}$$"
+        ],
+        "dependencies": [],
+        "title": "Improper Fraction",
+        "text": "First, identify the improper fraction. How many pieces is each whole circle divided into? (This is your denominator). Count the total shaded pieces (This is your numerator).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc17aa-s2",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$1$$ $$\\frac{1}{4}$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_exerc17aa-s1"
+        ],
+        "title": "Mixed Number",
+        "text": "Now, look at the whole shapes. How many full circles are shaded? What fraction of the last circle is shaded? Write this as a mixed number.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc17aa-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Total parts",
+        "text": "Each circle is divided into $$4$$ pieces.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc17aa-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_exerc17aa-h1"
+        ],
+        "title": "Shaded parts",
+        "text": "There are $$5$$ shaded pieces in total.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

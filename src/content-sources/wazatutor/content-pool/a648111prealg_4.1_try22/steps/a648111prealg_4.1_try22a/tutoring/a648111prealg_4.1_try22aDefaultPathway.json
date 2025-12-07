@@ -1,0 +1,46 @@
+[
+    {
+        "id": "a648111prealg_4.1_try22a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$16$$"
+        ],
+        "dependencies": [],
+        "title": "Step $$1$$",
+        "text": "What is the whole number (2) multiplied by the denominator (8)?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try22a-s2",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$23$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_try22a-s1"
+        ],
+        "title": "Step $$2$$",
+        "text": "What is that product (16) plus the numerator (7)?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try22a-h1",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try22a-s2"
+        ],
+        "title": "Step $$3$$",
+        "text": "Write the final sum (23) over the original denominator (8).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

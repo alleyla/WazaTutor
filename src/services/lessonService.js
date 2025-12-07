@@ -50,7 +50,7 @@ class LessonService {
 
         // If translation returns the key itself, it means it doesn't exist
         // Return "Skill" as fallback
-        return translated === translationKey ? 'Skill' : translated;
+        return translated === translationKey ? translationKey : translated;
     }
 
     /**

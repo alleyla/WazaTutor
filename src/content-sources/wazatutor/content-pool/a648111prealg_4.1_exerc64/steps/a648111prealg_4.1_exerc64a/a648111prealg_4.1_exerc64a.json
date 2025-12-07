@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_exerc64a",
+    "stepAnswer": [
+        "<"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Exercise $$64$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$-1$$ $$___$$ $$\\frac{-1}{4}$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_ex18ba",
+    "stepAnswer": [
+        "<"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Example $$4.18b$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$-3$$ $$\\frac{1}{2}$$ $$___$$ $$3$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

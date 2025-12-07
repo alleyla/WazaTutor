@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a648111prealg_4.1_try21a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Step $$1$$",
+        "text": "Multiply the whole number (3) by the denominator (7).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try21a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try21a-h1"
+        ],
+        "title": "Step $$2$$",
+        "text": "Add the numerator (5) to that product.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try21a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try21a-h2"
+        ],
+        "title": "Step $$3$$",
+        "text": "Write the final sum over the original denominator (7).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

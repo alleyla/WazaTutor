@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_exerc69a",
+    "stepAnswer": [
+        "<"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Exercise $$69$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$\\frac{-9}{10}$$ $$___$$ $$\\frac{-3}{10}$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

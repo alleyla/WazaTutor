@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a648111prealg_4.1_try17a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Divide",
+        "text": "Divide $$13$$ by $$7$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try17a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "string",
+        "hintAnswer": [
+            "1 R 6"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_try17a-h1"
+        ],
+        "title": "Quotient & Remainder",
+        "text": "What is the quotient and remainder? (Write as 'Q R R', e.g., '1 R 6').",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try17a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try17a-s1"
+        ],
+        "title": "Write as mixed number",
+        "text": "Write the mixed number as 'Quotient $$\\frac{remainder}{divisor'}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

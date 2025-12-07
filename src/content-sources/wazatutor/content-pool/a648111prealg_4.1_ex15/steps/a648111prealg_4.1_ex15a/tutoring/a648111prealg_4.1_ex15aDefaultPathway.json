@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a648111prealg_4.1_ex15a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Find the multiplier",
+        "text": "To get a denominator of $$21$$, what number must you multiply $$7$$ by?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex15a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$3$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_ex15a-h1"
+        ],
+        "title": "Find multiplier",
+        "text": "What is $$21$$ divided by 7?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex15a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex15a-s1"
+        ],
+        "title": "Multiply",
+        "text": "Multiply both the numerator (2) and the denominator (7) by $$3$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

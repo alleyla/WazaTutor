@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a648111prealg_4.1_ex9a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "How to",
+        "text": "To convert an improper fraction to a mixed number, divide the denominator into the numerator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex9a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "string",
+        "hintAnswer": [
+            "1 R 5"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_ex9a-h1"
+        ],
+        "title": "Divide",
+        "text": "What is $$11$$ divided by 6? Write the answer as 'Quotient R Remainder' (e.g., '1 R 5').",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex9a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex9a-s1"
+        ],
+        "title": "Write as mixed number",
+        "text": "The quotient is the whole number, the remainder is the new numerator, and the divisor is the denominator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -365,7 +365,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
                                         </Box>
 
                                         <Typography variant="body2" color="textSecondary" gutterBottom>
-                                            {completedProblemsCount} of {totalProblems} problems completed ({completionPercentage.toFixed(0)}%)
+                                            {completedProblemsCount} of {totalProblems} problems practiced ({completionPercentage.toFixed(0)}%)
                                         </Typography>
 
                                         <>
@@ -679,7 +679,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
                                             {dashboardData.problemsSolved.count}
                                         </Typography>
                                         <Typography className={classes.statDetail}>
-                                            problems completed
+                                            problems practiced
                                         </Typography>
                                         <Typography className={classes.statDetail}>
                                             in the last {dashboardData.problemsSolved.days} day{dashboardData.problemsSolved.days !== 1 ? 's' : ''}

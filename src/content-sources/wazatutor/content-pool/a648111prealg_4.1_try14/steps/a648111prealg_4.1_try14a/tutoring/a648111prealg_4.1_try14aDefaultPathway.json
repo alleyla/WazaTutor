@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a648111prealg_4.1_try14a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Model",
+        "text": "A whole is $$\\frac{4}{4}$$. How many $$\\frac{4}{4} ths$$ are in $$\\frac{7}{4}$$?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try14a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try14a-h1"
+        ],
+        "title": "Calculate",
+        "text": "$$\\frac{7}{4}$$ $$=$$ $$\\frac{4}{4}$$ + $$\\frac{3}{4}$$ $$=$$ $$1$$ + $$\\frac{3}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

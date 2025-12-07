@@ -1,9 +1,237 @@
 {
+    "a648111prealg_4.1_ex10a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_ex11a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_ex12a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_ex15a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_ex18aa": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_ex18ba": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_ex18ca": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_ex18da": [
+        "order_fractions"
+    ],
     "a648111prealg_4.1_ex1aa": [
         "visualize_fractions"
     ],
     "a648111prealg_4.1_ex1ba": [
         "visualize_fractions"
+    ],
+    "a648111prealg_4.1_ex5a": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_ex7a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_ex8a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_ex9a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc17aa": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_exerc17ba": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_exerc17ca": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_exerc18aa": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_exerc18ba": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_exerc18ca": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_exerc1aa": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc1ba": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc1ca": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc1da": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc28a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc29a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc2aa": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc2ba": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc2ca": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc2da": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc30a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc31a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc32a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc33a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc34a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc35a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_exerc36a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc37a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc38a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc39a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc40a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc41a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc42a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc43a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_exerc44a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc45a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc46a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc47a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc48a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc49a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc5a": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_exerc50a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc51a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc52a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc53a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc54a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc55a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_exerc64a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc65a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc66a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc67a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc68a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc69a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc70a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc71a": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_exerc72a": [
+        "word_problems"
+    ],
+    "a648111prealg_4.1_exerc73aa": [
+        "word_problems"
+    ],
+    "a648111prealg_4.1_exerc73ba": [
+        "word_problems"
+    ],
+    "a648111prealg_4.1_exerc74a": [
+        "word_problems"
+    ],
+    "a648111prealg_4.1_exerc8a": [
+        "visualize_fractions"
+    ],
+    "a648111prealg_4.1_try10a": [
+        "improper_fractions"
+    ],
+    "a648111prealg_4.1_try13a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_try14a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_try15a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_try16a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_try17a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_try18a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_try19a": [
+        "convert_improper_to_mixed"
     ],
     "a648111prealg_4.1_try1aa": [
         "visualize_fractions"
@@ -11,10 +239,49 @@
     "a648111prealg_4.1_try1ba": [
         "visualize_fractions"
     ],
+    "a648111prealg_4.1_try20a": [
+        "convert_improper_to_mixed"
+    ],
+    "a648111prealg_4.1_try21a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_try22a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_try23a": [
+        "convert_mixed_to_improper"
+    ],
+    "a648111prealg_4.1_try29a": [
+        "equivalent_fractions"
+    ],
     "a648111prealg_4.1_try2aa": [
         "visualize_fractions"
     ],
     "a648111prealg_4.1_try2ba": [
         "visualize_fractions"
+    ],
+    "a648111prealg_4.1_try30a": [
+        "equivalent_fractions"
+    ],
+    "a648111prealg_4.1_try35aa": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_try35ba": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_try35ca": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_try36aa": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_try36ba": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_try36ca": [
+        "order_fractions"
+    ],
+    "a648111prealg_4.1_try9a": [
+        "improper_fractions"
     ]
 }

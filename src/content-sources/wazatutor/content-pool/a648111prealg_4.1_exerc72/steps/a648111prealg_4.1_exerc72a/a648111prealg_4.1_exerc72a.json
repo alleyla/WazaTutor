@@ -1,0 +1,12 @@
+{
+    "id": "a648111prealg_4.1_exerc72a",
+    "stepAnswer": [
+        "$$5$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Exercise $$72$$",
+    "stepBody": "A choreographed dance is broken into counts. A $$\\frac{1}{1}$$ count has one step in a count, a $$\\frac{1}{2}$$ count has two steps in a count and a $$\\frac{1}{3}$$ count has three steps in a count. How many steps would be in a $$\\frac{1}{5}$$ count?",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$5$$"
+}

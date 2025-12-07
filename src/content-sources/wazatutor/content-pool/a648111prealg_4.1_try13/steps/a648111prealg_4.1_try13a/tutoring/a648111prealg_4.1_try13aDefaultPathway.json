@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a648111prealg_4.1_try13a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Model",
+        "text": "A whole is $$\\frac{7}{7}$$. How many whole groups of $$7$$ fit in 9? - That is the whole part",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try13a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try13a-h1"
+        ],
+        "title": "Calculate",
+        "text": "$$\\frac{9}{7}$$ $$=$$ $$\\frac{7}{7}$$ + $$\\frac{2}{7}$$ $$=$$ $$1$$ + $$\\frac{2}{7}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a648111prealg_4.1_ex7a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Model the Whole",
+        "text": "A whole is made of six sixths ($$\\frac{6}{6}$$). How many whole groups of $$6$$ sixths can you make from $$11$$ sixths?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex7a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex7a-h1"
+        ],
+        "title": "Find the Remainder",
+        "text": "$$\\frac{11}{6$$} $$=$$ $$\\frac{6}{6$$} + $$\\frac{?}{6}$$ What is the remaining fraction?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

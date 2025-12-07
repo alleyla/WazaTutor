@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_exerc70a",
+    "stepAnswer": [
+        "<"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Exercise $$70$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$-3$$ $$___$$ $$\\frac{-13}{5}$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

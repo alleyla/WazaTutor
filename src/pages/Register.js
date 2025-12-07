@@ -69,14 +69,11 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         color: '#83f3fa',
         textShadow: `
-      0 0 10px rgba(131, 243, 250, 0.9),
-      0 0 20px rgba(131, 243, 250, 0.7),
-      0 0 30px rgba(131, 243, 250, 0.5),
-      0 0 40px rgba(131, 243, 250, 0.3),
-      3px 3px 6px rgba(0, 0, 0, 0.8),
-      -1px -1px 2px rgba(0, 0, 0, 0.5)
-    `,
-        WebkitTextStroke: '0.5px rgba(131, 243, 250, 0.3)',
+            0 0 8px rgba(131, 243, 250, 0.5),
+            0 0 15px rgba(131, 243, 250, 0.3),
+            2px 2px 4px rgba(0, 0, 0, 0.7)
+          `,
+        WebkitTextStroke: '0.3px rgba(131, 243, 250, 0.2)',
         lineHeight: 1,
         margin: 0,
     },

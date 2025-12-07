@@ -1,0 +1,29 @@
+[
+    {
+        "id": "a648111prealg_4.1_try19a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "string",
+        "hintAnswer": [
+            "3 R 2"
+        ],
+        "dependencies": [],
+        "title": "Quotient & Remainder",
+        "text": "What is $$23$$ divided by 7? Write the answer as 'Quotient R Remainder'.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try19a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try19a-s1"
+        ],
+        "title": "Write as mixed number",
+        "text": "The quotient is the whole number, the remainder is the new numerator, and the divisor is the denominator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

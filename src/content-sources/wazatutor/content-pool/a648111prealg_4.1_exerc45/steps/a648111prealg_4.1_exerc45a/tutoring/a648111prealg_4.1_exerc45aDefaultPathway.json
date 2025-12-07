@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a648111prealg_4.1_exerc45a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Find multiplier",
+        "text": "To get $$12$$ in the denominator, what must you multiply $$3$$ by?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc45a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_exerc45a-h1"
+        ],
+        "title": "Multiply numerator",
+        "text": "Multiply the numerator (1) by that same number.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

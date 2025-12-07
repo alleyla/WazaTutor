@@ -1,6 +1,6 @@
 [
     {
-        "courseName": "OpenStax PreAlgebra",
+        "courseName": "PreAlgebra",
         "courseOER": "https://openstax.org/details/books/prealgebra-2e <OpenStax: College PreAlgebra>",
         "courseLicense": "https://creativecommons.org/licenses/by/4.0/ <CC BY 4.0>",
         "lessons": [
@@ -10,7 +10,13 @@
                 "topics": "Visualize Fractions",
                 "allowRecycle": true,
                 "learningObjectives": {
-                    "visualize_fractions": 0.85
+                    "convert_improper_to_mixed": 0.85,
+                    "convert_mixed_to_improper": 0.85,
+                    "equivalent_fractions": 0.85,
+                    "improper_fractions": 0.85,
+                    "order_fractions": 0.85,
+                    "visualize_fractions": 0.85,
+                    "word_problems": 0.85
                 }
             }
         ]

@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_try35ba",
+    "stepAnswer": [
+        ">"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Try It $$4.35b$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$-1$$ $$\\frac{1}{2}$$ $$___$$ $$-2$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

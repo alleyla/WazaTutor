@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a648111prealg_4.1_ex10a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Divide",
+        "text": "Divide the denominator (8) into the numerator (33).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex10a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "string",
+        "hintAnswer": [
+            "4 R 1"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_ex10a-h1"
+        ],
+        "title": "Quotient & Remainder",
+        "text": "What is $$33$$ divided by 8? Write the answer as 'Quotient R Remainder' (e.g., '4 R 1').",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex10a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex10a-s1"
+        ],
+        "title": "Write as mixed number",
+        "text": "The quotient is the whole number, the remainder is the new numerator, and the divisor is the denominator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,12 @@
+{
+    "id": "a648111prealg_4.1_exerc73aa",
+    "stepAnswer": [
+        "$$2$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Exercise 73a",
+    "stepBody": "In $$\\frac{4}{4}$$ time, there are four quarter notes in one measure. How many measures would eight quarter notes make?",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$2$$"
+}

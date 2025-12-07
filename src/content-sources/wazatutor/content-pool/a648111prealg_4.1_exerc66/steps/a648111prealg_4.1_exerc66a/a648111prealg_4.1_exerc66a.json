@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_exerc66a",
+    "stepAnswer": [
+        ">"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Exercise $$66$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$-2$$ $$\\frac{1}{2}$$ $$___$$ $$-3$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

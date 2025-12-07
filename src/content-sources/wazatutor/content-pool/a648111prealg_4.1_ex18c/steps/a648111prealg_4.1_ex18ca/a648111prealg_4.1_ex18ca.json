@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_ex18ca",
+    "stepAnswer": [
+        "<"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Example $$4.18c$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n- $$\\frac{3}{7}$$ $$___$$ $$\\frac{3}{8}$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

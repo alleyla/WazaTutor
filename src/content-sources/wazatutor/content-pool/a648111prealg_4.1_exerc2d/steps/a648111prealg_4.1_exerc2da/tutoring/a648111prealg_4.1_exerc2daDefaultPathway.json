@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a648111prealg_4.1_exerc2da-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Count total",
+        "text": "The shape is divided into $$9$$ equal parts.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc2da-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_exerc2da-h1"
+        ],
+        "title": "Count shaded",
+        "text": "$$5$$ parts are shaded.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

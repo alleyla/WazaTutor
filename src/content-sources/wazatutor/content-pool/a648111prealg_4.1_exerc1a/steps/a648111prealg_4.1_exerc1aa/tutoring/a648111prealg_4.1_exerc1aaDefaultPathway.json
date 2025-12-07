@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a648111prealg_4.1_exerc1aa-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Count total",
+        "text": "Count the total number of equal parts in the shape.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc1aa-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_exerc1aa-h1"
+        ],
+        "title": "Count shaded",
+        "text": "Count the number of parts that are shaded.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

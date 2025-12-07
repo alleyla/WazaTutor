@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a648111prealg_4.1_exerc70a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "First, convert the improper fraction to a mixed number.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc70a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$-2$$ $$\\frac{3}{5}$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_exerc70a-h1"
+        ],
+        "title": "Convert",
+        "text": "What is $$\\frac{-13}{5}$$ as a mixed number?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc70a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_exerc70a-s1"
+        ],
+        "title": "Number Line",
+        "text": "$$-3$$ is to the left of $$-2$$ $$\\frac{3}{5}$$ on the number line, so $$-3$$ is smaller.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

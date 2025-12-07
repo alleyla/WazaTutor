@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_try36aa",
+    "stepAnswer": [
+        ">"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Try It $$4.36a$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$\\frac{-1}{4}$$ $$___$$ $$\\frac{-2}{4}$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

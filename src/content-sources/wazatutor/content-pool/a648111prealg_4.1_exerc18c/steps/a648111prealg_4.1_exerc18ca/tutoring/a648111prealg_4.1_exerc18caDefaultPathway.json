@@ -1,0 +1,34 @@
+[
+    {
+        "id": "a648111prealg_4.1_exerc18ca-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$\\frac{11}{9}$$"
+        ],
+        "dependencies": [],
+        "title": "Improper Fraction",
+        "text": "Write the improper fraction.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc18ca-s2",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$1$$ $$\\frac{2}{9}$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_exerc18ca-s1"
+        ],
+        "title": "Mixed Number",
+        "text": "Write the mixed number.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

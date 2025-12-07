@@ -4,8 +4,8 @@
         "$$\\frac{5}{8}$$"
     ],
     "problemType": "TextBox",
-    "stepTitle": "Example $$4.1-a$$",
-    "stepBody": "Name the fraction of the shape that is shaded.##figure1.gif## ",
+    "stepTitle": "Name the fraction of the shape that is shaded.",
+    "stepBody": "##figure1.gif## ",
     "answerType": "arithmetic",
     "variabilization": {},
     "answerLatex": "$$\\frac{5}{8}$$"

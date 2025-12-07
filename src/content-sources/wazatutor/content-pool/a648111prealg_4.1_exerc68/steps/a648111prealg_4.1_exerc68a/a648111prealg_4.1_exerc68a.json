@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_exerc68a",
+    "stepAnswer": [
+        ">"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Exercise $$68$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$\\frac{-5}{12}$$ $$___$$ $$\\frac{-7}{12}$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

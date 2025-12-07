@@ -1,0 +1,15 @@
+{
+    "id": "a648111prealg_4.1_try36ba",
+    "stepAnswer": [
+        "<"
+    ],
+    "problemType": "MultipleChoice",
+    "stepTitle": "Try It $$4.36b$$",
+    "stepBody": "Order the pair of numbers using < or >:\\n$$\\frac{-3}{12}$$ $$___$$ $$-3$$",
+    "answerType": "string",
+    "variabilization": {},
+    "choices": [
+        "<",
+        ">"
+    ]
+}

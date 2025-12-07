@@ -1,0 +1,70 @@
+[
+    {
+        "id": "a648111prealg_4.1_ex11a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Step $$1$$",
+        "text": "Multiply the whole number (4) by the denominator (3).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex11a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$12$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_ex11a-h1"
+        ],
+        "title": "Multiply",
+        "text": "What is $$4$$ * 3?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex11a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex11a-s1"
+        ],
+        "title": "Step $$2$$",
+        "text": "Add the numerator (2) to the product you just found (12).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex11a-s2",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$14$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_ex11a-h2"
+        ],
+        "title": "Add",
+        "text": "What is $$12$$ + 2?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex11a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex11a-s2"
+        ],
+        "title": "Step $$3$$",
+        "text": "Write the final sum (14) over the original denominator (3).",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

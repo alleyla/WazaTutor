@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a648111prealg_4.1_try15a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Model",
+        "text": "The whole number $$1$$ is $$\\frac{8}{8}$$. Add the fractional part.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_try15a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_try15a-h1"
+        ],
+        "title": "Calculate",
+        "text": "$$1$$ + $$\\frac{3}{8$$} $$=$$ $$\\frac{8}{8$$} + $$\\frac{3}{8}$$ Now add the numerators and use the same denominator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

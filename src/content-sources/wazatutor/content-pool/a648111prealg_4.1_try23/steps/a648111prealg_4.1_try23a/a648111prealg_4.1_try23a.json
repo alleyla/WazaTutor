@@ -1,0 +1,12 @@
+{
+    "id": "a648111prealg_4.1_try23a",
+    "stepAnswer": [
+        "$$\\frac{50}{11}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.23$$",
+    "stepBody": "Convert the mixed number to an improper fraction: $$4\\frac{6}{11}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{50}{11}$$"
+}

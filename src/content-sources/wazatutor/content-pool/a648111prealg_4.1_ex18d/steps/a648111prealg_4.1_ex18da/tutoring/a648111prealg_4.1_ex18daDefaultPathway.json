@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a648111prealg_4.1_ex18da-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "First, convert the improper fraction $$\\frac{-16}{9}$$ to a mixed number.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex18da-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$-1$$ $$\\frac{7}{9}$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_ex18da-h1"
+        ],
+        "title": "Convert",
+        "text": "What is $$\\frac{-16}{9}$$ as a mixed number?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_ex18da-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_ex18da-s1"
+        ],
+        "title": "Number Line",
+        "text": "$$-2$$ is to the left of $$-1$$ $$\\frac{7}{9}$$ on the number line, so $$-2$$ is less than $$-1$$ $$\\frac{7}{9}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

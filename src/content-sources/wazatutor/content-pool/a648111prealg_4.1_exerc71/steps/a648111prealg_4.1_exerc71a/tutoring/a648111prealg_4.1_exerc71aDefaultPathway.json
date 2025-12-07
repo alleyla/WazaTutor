@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a648111prealg_4.1_exerc71a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "First, convert the improper fraction to a mixed number.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc71a-s1",
+        "type": "scaffold",
+        "problemType": "TextBox",
+        "answerType": "arithmetic",
+        "hintAnswer": [
+            "$$-3$$ $$\\frac{5}{6}$$"
+        ],
+        "dependencies": [
+            "a648111prealg_4.1_exerc71a-h1"
+        ],
+        "title": "Convert",
+        "text": "What is $$\\frac{-23}{6}$$ as a mixed number?",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a648111prealg_4.1_exerc71a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a648111prealg_4.1_exerc71a-s1"
+        ],
+        "title": "Number Line",
+        "text": "$$-4$$ is to the left of $$-3$$ $$\\frac{5}{6}$$ on the number line, so $$-4$$ is smaller.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]
