@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try67a",
+    "stepAnswer": [
+        "$$\\frac{27}{16}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.67$$",
+    "stepBody": "Find the quotient: $$\\frac{-7}{8}$$ / $$\\left(-\\frac{14}{27}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{27}{16}$$"
+}

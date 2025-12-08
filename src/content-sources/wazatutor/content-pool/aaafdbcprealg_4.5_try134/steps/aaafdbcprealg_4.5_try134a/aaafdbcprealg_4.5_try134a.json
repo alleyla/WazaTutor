@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try134a",
+    "stepAnswer": [
+        "$$\\frac{19d}{30}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.134$$",
+    "stepBody": "Find the sum: $$\\frac{3d}{10}$$ + $$\\frac{d}{3}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{19d}{30}$$"
+}

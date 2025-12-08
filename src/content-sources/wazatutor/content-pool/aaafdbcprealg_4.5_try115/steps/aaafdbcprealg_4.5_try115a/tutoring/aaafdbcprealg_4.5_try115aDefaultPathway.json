@@ -1,0 +1,12 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try115a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Multiples",
+        "text": "List multiples of $$12$$ and $$15$$ until you find a match.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

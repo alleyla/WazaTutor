@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try181a",
+    "stepAnswer": [
+        "$$32$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.181$$",
+    "stepBody": "Solve: $$\\left(-\\frac{3}{8}\\right) x$$ $$=$$ $$-12$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$32$$"
+}

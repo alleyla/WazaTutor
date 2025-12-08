@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex59a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Find Multiplier",
+        "text": "For $$\\frac{7}{12}$$: $$12$$ * $$3$$ $$=$$ $$36$$, so multiply numerator by $$3$$.\\nFor $$\\frac{5}{18}$$: $$18$$ * $$2$$ $$=$$ $$36$$, so multiply numerator by $$2$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex59a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex59a-h1"
+        ],
+        "title": "Multiply",
+        "text": "$$7$$ * $$3$$ $$=$$ $$21$$\\n$$5$$ * $$2$$ $$=$$ $$10$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

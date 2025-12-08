@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_ex87a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Isolate Variable",
+        "text": "Add $$\\frac{2}{3}$$ to both sides.\\n$$p$$ $$=$$ $$\\frac{-2}{3}$$ + $$\\frac{2}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex87a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex87a-h1"
+        ],
+        "title": "Add",
+        "text": "Opposites add to zero.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

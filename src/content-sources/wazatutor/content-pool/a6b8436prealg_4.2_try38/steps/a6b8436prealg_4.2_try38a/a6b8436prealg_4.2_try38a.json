@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try38a",
+    "stepAnswer": [
+        "$$\\frac{-5}{6}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.38$$",
+    "stepBody": "Simplify: $$\\frac{-100}{120}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-5}{6}$$"
+}

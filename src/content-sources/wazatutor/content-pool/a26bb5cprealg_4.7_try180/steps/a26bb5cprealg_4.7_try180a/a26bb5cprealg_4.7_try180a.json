@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try180a",
+    "stepAnswer": [
+        "$$25$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.180$$",
+    "stepBody": "Solve: $$\\frac{4}{5} k$$ $$=$$ $$20$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$25$$"
+}

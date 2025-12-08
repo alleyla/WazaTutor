@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try119a",
+    "stepAnswer": [
+        "$$\\frac{7}{10}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.119$$",
+    "stepBody": "Find the sum: $$\\frac{1}{2}$$ + $$\\frac{1}{5}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{7}{10}$$"
+}

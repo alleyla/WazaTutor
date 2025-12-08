@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_ex43a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Rewrite",
+        "text": "Rewrite as a division problem: $$\\frac{3}{4}$$ / $$\\frac{5}{8}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex43a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex43a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply by the reciprocal: $$\\frac{3}{4}$$ * $$\\frac{8}{5}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

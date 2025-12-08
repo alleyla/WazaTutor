@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_ex34a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Sign",
+        "text": "The quotient of two negatives is positive.\\n",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a6b8436prealg_4.2_ex34a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a6b8436prealg_4.2_ex34a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply by the reciprocal.\\n$$\\frac{-7}{18}$$ * $$\\left(-\\frac{27}{14}\\right)$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

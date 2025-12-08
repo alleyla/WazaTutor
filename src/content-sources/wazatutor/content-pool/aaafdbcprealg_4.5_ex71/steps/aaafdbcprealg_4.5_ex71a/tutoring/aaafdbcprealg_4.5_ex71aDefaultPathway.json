@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex71a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Numerator",
+        "text": "Add $$\\frac{8}{15}$$ + $$\\frac{12}{15}$$ $$=$$ $$\\frac{20}{15}$$. Simplify to $$\\frac{4}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex71a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex71a-h1"
+        ],
+        "title": "Denominator",
+        "text": "Add $$\\frac{2}{3}$$ + $$\\frac{1}{4}$$. LCD is $$12$$.\\n$$\\frac{8}{12}$$ + $$\\frac{3}{12}$$ $$=$$ $$\\frac{11}{12}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex71a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex71a-h2"
+        ],
+        "title": "Divide",
+        "text": "Divide $$\\frac{4}{3}$$ by $$\\frac{11}{12}$$.\\n$$\\frac{4}{3}$$ * $$\\frac{12}{11}$$ $$=$$ $$\\frac{48}{33}$$ $$=$$ $$\\frac{16}{11}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

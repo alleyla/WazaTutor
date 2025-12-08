@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try114a",
+    "stepAnswer": [
+        "$$\\frac{-22}{a}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.114$$",
+    "stepBody": "Find the difference: $$\\frac{-17}{a}$$ - $$\\frac{5}{a}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-22}{a}$$"
+}

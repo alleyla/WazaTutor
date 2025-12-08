@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try139a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Multiply",
+        "text": "$$\\frac{2}{3}$$ * $$\\frac{-1}{2}$$ $$=$$ $$\\frac{-2}{6}$$ $$=$$ $$\\frac{-1}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try139a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try139a-h1"
+        ],
+        "title": "Add",
+        "text": "$$\\frac{1}{4}$$ + $$\\left(-\\frac{1}{3}\\right)$$. LCD is $$12$$.\\n$$\\frac{3}{12}$$ - $$\\frac{4}{12}$$ $$=$$ $$\\frac{-1}{12}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

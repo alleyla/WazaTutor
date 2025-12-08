@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_ex46a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Multiply First",
+        "text": "Follow order of operations (PEMDAS). Multiply first.\\n$$4$$ * $$\\frac{2}{3}$$ $$=$$ $$\\frac{8}{3}$$ $$=$$ $$2$$ $$\\frac{2}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex46a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex46a-h1"
+        ],
+        "title": "Add",
+        "text": "Add $$5$$ $$\\frac{1}{2}$$ + $$2$$ $$\\frac{2}{3}$$.\\nFind common denominator (6).\\n$$5$$ $$\\frac{3}{6}$$ + $$2$$ $$\\frac{4}{6}$$ $$=$$ $$7$$ $$\\frac{7}{6}$$ $$=$$ $$8$$ $$\\frac{1}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

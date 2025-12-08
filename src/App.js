@@ -50,6 +50,8 @@ import PrintAnswerKey from './pages/PrintAnswerKey';
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import AboutButton from './components/AboutButton';
+import TermsAndConditions from './pages/Posts/TermsAndConditions';
+
 
 // ### BEGIN CUSTOMIZABLE IMPORTS ###
 import config from "./config/firebaseConfig.js";
@@ -795,6 +797,7 @@ class App extends React.Component {
                                             />
                                         )}
                                     />
+                                    <Route path="/terms" exact component={TermsAndConditions} />
                                     <Route
                                         exact
                                         path="/session-expired"
@@ -855,7 +858,7 @@ class App extends React.Component {
                         </Router>
                         <ToastContainer
                             position="bottom-center"
-                            autoClose={4000}
+                            autoClose={3000}
                             hideProgressBar={false}
                             newestOnTop={true}
                             closeOnClick={true}

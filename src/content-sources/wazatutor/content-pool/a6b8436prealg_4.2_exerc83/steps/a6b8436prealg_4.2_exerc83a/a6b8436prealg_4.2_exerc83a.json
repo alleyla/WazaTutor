@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_exerc83a",
+    "stepAnswer": [
+        "$$\\frac{x}{y}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Exercise $$83$$",
+    "stepBody": "Simplify: $$\\frac{7x}{7} y$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{x}{y}$$"
+}

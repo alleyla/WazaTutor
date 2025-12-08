@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try100a",
+    "stepAnswer": [
+        "$$\\frac{-4}{9}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.100$$",
+    "stepBody": "Find the sum: $$\\frac{-3}{9}$$ + $$\\left(-\\frac{1}{9}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-4}{9}$$"
+}

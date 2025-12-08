@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try115a",
+    "stepAnswer": [
+        "$$60$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.115$$",
+    "stepBody": "Find the LCD for the fractions: $$\\frac{7}{12}$$ and $$\\frac{11}{15}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$60$$"
+}

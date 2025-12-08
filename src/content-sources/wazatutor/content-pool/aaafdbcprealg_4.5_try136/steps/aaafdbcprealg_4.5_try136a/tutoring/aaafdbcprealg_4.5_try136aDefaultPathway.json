@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try136a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$4$$ and $$10$$ is $$20$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try136a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try136a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{3n}{4}$$ $$=$$ $$\\frac{15n}{20}$$\\n$$\\frac{n}{10}$$ $$=$$ $$\\frac{2n}{20}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

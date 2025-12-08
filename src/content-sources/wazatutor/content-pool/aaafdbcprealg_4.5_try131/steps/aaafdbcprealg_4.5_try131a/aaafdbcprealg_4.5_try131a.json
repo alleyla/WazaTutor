@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try131a",
+    "stepAnswer": [
+        "$$\\frac{-1}{10}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.131$$",
+    "stepBody": "Find the difference: $$\\frac{-3}{5}$$ - $$\\left(-\\frac{1}{2}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-1}{10}$$"
+}

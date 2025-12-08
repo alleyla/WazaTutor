@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try138a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Parentheses",
+        "text": "$$\\frac{1}{4}$$ - $$\\frac{1}{3}$$. LCD is $$12$$.\\n$$\\frac{3}{12}$$ - $$\\frac{4}{12}$$ $$=$$ $$\\frac{-1}{12}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try138a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try138a-h1"
+        ],
+        "title": "Multiply",
+        "text": "$$\\frac{2}{3}$$ * $$\\frac{-1}{12}$$ $$=$$ $$\\frac{-2}{36}$$. Simplify.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

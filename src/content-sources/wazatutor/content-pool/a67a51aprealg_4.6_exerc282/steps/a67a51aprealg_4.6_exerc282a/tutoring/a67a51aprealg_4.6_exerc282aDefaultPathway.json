@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_exerc282a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "LCD is $$6$$. Convert to $$8$$ $$\\frac{1}{6}$$ - $$5$$ $$\\frac{2}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_exerc282a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_exerc282a-h1"
+        ],
+        "title": "Borrow",
+        "text": "Rename $$8$$ $$\\frac{1}{6}$$ as $$7$$ $$\\frac{7}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

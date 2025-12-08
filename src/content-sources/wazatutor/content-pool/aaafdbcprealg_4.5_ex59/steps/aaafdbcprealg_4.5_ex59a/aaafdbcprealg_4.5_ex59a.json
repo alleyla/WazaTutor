@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_ex59a",
+    "stepAnswer": [
+        "21/36, 10/36"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Example $$4.59$$",
+    "stepBody": "Convert $$\\frac{7}{12}$$ and $$\\frac{5}{18}$$ to equivalent fractions with denominator $$36$$.",
+    "answerType": "string",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{21}{36}$$, $$\\frac{10}{36}$$"
+}

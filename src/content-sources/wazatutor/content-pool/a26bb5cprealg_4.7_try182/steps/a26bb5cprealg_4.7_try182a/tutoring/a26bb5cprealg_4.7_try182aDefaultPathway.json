@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try182a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Reciprocal",
+        "text": "Multiply by $$\\frac{-9}{5}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try182a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try182a-h1"
+        ],
+        "title": "Solve",
+        "text": "$$-25$$ * $$\\left(-\\frac{9}{5}\\right)$$ $$=$$ $$\\frac{225}{5}$$ $$=$$ $$45$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

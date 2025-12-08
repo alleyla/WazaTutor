@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_try154a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Subtract",
+        "text": "$$7$$ - $$5$$ $$=$$ $$2$$\\n$$\\frac{9}{10}$$ - $$\\frac{1}{10}$$ $$=$$ $$\\frac{8}{10}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try154a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try154a-h1"
+        ],
+        "title": "Simplify",
+        "text": "Simplify $$2$$ $$\\frac{8}{10}$$ to $$2$$ $$\\frac{4}{5}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

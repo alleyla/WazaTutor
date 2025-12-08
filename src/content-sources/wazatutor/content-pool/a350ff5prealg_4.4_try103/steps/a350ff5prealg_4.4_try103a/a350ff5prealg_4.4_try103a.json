@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try103a",
+    "stepAnswer": [
+        "$$\\frac{2}{5}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.103$$",
+    "stepBody": "Find the sum: $$\\frac{-2}{5}$$ + $$\\frac{4}{5}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{2}{5}$$"
+}

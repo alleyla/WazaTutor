@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_ex88a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Multiply",
+        "text": "Multiply both sides by $$7$$ to isolate $$x$$.\\n$$x$$ $$=$$ $$-9$$ * $$7$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex88a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex88a-h1"
+        ],
+        "title": "Solve",
+        "text": "$$-9$$ * $$7$$ $$=$$ $$-63$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

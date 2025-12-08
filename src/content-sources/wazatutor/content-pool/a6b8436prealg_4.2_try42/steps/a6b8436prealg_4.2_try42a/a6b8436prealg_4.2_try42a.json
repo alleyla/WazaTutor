@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try42a",
+    "stepAnswer": [
+        "$$\\frac{a}{b}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.42$$",
+    "stepBody": "Simplify: $$\\frac{3a}{3} b$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{a}{b}$$"
+}

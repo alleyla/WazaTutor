@@ -18,6 +18,73 @@
                     "visualize_fractions": 0.85,
                     "word_problems": 0.85
                 }
+            },
+            {
+                "id": "1600ced2-dadf-5d10f63ada",
+                "name": "Lesson 4.2",
+                "topics": "Multiply and Divide Fractions",
+                "allowRecycle": true,
+                "learningObjectives": {
+                    "divide_fractions": 0.85,
+                    "multiply_fractions": 0.85,
+                    "reciprocals": 0.85,
+                    "simplify_fractions": 0.85
+                }
+            },
+            {
+                "id": "61ba97ff-016d-9746cd6701",
+                "name": "Lesson 4.3",
+                "topics": "Multiply and Divide Mixed Numbers and Complex Fractions",
+                "allowRecycle": true,
+                "learningObjectives": {
+                    "complex_fractions": 0.85,
+                    "divide_mixed_numbers": 0.85,
+                    "multiply_mixed_numbers": 0.85,
+                    "order_of_operations": 0.85
+                }
+            },
+            {
+                "id": "143bcf80-1763-61caf8e817",
+                "name": "Lesson 4.4",
+                "topics": "Add and Subtract Fractions with Common Denominators",
+                "allowRecycle": true,
+                "learningObjectives": {
+                    "add_fractions": 0.85,
+                    "add_mixed_numbers": 0.85,
+                    "subtract_fractions": 0.85
+                }
+            },
+            {
+                "id": "905f0915-bd00-374286adbd",
+                "name": "Lesson 4.5",
+                "topics": "Add and Subtract Fractions with Different Denominators",
+                "allowRecycle": true,
+                "learningObjectives": {
+                    "add_fractions": 0.85,
+                    "equivalent_fractions": 0.85,
+                    "find_lcd": 0.85,
+                    "order_of_operations": 0.85,
+                    "subtract_fractions": 0.85
+                }
+            },
+            {
+                "id": "0cb89eba-9170-a7ad645291",
+                "name": "Lesson 4.6",
+                "topics": "Add and Subtract Mixed Numbers",
+                "allowRecycle": true,
+                "learningObjectives": {
+                    "add_mixed_numbers": 0.85,
+                    "subtract_mixed_numbers": 0.85
+                }
+            },
+            {
+                "id": "5e76eb89-3c6f-f96bb1213c",
+                "name": "Lesson 4.7",
+                "topics": "Solve Equations with Fractions",
+                "allowRecycle": true,
+                "learningObjectives": {
+                    "solve_equations": 0.85
+                }
             }
         ]
     }

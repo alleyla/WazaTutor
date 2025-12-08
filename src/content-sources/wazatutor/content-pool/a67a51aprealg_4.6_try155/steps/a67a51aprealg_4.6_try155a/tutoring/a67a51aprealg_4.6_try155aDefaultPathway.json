@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_try155a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$6$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try155a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try155a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$2$$ $$\\frac{1}{2}$$ $$=$$ $$2$$ $$\\frac{3}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try155a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try155a-h2"
+        ],
+        "title": "Subtract",
+        "text": "$$8$$ $$\\frac{5}{6}$$ - $$2$$ $$\\frac{3}{6}$$ $$=$$ $$6$$ $$\\frac{2}{6}$$. Simplify.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_try82a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "Convert $$3$$ $$\\frac{1}{3}$$ to $$\\frac{10}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_try82a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_try82a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply $$\\frac{10}{3}$$ by $$\\frac{1}{4}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

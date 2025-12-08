@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_try86a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Rewrite",
+        "text": "Rewrite as $$\\frac{3}{7}$$ / $$\\frac{6}{11}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_try86a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_try86a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply $$\\frac{3}{7}$$ * $$\\frac{11}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_ex50a",
+    "stepAnswer": [
+        "$$-1$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Example $$4.50$$",
+    "stepBody": "Find the sum: $$\\frac{-3}{4}$$ + $$\\left(-\\frac{1}{4}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$-1$$"
+}

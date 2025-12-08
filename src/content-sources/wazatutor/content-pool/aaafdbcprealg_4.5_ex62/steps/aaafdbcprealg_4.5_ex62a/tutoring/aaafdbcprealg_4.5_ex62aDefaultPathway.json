@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex62a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$12$$ and $$18$$ is $$36$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex62a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex62a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{7}{12}$$ $$=$$ $$\\frac{21}{36}$$\\n$$\\frac{5}{18}$$ $$=$$ $$\\frac{10}{36}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex62a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex62a-h2"
+        ],
+        "title": "Add",
+        "text": "$$\\frac{21}{36}$$ + $$\\frac{10}{36}$$ $$=$$ $$\\frac{31}{36}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

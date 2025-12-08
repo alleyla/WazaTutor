@@ -553,7 +553,7 @@ function Dashboard({ translate }) {    const classes = useStyles();
                         {dashboardData.practiceStreak.currentStreak > 0 && (
                             <Paper style={{ marginTop: 20, padding: 10, textAlign: 'center' }}>
                                 <Typography variant="h6" color="primary">
-                                    🎉 Keep up the great work! 🎉
+                                    Keep up the great work!
                                 </Typography>
                                 <Typography color="textSecondary">
                                     You're on a {dashboardData.practiceStreak.currentStreak}-day streak!

@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try171a",
+    "stepAnswer": [
+        "$$-6$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.171$$",
+    "stepBody": "Solve: $$x$$ + $$\\frac{10}{3}$$ $$=$$ $$\\frac{-8}{3}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$-6$$"
+}

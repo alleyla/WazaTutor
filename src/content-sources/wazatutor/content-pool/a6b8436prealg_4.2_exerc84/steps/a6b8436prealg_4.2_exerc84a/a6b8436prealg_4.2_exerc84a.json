@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_exerc84a",
+    "stepAnswer": [
+        "$$\\frac{n}{m}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Exercise $$84$$",
+    "stepBody": "Simplify: $$\\frac{8n}{8} m$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{n}{m}$$"
+}

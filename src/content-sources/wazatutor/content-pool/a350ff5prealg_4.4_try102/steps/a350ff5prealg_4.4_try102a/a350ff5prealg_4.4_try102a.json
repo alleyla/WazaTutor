@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try102a",
+    "stepAnswer": [
+        "$$\\frac{2y}{3}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.102$$",
+    "stepBody": "Find the sum: $$\\frac{4y}{9}$$ + $$\\frac{2y}{9}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{2y}{3}$$"
+}

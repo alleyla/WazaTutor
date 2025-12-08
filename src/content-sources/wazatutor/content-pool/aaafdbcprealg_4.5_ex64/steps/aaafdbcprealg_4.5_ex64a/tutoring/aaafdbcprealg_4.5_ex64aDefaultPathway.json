@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex64a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$12$$ and $$8$$ is $$24$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex64a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex64a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{11}{12}$$ $$=$$ $$\\frac{22}{24}$$\\n$$\\frac{3}{8}$$ $$=$$ $$\\frac{9}{24}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex64a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex64a-h2"
+        ],
+        "title": "Subtract",
+        "text": "$$\\frac{22}{24}$$ - $$\\frac{9}{24}$$ $$=$$ $$\\frac{13}{24}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

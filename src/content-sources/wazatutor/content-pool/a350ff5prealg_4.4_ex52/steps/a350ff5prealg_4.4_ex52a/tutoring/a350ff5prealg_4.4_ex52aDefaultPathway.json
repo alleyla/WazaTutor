@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_ex52a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Numerators",
+        "text": "Add the numerators.\\n$$-3$$ + $$7$$ $$=$$ $$4$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_ex52a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_ex52a-h1"
+        ],
+        "title": "Simplify",
+        "text": "Place $$4$$ over $$8$$ and simplify.\\n$$\\frac{4}{8}$$ $$=$$ $$\\frac{1}{2}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

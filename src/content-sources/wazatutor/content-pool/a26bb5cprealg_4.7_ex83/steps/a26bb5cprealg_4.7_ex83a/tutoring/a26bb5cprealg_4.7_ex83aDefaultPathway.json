@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_ex83a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Isolate Variable",
+        "text": "Subtract $$\\frac{9}{16}$$ from both sides to isolate $$y$$.\\n$$y$$ $$=$$ $$\\frac{5}{16}$$ - $$\\frac{9}{16}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex83a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex83a-h1"
+        ],
+        "title": "Subtract",
+        "text": "Subtract the numerators: $$5$$ - $$9$$ $$=$$ $$-4$$.\\n$$y$$ $$=$$ $$\\frac{-4}{16}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex83a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex83a-h2"
+        ],
+        "title": "Simplify",
+        "text": "Simplify $$\\frac{-4}{16}$$ by dividing by $$4$$.\\n$$y$$ $$=$$ $$\\frac{-1}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

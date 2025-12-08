@@ -20,6 +20,8 @@ import ProblemWrapper from '@components/problem-layout/ProblemWrapper';
 import { findLessonById, ThemeContext, SHOW_COPYRIGHT, SITE_NAME } from '../../config/config.js';
 import { CONTENT_SOURCE } from '@common/global-config';
 import withTranslation from '../../util/withTranslation.js';
+import WarningIcon from '@material-ui/icons/Warning';
+import { IS_STAGING_OR_DEVELOPMENT } from '../../util/getBuildType';
 
 const useStyles = makeStyles(theme => ({
         root: {
@@ -39,6 +41,21 @@ const useStyles = makeStyles(theme => ({
         },
         textSecondary: {
             color: theme.palette.primary.main,
+        },
+        devNotice: {
+            backgroundColor: '#fff3cd',
+            border: '2px solid #ffc107',
+            borderRadius: 8,
+            padding: theme.spacing(2),
+            marginBottom: theme.spacing(3),
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: theme.spacing(2),
+        },
+        devNoticeIcon: {
+            color: '#ff9800',
+            fontSize: '2rem',
+            flexShrink: 0,
         },
         problemCard: {
             position: 'relative',
@@ -149,6 +166,25 @@ const ViewAllProblems = ({ translate }) => {
                                 {topicsText}
                             </Typography>
                         )}
+                    </Box>
+                )}
+
+                {/* Development Mode Notice */}
+                {IS_STAGING_OR_DEVELOPMENT && (
+                    <Box className={classes.devNotice}>
+                        <WarningIcon className={classes.devNoticeIcon} />
+                        <Box>
+                            <Typography variant="h6" gutterBottom style={{ color: '#856404', fontWeight: 600, marginBottom: 8 }}>
+                                Development Mode: Content Verification View
+                            </Typography>
+                            <Typography variant="body2" style={{ color: '#856404', marginBottom: 4 }}>
+                                This page displays all lesson problems for content verification purposes only.
+                            </Typography>
+                            <Typography variant="body2" style={{ color: '#856404' }}>
+                                <strong>Note:</strong> This view won't trigger certain functionality like the hybrid paper practice loop,
+                                BKT mastery tracking, or checkpoints. Use the regular lesson practice mode for full functionality.
+                            </Typography>
+                        </Box>
                     </Box>
                 )}
 

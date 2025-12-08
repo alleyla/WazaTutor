@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_try85a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Rewrite",
+        "text": "Rewrite as $$\\frac{2}{3}$$ / $$\\frac{5}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_try85a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_try85a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply $$\\frac{2}{3}$$ * $$\\frac{6}{5}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try174a",
+    "stepAnswer": [
+        "$$0$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.174$$",
+    "stepBody": "Solve: $$x$$ - $$\\frac{5}{11}$$ $$=$$ $$\\frac{-5}{11}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$0$$"
+}

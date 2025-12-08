@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try98a",
+    "stepAnswer": [
+        "$$1$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.98$$",
+    "stepBody": "Find the sum: $$\\frac{4}{5}$$ + $$\\frac{1}{5}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$1$$"
+}

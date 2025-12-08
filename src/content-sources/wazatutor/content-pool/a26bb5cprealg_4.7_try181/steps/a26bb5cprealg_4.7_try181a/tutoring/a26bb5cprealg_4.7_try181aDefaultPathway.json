@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try181a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Reciprocal",
+        "text": "Multiply by $$\\frac{-8}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try181a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try181a-h1"
+        ],
+        "title": "Solve",
+        "text": "$$-12$$ * $$\\left(-\\frac{8}{3}\\right)$$ $$=$$ $$\\frac{96}{3}$$ $$=$$ $$32$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

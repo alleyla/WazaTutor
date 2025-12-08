@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try179a",
+    "stepAnswer": [
+        "$$10$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.179$$",
+    "stepBody": "Solve: $$\\frac{3}{5} h$$ $$=$$ $$6$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$10$$"
+}

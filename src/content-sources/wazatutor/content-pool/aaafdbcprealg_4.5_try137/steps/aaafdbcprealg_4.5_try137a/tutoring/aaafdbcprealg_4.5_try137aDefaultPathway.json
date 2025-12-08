@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try137a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Parentheses",
+        "text": "$$\\frac{2}{3}$$ - $$\\frac{5}{6}$$. LCD is $$6$$.\\n$$\\frac{4}{6}$$ - $$\\frac{5}{6}$$ $$=$$ $$\\frac{-1}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try137a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try137a-h1"
+        ],
+        "title": "Multiply",
+        "text": "$$\\frac{1}{4}$$ * $$\\frac{-1}{6}$$ $$=$$ $$\\frac{-1}{24}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

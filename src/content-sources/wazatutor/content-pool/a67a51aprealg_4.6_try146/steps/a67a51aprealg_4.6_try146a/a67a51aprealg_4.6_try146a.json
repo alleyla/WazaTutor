@@ -1,0 +1,12 @@
+{
+    "id": "a67a51aprealg_4.6_try146a",
+    "stepAnswer": [
+        "$$8$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.146$$",
+    "stepBody": "Find the sum: $$3$$ $$\\frac{5}{8}$$ + $$4$$ $$\\frac{3}{8}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$8$$"
+}

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try172a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Subtract",
+        "text": "$$x$$ $$=$$ $$\\frac{-8}{9}$$ - $$\\frac{4}{9}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try172a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try172a-h1"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{-12}{9}$$ simplifies to $$\\frac{-4}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

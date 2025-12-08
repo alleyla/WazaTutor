@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try122a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$4$$ and $$8$$ is $$8$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try122a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try122a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{1}{4}$$ $$=$$ $$\\frac{2}{8}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

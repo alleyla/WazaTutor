@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_ex75a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$2$$ and $$3$$ is $$6$$.\\nConvert fractions:\\n$$\\frac{1}{2}$$ $$=$$ $$\\frac{3}{6}$$\\n$$\\frac{2}{3}$$ $$=$$ $$\\frac{4}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex75a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex75a-h1"
+        ],
+        "title": "Add",
+        "text": "Add the new mixed numbers:\\n$$2$$ $$\\frac{3}{6}$$ + $$3$$ $$\\frac{4}{6}$$ $$=$$ $$5$$ $$\\frac{7}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex75a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex75a-h2"
+        ],
+        "title": "Simplify",
+        "text": "Convert the improper fraction $$\\frac{7}{6}$$ to $$1$$ $$\\frac{1}{6}$$.\\nAdd this to the whole number $$5$$.\\n$$5$$ + $$1$$ $$\\frac{1}{6}$$ $$=$$ $$6$$ $$\\frac{1}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

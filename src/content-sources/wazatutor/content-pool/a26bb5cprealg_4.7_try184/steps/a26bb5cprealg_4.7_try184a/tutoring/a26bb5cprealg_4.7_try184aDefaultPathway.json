@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try184a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Reciprocal",
+        "text": "Multiply by $$\\frac{-5}{4}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try184a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try184a-h1"
+        ],
+        "title": "Solve",
+        "text": "$$\\frac{-16}{25}$$ * $$\\left(-\\frac{5}{4}\\right)$$ $$=$$ $$\\frac{80}{100}$$ $$=$$ $$\\frac{4}{5}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_ex20a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Prime Factors",
+        "text": "Rewrite the numerator and denominator using prime factors.\\n$$69$$ $$=$$ $$3$$ * $$23$$\\n$$120$$ $$=$$ $$2$$ * $$2$$ * $$2$$ * $$3$$ * $$5$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a6b8436prealg_4.2_ex20a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a6b8436prealg_4.2_ex20a-h1"
+        ],
+        "title": "Cancel",
+        "text": "Remove the common factor of $$3$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try116a",
+    "stepAnswer": [
+        "$$60$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.116$$",
+    "stepBody": "Find the LCD for the fractions: $$\\frac{13}{15}$$ and $$\\frac{17}{20}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$60$$"
+}

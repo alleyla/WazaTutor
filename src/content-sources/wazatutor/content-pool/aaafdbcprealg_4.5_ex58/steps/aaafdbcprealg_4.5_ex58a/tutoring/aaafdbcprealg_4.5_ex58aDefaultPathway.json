@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex58a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Prime Factors",
+        "text": "Find the prime factorization of $$12$$ and $$18$$.\\n$$12$$ $$=$$ $$2$$ * $$2$$ * $$3$$\\n$$18$$ $$=$$ $$2$$ * $$3$$ * $$3$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex58a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex58a-h1"
+        ],
+        "title": "LCD",
+        "text": "The LCD must contain the most factors of each prime.\\nLCD $$=$$ $$2$$ * $$2$$ * $$3$$ * $$3$$ $$=$$ $$36$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

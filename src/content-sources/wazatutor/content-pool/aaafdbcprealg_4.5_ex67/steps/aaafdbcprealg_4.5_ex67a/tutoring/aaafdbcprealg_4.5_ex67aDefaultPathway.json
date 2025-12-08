@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex67a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$7$$ and $$6$$ is $$42$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex67a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex67a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{2a}{7}$$ $$=$$ $$\\frac{12a}{42}$$\\n$$\\frac{a}{6}$$ $$=$$ $$\\frac{7a}{42}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex67a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex67a-h2"
+        ],
+        "title": "Add",
+        "text": "12a + 7a $$=$$ 19a",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

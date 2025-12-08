@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_ex86a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Isolate Variable",
+        "text": "Subtract $$\\frac{9}{7}$$ from both sides.\\n$$x$$ $$=$$ $$\\frac{-12}{7}$$ - $$\\frac{9}{7}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex86a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex86a-h1"
+        ],
+        "title": "Subtract",
+        "text": "Combine the numerators: $$-12$$ - $$9$$ $$=$$ $$-21$$.\\n$$x$$ $$=$$ $$\\frac{-21}{7}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex86a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex86a-h2"
+        ],
+        "title": "Simplify",
+        "text": "Simplify $$\\frac{-21}{7}$$ to $$-3$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

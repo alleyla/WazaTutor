@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try122a",
+    "stepAnswer": [
+        "$$\\frac{5}{8}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.122$$",
+    "stepBody": "Find the sum: $$\\frac{1}{4}$$ + $$\\frac{3}{8}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{5}{8}$$"
+}

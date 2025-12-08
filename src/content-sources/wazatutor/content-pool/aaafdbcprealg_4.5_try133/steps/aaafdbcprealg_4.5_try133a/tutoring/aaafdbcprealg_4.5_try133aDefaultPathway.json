@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try133a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$40$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try133a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try133a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{4x}{5}$$ $$=$$ $$\\frac{32x}{40}$$\\n$$\\frac{x}{8}$$ $$=$$ $$\\frac{5x}{40}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

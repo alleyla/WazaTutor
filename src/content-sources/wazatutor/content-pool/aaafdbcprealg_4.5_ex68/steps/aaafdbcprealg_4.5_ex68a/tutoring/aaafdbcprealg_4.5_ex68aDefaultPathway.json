@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex68a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$8$$ and $$3$$ is $$24$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex68a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex68a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{7y}{8}$$ $$=$$ $$\\frac{21y}{24}$$\\n$$\\frac{2y}{3}$$ $$=$$ $$\\frac{16y}{24}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex68a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex68a-h2"
+        ],
+        "title": "Subtract",
+        "text": "$$21y$$ - $$16y$$ $$=$$ $$5y$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

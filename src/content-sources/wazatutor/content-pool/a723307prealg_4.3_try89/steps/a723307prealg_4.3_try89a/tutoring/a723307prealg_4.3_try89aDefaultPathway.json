@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_try89a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Simplify Denominator",
+        "text": "Add $$\\frac{2}{3}$$ + $$\\frac{3}{4}$$. The LCD is $$12$$.\\n$$\\frac{8}{12}$$ + $$\\frac{9}{12}$$ $$=$$ $$\\frac{17}{12}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_try89a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_try89a-h1"
+        ],
+        "title": "Divide",
+        "text": "Divide $$\\frac{1}{2}$$ by $$\\frac{17}{12}$$.\\n$$\\frac{1}{2}$$ * $$\\frac{12}{17}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

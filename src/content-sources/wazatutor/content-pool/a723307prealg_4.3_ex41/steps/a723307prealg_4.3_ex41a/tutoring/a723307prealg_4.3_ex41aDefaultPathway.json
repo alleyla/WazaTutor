@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_ex41a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "Convert $$3$$ $$\\frac{1}{2}$$ to the improper fraction $$\\frac{7}{2}$$.\\nTreat $$2$$ as $$\\frac{2}{1}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex41a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex41a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply by the reciprocal of the divisor.\\n$$\\frac{7}{2}$$ * $$\\frac{1}{2}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

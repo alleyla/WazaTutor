@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_try84a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "Convert to $$\\frac{21}{5}$$ and $$\\frac{4}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_try84a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_try84a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply $$\\frac{21}{5}$$ * $$\\frac{3}{4}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

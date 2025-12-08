@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try177a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Reciprocal",
+        "text": "Multiply both sides by $$\\frac{4}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try177a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try177a-h1"
+        ],
+        "title": "Solve",
+        "text": "$$\\frac{7}{8}$$ * $$\\frac{4}{3}$$ $$=$$ $$\\frac{28}{24}$$. Simplify to $$\\frac{7}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

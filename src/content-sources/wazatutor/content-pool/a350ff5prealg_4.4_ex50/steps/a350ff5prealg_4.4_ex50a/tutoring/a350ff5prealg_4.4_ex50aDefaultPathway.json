@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_ex50a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Numerators",
+        "text": "Add the numerators.\\n$$-3$$ + $$(-1)$$ $$=$$ $$-4$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_ex50a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_ex50a-h1"
+        ],
+        "title": "Result",
+        "text": "Place over the denominator.\\n$$\\frac{-4}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_ex50a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_ex50a-h2"
+        ],
+        "title": "Simplify",
+        "text": "Simplify the fraction.\\n$$-1$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

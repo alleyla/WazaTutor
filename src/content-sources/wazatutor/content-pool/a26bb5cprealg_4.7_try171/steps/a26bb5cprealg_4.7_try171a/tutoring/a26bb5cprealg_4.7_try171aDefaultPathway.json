@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try171a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Subtract",
+        "text": "$$x$$ $$=$$ $$\\frac{-8}{3}$$ - $$\\frac{10}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try171a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try171a-h1"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{-18}{3}$$ simplifies to $$-6$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

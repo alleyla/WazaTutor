@@ -1,0 +1,48 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex66a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Rewrite",
+        "text": "Rewrite subtraction as addition: $$\\frac{-4}{5}$$ + $$\\frac{1}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex66a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex66a-h1"
+        ],
+        "title": "LCD",
+        "text": "The LCD is $$20$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex66a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex66a-h2"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{-4}{5}$$ $$=$$ $$\\frac{-16}{20}$$\\n$$\\frac{1}{4}$$ $$=$$ $$\\frac{5}{20}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex66a-h4",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex66a-h3"
+        ],
+        "title": "Add",
+        "text": "$$\\frac{-16}{20}$$ + $$\\frac{5}{20}$$ $$=$$ $$\\frac{-11}{20}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

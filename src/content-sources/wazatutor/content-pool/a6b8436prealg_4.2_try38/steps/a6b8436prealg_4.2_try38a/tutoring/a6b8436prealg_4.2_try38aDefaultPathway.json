@@ -1,0 +1,12 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_try38a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Find Common Factors",
+        "text": "Divide both numerator and denominator by their greatest common factor, which is $$20$$.\\n$$100$$ / $$20$$ $$=$$ $$5$$\\n$$120$$ / $$20$$ $$=$$ $$6$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_ex31a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Sign",
+        "text": "The reciprocal keeps the same sign.\\n",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a6b8436prealg_4.2_ex31a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a6b8436prealg_4.2_ex31a-h1"
+        ],
+        "title": "Flip",
+        "text": "The reciprocal of $$\\frac{1}{7}$$ is $$\\frac{7}{1}$$ (which is 7).\\n",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

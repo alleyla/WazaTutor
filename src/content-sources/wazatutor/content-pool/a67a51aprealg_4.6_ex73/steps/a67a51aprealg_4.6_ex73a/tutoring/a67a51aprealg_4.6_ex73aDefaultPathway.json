@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_ex73a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Wholes",
+        "text": "Add the whole numbers.\\n$$9$$ + $$2$$ $$=$$ $$11$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex73a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex73a-h1"
+        ],
+        "title": "Add Fractions",
+        "text": "Add the fractions.\\n$$\\frac{3}{4}$$ + $$\\frac{1}{4}$$ $$=$$ $$\\frac{4}{4}$$ $$=$$ $$1$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex73a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex73a-h2"
+        ],
+        "title": "Combine",
+        "text": "Add the whole number sum (11) to the fraction sum (1).\\n$$11$$ + $$1$$ $$=$$ $$12$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

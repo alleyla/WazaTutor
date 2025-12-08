@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try183a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Reciprocal",
+        "text": "Multiply by $$\\frac{-4}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try183a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try183a-h1"
+        ],
+        "title": "Solve",
+        "text": "$$\\frac{9}{20}$$ * $$\\left(-\\frac{4}{3}\\right)$$ $$=$$ $$\\frac{-36}{60}$$ $$=$$ $$\\frac{-3}{5}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

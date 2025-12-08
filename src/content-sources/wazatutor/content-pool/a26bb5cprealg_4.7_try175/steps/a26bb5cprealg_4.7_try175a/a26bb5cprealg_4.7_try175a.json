@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try175a",
+    "stepAnswer": [
+        "$$-50$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.175$$",
+    "stepBody": "Solve: $$\\frac{f}{5}$$ $$=$$ $$-10$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$-50$$"
+}

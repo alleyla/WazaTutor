@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_exerc157a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Simplify Denominator",
+        "text": "Simplify the numerator: $$\\frac{1}{2}$$ + $$\\frac{3}{4}$$ $$=$$ $$\\frac{5}{4}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_exerc157a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_exerc157a-h1"
+        ],
+        "title": "Divide",
+        "text": "Divide $$\\frac{5}{4}$$ by $$\\frac{3}{5}$$.\\n$$\\frac{5}{4}$$ * $$\\frac{5}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

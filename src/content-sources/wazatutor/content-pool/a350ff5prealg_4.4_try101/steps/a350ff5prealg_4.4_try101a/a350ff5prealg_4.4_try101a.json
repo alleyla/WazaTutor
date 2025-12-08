@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try101a",
+    "stepAnswer": [
+        "$$\\frac{5x}{7}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.101$$",
+    "stepBody": "Find the sum: $$\\frac{3x}{7}$$ + $$\\frac{2x}{7}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{5x}{7}$$"
+}

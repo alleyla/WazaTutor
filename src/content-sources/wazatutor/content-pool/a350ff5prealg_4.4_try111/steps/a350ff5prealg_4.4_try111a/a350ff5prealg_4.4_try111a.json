@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try111a",
+    "stepAnswer": [
+        "$$\\frac{y}{4}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.111$$",
+    "stepBody": "Find the difference: $$\\frac{19y}{24}$$ - $$\\frac{13y}{24}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{y}{4}$$"
+}

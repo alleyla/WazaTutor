@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try99a",
+    "stepAnswer": [
+        "$$\\frac{-6}{5}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.99$$",
+    "stepBody": "Find the sum: $$\\frac{-2}{5}$$ + $$\\left(-\\frac{4}{5}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-6}{5}$$"
+}

@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex65a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$10$$ and $$8$$ is $$40$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex65a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex65a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{-3}{10}$$ $$=$$ $$\\frac{-12}{40}$$\\n$$\\frac{-5}{8}$$ $$=$$ $$\\frac{-25}{40}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex65a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex65a-h2"
+        ],
+        "title": "Add",
+        "text": "$$-12$$ + $$(-25)$$ $$=$$ $$-37$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

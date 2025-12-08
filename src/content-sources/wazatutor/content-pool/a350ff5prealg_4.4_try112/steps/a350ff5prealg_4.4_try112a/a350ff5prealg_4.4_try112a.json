@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try112a",
+    "stepAnswer": [
+        "$$\\frac{z}{3}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.112$$",
+    "stepBody": "Find the difference: $$\\frac{13z}{15}$$ - $$\\frac{8z}{15}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{z}{3}$$"
+}

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_ex57a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Subtract Numerators",
+        "text": "Subtract the numerators.\\n$$-10$$ - $$4$$ $$=$$ $$-14$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_ex57a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_ex57a-h1"
+        ],
+        "title": "Result",
+        "text": "Place over the common denominator.\\n$$\\frac{-14}{x}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

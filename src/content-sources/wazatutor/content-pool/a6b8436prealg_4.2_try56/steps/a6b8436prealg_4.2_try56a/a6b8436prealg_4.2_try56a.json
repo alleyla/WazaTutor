@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try56a",
+    "stepAnswer": [
+        "$$\\frac{13}{7}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.56$$",
+    "stepBody": "Find the product: $$\\frac{-6}{14}$$ * $$\\left(-\\frac{13}{3}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{13}{7}$$"
+}

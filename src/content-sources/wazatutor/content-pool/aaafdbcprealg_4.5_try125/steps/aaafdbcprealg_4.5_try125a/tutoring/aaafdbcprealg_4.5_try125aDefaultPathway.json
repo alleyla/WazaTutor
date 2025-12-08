@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try125a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$24$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try125a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try125a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{5}{8}$$ $$=$$ $$\\frac{15}{24}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try125a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try125a-h2"
+        ],
+        "title": "Subtract",
+        "text": "$$\\frac{19}{24}$$ - $$\\frac{15}{24}$$ $$=$$ $$\\frac{4}{24}$$. Simplify.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

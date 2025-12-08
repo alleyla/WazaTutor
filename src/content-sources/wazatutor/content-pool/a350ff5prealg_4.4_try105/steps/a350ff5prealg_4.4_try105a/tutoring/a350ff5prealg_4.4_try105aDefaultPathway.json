@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_try105a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Wholes",
+        "text": "Add $$1$$ + $$4$$ $$=$$ $$5$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_try105a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_try105a-h1"
+        ],
+        "title": "Add Fractions",
+        "text": "Add $$\\frac{1}{4}$$ + $$\\frac{3}{4}$$ $$=$$ $$\\frac{4}{4}$$ $$=$$ $$1$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_try105a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_try105a-h2"
+        ],
+        "title": "Combine",
+        "text": "Add $$5$$ + $$1$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

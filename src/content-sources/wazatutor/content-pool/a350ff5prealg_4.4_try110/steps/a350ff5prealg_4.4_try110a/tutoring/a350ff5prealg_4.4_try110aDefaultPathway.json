@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_try110a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Subtract Numerators",
+        "text": "Subtract $$13$$ - $$5$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_try110a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_try110a-h1"
+        ],
+        "title": "Simplify",
+        "text": "Simplify $$\\frac{8}{24}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_ex42a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "Convert both to improper fractions: $$\\frac{23}{5}$$ and $$\\frac{5}{4}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex42a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex42a-h1"
+        ],
+        "title": "Reciprocal",
+        "text": "Multiply $$\\frac{23}{5}$$ by the reciprocal of $$\\frac{5}{4}$$ (which is 4/5).\\n$$\\frac{23}{5}$$ * $$\\frac{4}{5}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

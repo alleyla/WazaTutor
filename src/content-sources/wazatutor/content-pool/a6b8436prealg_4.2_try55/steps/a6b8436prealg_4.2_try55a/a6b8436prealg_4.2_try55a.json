@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try55a",
+    "stepAnswer": [
+        "$$\\frac{9}{7}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.55$$",
+    "stepBody": "Find the product: $$\\frac{-9}{14}$$ * $$\\left(-\\frac{12}{6}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{9}{7}$$"
+}

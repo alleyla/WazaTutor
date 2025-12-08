@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try125a",
+    "stepAnswer": [
+        "$$\\frac{1}{6}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.125$$",
+    "stepBody": "Find the difference: $$\\frac{19}{24}$$ - $$\\frac{5}{8}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{1}{6}$$"
+}

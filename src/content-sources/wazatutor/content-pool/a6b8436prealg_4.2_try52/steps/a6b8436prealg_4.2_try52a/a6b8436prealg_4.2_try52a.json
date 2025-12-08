@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try52a",
+    "stepAnswer": [
+        "$$1$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.52$$",
+    "stepBody": "Find the product: $$\\frac{-5}{7}$$ * $$\\left(-\\frac{7}{5}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$1$$"
+}

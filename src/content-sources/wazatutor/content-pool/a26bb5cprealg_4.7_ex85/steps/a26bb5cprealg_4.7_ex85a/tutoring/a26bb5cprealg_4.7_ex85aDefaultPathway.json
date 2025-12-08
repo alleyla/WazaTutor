@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_ex85a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "Convert $$\\frac{1}{2}$$ to an equivalent fraction with denominator $$4$$.\\n$$\\frac{1}{2}$$ $$=$$ $$\\frac{2}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex85a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex85a-h1"
+        ],
+        "title": "Isolate Variable",
+        "text": "Add $$\\frac{3}{4}$$ to both sides.\\n$$n$$ $$=$$ $$\\frac{2}{4}$$ + $$\\frac{3}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_ex85a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_ex85a-h2"
+        ],
+        "title": "Add",
+        "text": "$$\\frac{2}{4}$$ + $$\\frac{3}{4}$$ $$=$$ $$\\frac{5}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

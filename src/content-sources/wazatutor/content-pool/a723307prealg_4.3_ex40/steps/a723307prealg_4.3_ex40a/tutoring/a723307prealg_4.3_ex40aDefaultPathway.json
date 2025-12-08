@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a723307prealg_4.3_ex40a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "Convert to improper fractions.\\n$$3$$ $$\\frac{1}{3}$$ $$=$$ $$\\frac{10}{3}$$\\n$$-2$$ $$\\frac{3}{4}$$ $$=$$ $$\\frac{-11}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex40a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex40a-h1"
+        ],
+        "title": "Sign",
+        "text": "The product of a positive and a negative is negative.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex40a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex40a-h2"
+        ],
+        "title": "Multiply",
+        "text": "Multiply $$\\frac{10}{3}$$ * $$\\left(-\\frac{11}{4}\\right)$$ $$=$$ $$\\frac{-110}{12}$$. Then simplify.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

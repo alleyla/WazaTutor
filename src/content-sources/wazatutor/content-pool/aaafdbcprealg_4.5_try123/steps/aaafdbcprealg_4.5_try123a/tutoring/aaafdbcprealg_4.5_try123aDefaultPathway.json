@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try123a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$60$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try123a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try123a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{7}{12}$$ $$=$$ $$\\frac{35}{60}$$\\n$$\\frac{11}{15}$$ $$=$$ $$\\frac{44}{60}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_try98a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Numerators",
+        "text": "Add $$4$$ + $$1$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_try98a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_try98a-h1"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{5}{5}$$ simplifies to $$1$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

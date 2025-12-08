@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_try149a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$6$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try149a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try149a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$2$$ $$\\frac{2}{6}$$ + $$3$$ $$\\frac{3}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

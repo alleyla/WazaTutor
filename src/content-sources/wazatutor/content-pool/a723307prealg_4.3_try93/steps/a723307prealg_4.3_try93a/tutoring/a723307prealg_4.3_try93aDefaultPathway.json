@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_try93a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Parentheses",
+        "text": "Add $$\\frac{1}{2}$$ + $$\\frac{1}{4}$$ $$=$$ $$\\frac{3}{4}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_try93a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_try93a-h1"
+        ],
+        "title": "Divide",
+        "text": "Divide $$2$$ $$\\frac{1}{3}$$ by $$\\frac{3}{4}$$.\\n$$\\frac{7}{3}$$ * $$\\frac{4}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

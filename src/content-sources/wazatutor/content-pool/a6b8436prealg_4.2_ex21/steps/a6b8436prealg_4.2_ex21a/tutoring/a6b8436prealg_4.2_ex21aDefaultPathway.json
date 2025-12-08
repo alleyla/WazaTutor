@@ -1,0 +1,12 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_ex21a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Common Factor",
+        "text": "Since $$5$$ is a common factor in the numerator and denominator, it divides out to $$1$$.\\n(5 * x) / (5 * y) $$=$$ $$\\frac{x}{y}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

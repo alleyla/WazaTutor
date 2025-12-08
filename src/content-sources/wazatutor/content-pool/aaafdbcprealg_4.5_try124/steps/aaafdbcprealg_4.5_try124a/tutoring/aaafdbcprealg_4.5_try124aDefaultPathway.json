@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try124a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$60$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try124a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try124a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{13}{15}$$ $$=$$ $$\\frac{52}{60}$$\\n$$\\frac{17}{20}$$ $$=$$ $$\\frac{51}{60}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

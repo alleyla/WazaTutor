@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try127a",
+    "stepAnswer": [
+        "$$\\frac{7}{48}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.127$$",
+    "stepBody": "Find the difference: $$\\frac{9}{16}$$ - $$\\frac{5}{12}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{7}{48}$$"
+}

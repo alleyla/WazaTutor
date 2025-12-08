@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_ex21a",
+    "stepAnswer": [
+        "$$\\frac{x}{y}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Example $$4.21$$",
+    "stepBody": "Simplify: $$\\frac{5x}{5} y$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{x}{y}$$"
+}

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_exerc161a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Simplify Parts",
+        "text": "Simplify numerator: $$\\frac{7}{9}$$ - $$\\frac{3}{9}$$ $$=$$ $$\\frac{4}{9}$$\\nSimplify denominator: $$\\frac{6}{8}$$ - $$\\frac{3}{8}$$ $$=$$ $$\\frac{3}{8}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_exerc161a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_exerc161a-h1"
+        ],
+        "title": "Divide",
+        "text": "Divide $$\\frac{4}{9}$$ by $$\\frac{3}{8}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

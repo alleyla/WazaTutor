@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try129a",
+    "stepAnswer": [
+        "$$\\frac{-19}{18}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.129$$",
+    "stepBody": "Find the sum: $$\\frac{-2}{9}$$ + $$\\left(-\\frac{5}{6}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-19}{18}$$"
+}

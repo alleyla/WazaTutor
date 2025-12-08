@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_ex77a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Subtract Wholes",
+        "text": "Subtract whole numbers.\\n$$5$$ - $$2$$ $$=$$ $$3$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex77a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex77a-h1"
+        ],
+        "title": "Subtract Fractions",
+        "text": "Subtract fractions.\\n$$\\frac{3}{4}$$ - $$\\frac{1}{4}$$ $$=$$ $$\\frac{2}{4}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex77a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex77a-h2"
+        ],
+        "title": "Simplify",
+        "text": "Combine and simplify.\\n$$3$$ $$\\frac{2}{4}$$ $$=$$ $$3$$ $$\\frac{1}{2}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

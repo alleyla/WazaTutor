@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_try152a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$12$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try152a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try152a-h1"
+        ],
+        "title": "Add",
+        "text": "$$2$$ $$\\frac{9}{12}$$ + $$1$$ $$\\frac{10}{12}$$ $$=$$ $$3$$ $$\\frac{19}{12}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try152a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try152a-h2"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{19}{12}$$ $$=$$ $$1$$ $$\\frac{7}{12}$$.\\n$$3$$ + $$1$$ $$\\frac{7}{12}$$ $$=$$ $$4$$ $$\\frac{7}{12}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

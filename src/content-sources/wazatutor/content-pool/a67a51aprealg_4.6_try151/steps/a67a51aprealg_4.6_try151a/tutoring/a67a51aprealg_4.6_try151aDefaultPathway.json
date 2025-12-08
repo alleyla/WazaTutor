@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_try151a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$6$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try151a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try151a-h1"
+        ],
+        "title": "Add",
+        "text": "$$3$$ $$\\frac{4}{6}$$ + $$2$$ $$\\frac{3}{6}$$ $$=$$ $$5$$ $$\\frac{7}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try151a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try151a-h2"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{7}{6}$$ $$=$$ $$1$$ $$\\frac{1}{6}$$.\\n$$5$$ + $$1$$ $$\\frac{1}{6}$$ $$=$$ $$6$$ $$\\frac{1}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

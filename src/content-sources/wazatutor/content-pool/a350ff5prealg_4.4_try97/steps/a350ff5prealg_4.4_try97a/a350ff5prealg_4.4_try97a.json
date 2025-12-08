@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try97a",
+    "stepAnswer": [
+        "$$\\frac{5}{8}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.97$$",
+    "stepBody": "Find the sum: $$\\frac{3}{8}$$ + $$\\frac{2}{8}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{5}{8}$$"
+}

@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_ex53a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Wholes",
+        "text": "Add the whole numbers.\\n$$5$$ + $$2$$ $$=$$ $$7$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_ex53a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_ex53a-h1"
+        ],
+        "title": "Add Fractions",
+        "text": "Add the fractions.\\n$$\\frac{1}{3}$$ + $$\\frac{2}{3}$$ $$=$$ $$\\frac{3}{3}$$ $$=$$ $$1$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_ex53a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_ex53a-h2"
+        ],
+        "title": "Combine",
+        "text": "Combine the whole number and the simplified fraction sum.\\n$$7$$ + $$1$$ $$=$$ $$8$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

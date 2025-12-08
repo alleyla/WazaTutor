@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_try90a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Simplify Denominator",
+        "text": "Add $$\\frac{1}{2}$$ + $$\\frac{2}{5}$$. The LCD is $$10$$.\\n$$\\frac{5}{10}$$ + $$\\frac{4}{10}$$ $$=$$ $$\\frac{9}{10}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_try90a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_try90a-h1"
+        ],
+        "title": "Divide",
+        "text": "Divide $$\\frac{1}{3}$$ by $$\\frac{9}{10}$$.\\n$$\\frac{1}{3}$$ * $$\\frac{10}{9}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

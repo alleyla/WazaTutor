@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try142a",
+    "stepAnswer": [
+        "$$\\frac{12}{5}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.142$$",
+    "stepBody": "Simplify: (9/16 + 7/16) / (1/4 + 1/6)",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{12}{5}$$"
+}

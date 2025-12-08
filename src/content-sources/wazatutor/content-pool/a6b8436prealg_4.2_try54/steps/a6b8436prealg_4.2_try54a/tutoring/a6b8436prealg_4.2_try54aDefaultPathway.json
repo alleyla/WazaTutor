@@ -1,0 +1,12 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_try54a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Simplify",
+        "text": "Before multiplying, look for common factors. $$3$$ and $$12$$ share a factor of $$3$$.\\n$$\\frac{-5}{12}$$ * $$\\frac{3}{8}$$ $$=$$ -(5 * 3) / (4 * $$3$$ * 8)",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

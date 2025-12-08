@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try130a",
+    "stepAnswer": [
+        "$$\\frac{-47}{30}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.130$$",
+    "stepBody": "Find the sum: $$\\frac{-2}{5}$$ + $$\\left(-\\frac{7}{6}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-47}{30}$$"
+}

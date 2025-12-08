@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_try37a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Find Common Factors",
+        "text": "Find the greatest common factor (GCF) of $$63$$ and $$105$$, or use prime factorization.\\n$$63$$ $$=$$ $$3$$ * $$3$$ * $$7$$\\n$$105$$ $$=$$ $$3$$ * $$5$$ * $$7$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a6b8436prealg_4.2_try37a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a6b8436prealg_4.2_try37a-h1"
+        ],
+        "title": "Simplify",
+        "text": "Cancel out the common factors of $$3$$ and $$7$$.\\nThe remaining factors are $$3$$ in the numerator and $$5$$ in the denominator.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

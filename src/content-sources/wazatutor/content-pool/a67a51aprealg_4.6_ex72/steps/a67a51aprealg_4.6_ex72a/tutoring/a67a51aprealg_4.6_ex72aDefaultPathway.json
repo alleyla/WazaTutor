@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_ex72a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Wholes",
+        "text": "Add the whole numbers.\\n$$3$$ + $$4$$ $$=$$ $$7$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex72a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex72a-h1"
+        ],
+        "title": "Add Fractions",
+        "text": "Add the fractions.\\n$$\\frac{1}{7}$$ + $$\\frac{2}{7}$$ $$=$$ $$\\frac{3}{7}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex72a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex72a-h2"
+        ],
+        "title": "Combine",
+        "text": "Combine the whole number and fraction.\\n$$7$$ $$\\frac{3}{7}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try173a",
+    "stepAnswer": [
+        "$$0$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.173$$",
+    "stepBody": "Solve: $$x$$ - $$\\frac{3}{7}$$ $$=$$ $$\\frac{-3}{7}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$0$$"
+}

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_ex19a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Prime Factorization",
+        "text": "Find the prime factorization of the numerator and denominator.\\n$$315$$ $$=$$ $$3$$ * $$3$$ * $$5$$ * $$7$$\\n$$770$$ $$=$$ $$2$$ * $$5$$ * $$7$$ * $$11$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a6b8436prealg_4.2_ex19a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a6b8436prealg_4.2_ex19a-h1"
+        ],
+        "title": "Remove Common Factors",
+        "text": "Remove the common factors of $$5$$ and $$7$$.\\n- (3 * $$3$$ * $$5$$ * 7) / (2 * $$5$$ * $$7$$ * 11) $$=$$ - (3 * 3) / (2 * 11)",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

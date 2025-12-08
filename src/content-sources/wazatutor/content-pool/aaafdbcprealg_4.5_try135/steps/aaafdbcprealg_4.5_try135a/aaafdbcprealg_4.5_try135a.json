@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try135a",
+    "stepAnswer": [
+        "$$\\frac{11m}{15}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.135$$",
+    "stepBody": "Find the difference: $$\\frac{5m}{6}$$ - $$\\frac{m}{10}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{11m}{15}$$"
+}

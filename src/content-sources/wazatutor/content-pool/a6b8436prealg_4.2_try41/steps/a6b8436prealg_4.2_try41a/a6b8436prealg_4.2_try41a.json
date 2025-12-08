@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try41a",
+    "stepAnswer": [
+        "$$\\frac{x}{y}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.41$$",
+    "stepBody": "Simplify: $$\\frac{7x}{7} y$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{x}{y}$$"
+}

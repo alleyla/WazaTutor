@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try167a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add",
+        "text": "Add $$\\frac{4}{9}$$ to $$\\frac{-7}{9}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try167a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try167a-h1"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{-7}{9}$$ + $$\\frac{4}{9}$$ $$=$$ $$\\frac{-3}{9}$$. Simplify.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

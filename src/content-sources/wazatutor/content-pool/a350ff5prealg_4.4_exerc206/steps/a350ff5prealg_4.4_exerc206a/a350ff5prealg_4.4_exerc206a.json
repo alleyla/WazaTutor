@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_exerc206a",
+    "stepAnswer": [
+        "$$\\frac{3x}{11}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Exercise $$206$$",
+    "stepBody": "Find the difference: $$\\frac{9x}{11}$$ - $$\\frac{6x}{11}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{3x}{11}$$"
+}

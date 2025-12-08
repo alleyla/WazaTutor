@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a6b8436prealg_4.2_ex27a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Sign",
+        "text": "A positive multiplied by a negative is negative.\\n",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a6b8436prealg_4.2_ex27a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a6b8436prealg_4.2_ex27a-h1"
+        ],
+        "title": "Multiply",
+        "text": "Multiply numerators together and denominators together.\\n- (11 * 5) / (12 * 7)",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

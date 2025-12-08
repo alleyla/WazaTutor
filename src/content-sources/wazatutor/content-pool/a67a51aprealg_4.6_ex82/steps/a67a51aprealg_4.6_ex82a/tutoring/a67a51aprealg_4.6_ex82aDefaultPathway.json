@@ -1,0 +1,48 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_ex82a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$2$$ and $$6$$ is $$6$$.\\n$$2$$ $$\\frac{1}{2}$$ $$=$$ $$2$$ $$\\frac{3}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex82a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex82a-h1"
+        ],
+        "title": "Borrow",
+        "text": "We cannot subtract $$\\frac{5}{6}$$ from $$\\frac{3}{6}$$. Borrow from $$2$$.\\n$$2$$ $$\\frac{3}{6}$$ becomes $$1$$ $$\\frac{9}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex82a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex82a-h2"
+        ],
+        "title": "Subtract",
+        "text": "$$1$$ $$\\frac{9}{6}$$ - $$1$$ $$\\frac{5}{6}$$ $$=$$ $$0$$ $$\\frac{4}{6}$$ $$=$$ $$\\frac{4}{6}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_ex82a-h4",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_ex82a-h3"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{4}{6}$$ $$=$$ $$\\frac{2}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

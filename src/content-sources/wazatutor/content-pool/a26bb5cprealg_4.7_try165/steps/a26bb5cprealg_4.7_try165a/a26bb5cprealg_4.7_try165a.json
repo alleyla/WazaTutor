@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try165a",
+    "stepAnswer": [
+        "$$\\frac{-3}{8}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.165$$",
+    "stepBody": "Solve: $$y$$ + $$\\frac{11}{16}$$ $$=$$ $$\\frac{5}{16}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-3}{8}$$"
+}

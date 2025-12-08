@@ -1,0 +1,24 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_try119a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$2$$ and $$5$$ is $$10$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_try119a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_try119a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{1}{2}$$ $$=$$ $$\\frac{5}{10}$$\\n$$\\frac{1}{5}$$ $$=$$ $$\\frac{2}{10}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_try96a",
+    "stepAnswer": [
+        "$$\\frac{10}{13}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.96$$",
+    "stepBody": "Find the sum: $$\\frac{3}{13}$$ + $$\\frac{7}{13}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{10}{13}$$"
+}

@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_try159a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Borrow",
+        "text": "Borrow from $$7$$ to get $$6$$ $$\\frac{5}{4}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try159a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try159a-h1"
+        ],
+        "title": "Subtract",
+        "text": "$$6$$ $$\\frac{5}{4}$$ - $$2$$ $$\\frac{3}{4}$$ $$=$$ $$4$$ $$\\frac{2}{4}$$. Simplify.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

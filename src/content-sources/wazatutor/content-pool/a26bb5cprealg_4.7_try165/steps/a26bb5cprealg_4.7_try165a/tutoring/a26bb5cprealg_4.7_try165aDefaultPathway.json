@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try165a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Subtract",
+        "text": "Subtract $$\\frac{11}{16}$$ from $$\\frac{5}{16}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try165a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try165a-h1"
+        ],
+        "title": "Simplify",
+        "text": "$$\\frac{5}{16}$$ - $$\\frac{11}{16}$$ $$=$$ $$\\frac{-6}{16}$$. Simplify to $$\\frac{-3}{8}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

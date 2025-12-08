@@ -1,0 +1,12 @@
+{
+    "id": "a6b8436prealg_4.2_try64a",
+    "stepAnswer": [
+        "$$\\frac{1}{8}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.64$$",
+    "stepBody": "Find the reciprocal of $$8$$.",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{1}{8}$$"
+}

@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try132a",
+    "stepAnswer": [
+        "$$\\frac{-1}{8}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.132$$",
+    "stepBody": "Find the difference: $$\\frac{-3}{8}$$ - $$\\left(-\\frac{1}{4}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-1}{8}$$"
+}

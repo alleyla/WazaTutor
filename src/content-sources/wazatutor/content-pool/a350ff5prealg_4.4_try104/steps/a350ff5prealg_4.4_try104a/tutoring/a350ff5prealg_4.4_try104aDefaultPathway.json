@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a350ff5prealg_4.4_try104a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Numerators",
+        "text": "Add $$-4$$ + $$7$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a350ff5prealg_4.4_try104a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a350ff5prealg_4.4_try104a-h1"
+        ],
+        "title": "Simplify",
+        "text": "Simplify $$\\frac{3}{9}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

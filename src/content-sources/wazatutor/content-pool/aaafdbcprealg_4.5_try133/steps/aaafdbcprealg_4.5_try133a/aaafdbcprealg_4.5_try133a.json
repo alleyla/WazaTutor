@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try133a",
+    "stepAnswer": [
+        "$$\\frac{37x}{40}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.133$$",
+    "stepBody": "Find the sum: $$\\frac{4x}{5}$$ + $$\\frac{x}{8}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{37x}{40}$$"
+}

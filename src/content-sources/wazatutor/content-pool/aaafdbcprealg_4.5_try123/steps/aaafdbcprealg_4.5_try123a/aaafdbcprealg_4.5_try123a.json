@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try123a",
+    "stepAnswer": [
+        "$$\\frac{79}{60}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.123$$",
+    "stepBody": "Find the sum: $$\\frac{7}{12}$$ + $$\\frac{11}{15}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{79}{60}$$"
+}

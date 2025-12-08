@@ -1,21 +1,20 @@
 import React, { Fragment } from 'react';
-import { Grid, Box, Paper, Typography, Button, IconButton, Divider, Container } from '@material-ui/core';
+import { Grid, Box, Paper, Typography, Button, IconButton, Divider, Container, Badge, Chip } from '@material-ui/core';
 
 import { withStyles } from '@material-ui/core/styles';
 import styles from './common-styles.js';
 import { _coursePlansNoEditor, ThemeContext, SITE_NAME, SHOW_COPYRIGHT } from '../../config/config.js';
 import Spacer from "../Spacer";
-import HelpOutlineOutlinedIcon from "@material-ui/icons/HelpOutlineOutlined";
 import { IS_STAGING_OR_DEVELOPMENT } from "../../util/getBuildType";
 import BuildTimeIndicator from "@components/BuildTimeIndicator";
 import withTranslation from "../../util/withTranslation.js";
-import Popup from '../Popup/Popup.js';
-import About from '../../pages/Posts/About.js';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ListIcon from '@material-ui/icons/List';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import worksheetService from '../../services/worksheetService';
+import storageService from '../../services/storageService';
 
 const customStyles = (theme) => ({
         ... styles(theme),
@@ -153,7 +152,8 @@ class LessonSelection extends React.Component {
         this.state = {
             preparedRemoveProgress: false,
             removedProgress: false,
-            showPopup: false
+            showPopup: false,
+            pendingWorksheets: {}
         }
     }
 
@@ -162,6 +162,50 @@ class LessonSelection extends React.Component {
         this.setState((prevState) => ({
             showPopup: !prevState.showPopup,
         }));
+    };
+    async componentDidMount() {
+        await this.loadPendingWorksheets();
+    }
+
+    loadPendingWorksheets = async () => {
+        if (!storageService. isAuthenticated()) {
+            return;
+        }
+
+        try {
+            const result = await worksheetService.checkPendingWorksheet();
+
+            // Handle both single worksheet (current) and array (future) responses
+            let worksheets = [];
+            if (result) {
+                if (Array.isArray(result)) {
+                    worksheets = result;
+                } else {
+                    // Single worksheet returned - wrap in array
+                    worksheets = [result];
+                }
+            }
+
+            // Create a map of lessonId -> worksheetId
+            const pendingMap = {};
+            worksheets.forEach(worksheet => {
+                pendingMap[worksheet.lesson_id] = worksheet.id;
+            });
+
+            this.setState({ pendingWorksheets: pendingMap });
+        } catch (error) {
+            console.error('Failed to load pending worksheets:', error);
+        }
+    };
+
+    hasLessonProgress = (lesson) => {
+        const bktParams = this.context.bktParams;
+        const lessonSkills = Object.keys(lesson.learningObjectives || {});
+
+        return lessonSkills.some(skill => {
+            const params = bktParams[skill];
+            return params && params.probMastery > 0.1;
+        });
     };
 
     removeProgress = () => {
@@ -184,8 +228,8 @@ class LessonSelection extends React.Component {
     render() {
         const { translate } = this.props;
         const { classes, courseNum } = this.props;
-        const selectionMode = courseNum == null ?  "course" : "lesson"
-        const { showPopup } = this.state;
+        const selectionMode = courseNum == null ?  "course" : "lesson";
+        const { showPopup, pendingWorksheets } = this.state;
 
         if (selectionMode === "lesson" && courseNum >= this.coursePlans.length) {
             return <Box width={'100%'} textAlign={'center'} pt={4} pb={4}>
@@ -260,6 +304,9 @@ class LessonSelection extends React.Component {
                                     ))
                                     : this.coursePlans[this.props.courseNum].lessons.map((lesson, i) => {
                                         const textbookUrl = this.getTextbookUrl(lesson);
+                                        const hasPendingWorksheet = !!pendingWorksheets[lesson.id];
+                                        const worksheetId = pendingWorksheets[lesson.id];
+                                        const hasProgress = this.hasLessonProgress(lesson);
 
                                         return (
                                             <Fragment key={lesson.id}>
@@ -269,24 +316,31 @@ class LessonSelection extends React.Component {
                                                     elevation={2}
                                                 >
                                                     <div className={classes.pathItemContent}>
-                                                        <div className={classes.pathItemTitle}>
-                                                            {lesson.name.replace(/##/g, "")} - {lesson.topics}
-                                                        </div>
+                                                        <Box display="flex" alignItems="flex-start" justifyContent="space-between">
+                                                            <div className={classes. pathItemTitle} style={{ marginBottom: 0, flex: 1 }}>
+                                                                {lesson.name.replace(/##/g, "")} - {lesson.topics}
+                                                            </div>
+                                                        </Box>
                                                         <div className={classes.pathItemActions}>
+
+                                                            {/* View All Problems (Dev Only) */}
+                                                            {IS_STAGING_OR_DEVELOPMENT && (
+                                                                <IconButton
+                                                                    className={classes.actionIconButton}
+                                                                    size="small"
+                                                                    aria-label="View all problems"
+                                                                    title="View all problems"
+                                                                    onClick={(e) => {
+                                                                        e. stopPropagation();
+                                                                        this.props.history.push(`/lessons/${lesson.id}/problems`);
+                                                                    }}
+                                                                >
+                                                                    <ListIcon className={classes.actionIcon} />
+                                                                </IconButton>
+                                                            )}
+
                                                             <IconButton
                                                                 className={classes. actionIconButton}
-                                                                size="small"
-                                                                aria-label="View all problems"
-                                                                title="View all problems"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    this.props.history.push(`/lessons/${lesson.id}/problems`);
-                                                                }}
-                                                            >
-                                                                <ListIcon className={classes.actionIcon} />
-                                                            </IconButton>
-                                                            <IconButton
-                                                                className={classes.actionIconButton}
                                                                 size="small"
                                                                 component="a"
                                                                 href={textbookUrl}
@@ -300,6 +354,43 @@ class LessonSelection extends React.Component {
                                                             >
                                                                 <MenuBookIcon className={classes.actionIcon} />
                                                             </IconButton>
+                                                            {/* Pending Worksheet Icon */}
+                                                            {hasPendingWorksheet && (
+                                                                <IconButton
+                                                                    className={classes.actionIconButton}
+                                                                    size="small"
+                                                                    aria-label="Complete pending worksheet"
+                                                                    title="You have a pending worksheet - click to enter answers"
+                                                                    onClick={(e) => {
+                                                                        e. stopPropagation();
+                                                                        this.props.history.push(`/worksheets/${worksheetId}/enter-answers`);
+                                                                    }}
+                                                                    style={{ color: '#ff9800' }}
+                                                                >
+                                                                    <Badge badgeContent="!" color="error">
+                                                                        <AssignmentIcon className={classes.actionIcon} />
+                                                                    </Badge>
+                                                                </IconButton>
+                                                            )}
+
+                                                            {/* In Progress Badge - Top Right */}
+                                                            {(hasProgress || hasPendingWorksheet) && (
+                                                                <div>
+                                                                    <Chip
+                                                                        label="In Progress"
+                                                                        size="small"
+                                                                        style={{
+                                                                            backgroundColor: '#e3f2fd',
+                                                                            color: '#1976d2',
+                                                                            fontWeight: 600,
+                                                                            fontSize: '0. 7rem',
+                                                                            height: 22,
+                                                                            marginLeft: 8,
+                                                                        }}
+                                                                    />
+                                                                </div>
+
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <div className={classes.rightActions}>
@@ -311,7 +402,7 @@ class LessonSelection extends React.Component {
                                                                 this. props.history.push(`/lessons/${lesson.id}`)
                                                             }}
                                                         >
-                                                            Start Lesson
+                                                            {(hasProgress || hasPendingWorksheet) ?  'Continue Lesson' : 'Start Lesson'}
                                                         </Button>
                                                     </div>
                                                 </Paper>
@@ -348,25 +439,6 @@ class LessonSelection extends React.Component {
                     )}
                     <Spacer/>
                 </div>
-                <footer>
-                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                        <div style={{ marginLeft: 20, fontSize: 16 }}>
-                            {SHOW_COPYRIGHT && <>© {new Date().getFullYear()} {SITE_NAME}</>}
-                        </div>
-                        <div style={{ display: "flex", flexGrow: 1, marginRight: 20, justifyContent: "flex-end" }}>
-                            <IconButton aria-label="about" title={`About ${SITE_NAME}`}
-                                        onClick={this.togglePopup}>
-                                <HelpOutlineOutlinedIcon htmlColor={"#000"} style={{
-                                    fontSize: 36,
-                                    margin: -2
-                                }}/>
-                            </IconButton>
-                        </div>
-                        <Popup isOpen={showPopup} onClose={this.togglePopup}>
-                            <About />
-                        </Popup>
-                    </div>
-                </footer>
             </>
         )
     }

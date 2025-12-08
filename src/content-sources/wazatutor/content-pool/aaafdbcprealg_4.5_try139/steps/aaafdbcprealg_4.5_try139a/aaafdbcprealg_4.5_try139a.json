@@ -1,0 +1,12 @@
+{
+    "id": "aaafdbcprealg_4.5_try139a",
+    "stepAnswer": [
+        "$$\\frac{-1}{12}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.139$$",
+    "stepBody": "Simplify: $$\\frac{1}{4}$$ + $$\\frac{2}{3}$$ * $$\\left(-\\frac{1}{2}\\right)$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-1}{12}$$"
+}

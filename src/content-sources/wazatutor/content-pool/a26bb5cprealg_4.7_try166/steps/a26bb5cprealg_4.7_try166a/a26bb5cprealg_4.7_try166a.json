@@ -1,0 +1,12 @@
+{
+    "id": "a26bb5cprealg_4.7_try166a",
+    "stepAnswer": [
+        "$$\\frac{-2}{3}$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Try It $$4.166$$",
+    "stepBody": "Solve: a + $$\\frac{5}{6}$$ $$=$$ $$\\frac{1}{6}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$\\frac{-2}{3}$$"
+}

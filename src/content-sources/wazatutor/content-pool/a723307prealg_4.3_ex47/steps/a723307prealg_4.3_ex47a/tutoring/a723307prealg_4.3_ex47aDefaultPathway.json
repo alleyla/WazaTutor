@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_ex47a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Parentheses",
+        "text": "Simplify inside the parentheses first.\\n$$\\frac{1}{4}$$ + $$\\frac{1}{8}$$ $$=$$ $$\\frac{2}{8}$$ + $$\\frac{1}{8}$$ $$=$$ $$\\frac{3}{8}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex47a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex47a-h1"
+        ],
+        "title": "Divide",
+        "text": "Divide $$2$$ $$\\frac{1}{2}$$ by $$\\frac{3}{8}$$.\\n$$\\frac{5}{2}$$ * $$\\frac{8}{3}$$ $$=$$ $$\\frac{20}{3}$$ $$=$$ $$6$$ $$\\frac{2}{3}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

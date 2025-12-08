@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a723307prealg_4.3_ex38a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Convert",
+        "text": "Convert both mixed numbers to improper fractions.\\n$$2$$ $$\\frac{1}{2}$$ $$=$$ $$\\frac{5}{2}$$\\n$$2$$ $$\\frac{1}{5}$$ $$=$$ $$\\frac{11}{5}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a723307prealg_4.3_ex38a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a723307prealg_4.3_ex38a-h1"
+        ],
+        "title": "Multiply",
+        "text": "Multiply the fractions: $$\\frac{5}{2}$$ * $$\\frac{11}{5}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

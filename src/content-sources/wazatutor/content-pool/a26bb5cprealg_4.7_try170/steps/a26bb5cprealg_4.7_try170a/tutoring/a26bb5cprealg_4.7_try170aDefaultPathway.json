@@ -1,0 +1,36 @@
+[
+    {
+        "id": "a26bb5cprealg_4.7_try170a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD is $$6$$. Convert $$\\frac{1}{2}$$ to $$\\frac{3}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try170a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try170a-h1"
+        ],
+        "title": "Add",
+        "text": "q $$=$$ $$\\frac{1}{6}$$ + $$\\frac{3}{6}$$ $$=$$ $$\\frac{4}{6}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a26bb5cprealg_4.7_try170a-h3",
+        "type": "hint",
+        "dependencies": [
+            "a26bb5cprealg_4.7_try170a-h2"
+        ],
+        "title": "Simplify",
+        "text": "Simplify $$\\frac{4}{6}$$ to $$\\frac{2}{3}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

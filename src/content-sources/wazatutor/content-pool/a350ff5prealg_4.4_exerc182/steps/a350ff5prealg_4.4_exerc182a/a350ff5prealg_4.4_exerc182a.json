@@ -1,0 +1,12 @@
+{
+    "id": "a350ff5prealg_4.4_exerc182a",
+    "stepAnswer": [
+        "$$r$$"
+    ],
+    "problemType": "TextBox",
+    "stepTitle": "Exercise $$182$$",
+    "stepBody": "Find the sum: $$\\frac{4r}{12}$$ + $$\\frac{8r}{12}$$",
+    "answerType": "arithmetic",
+    "variabilization": {},
+    "answerLatex": "$$r$$"
+}

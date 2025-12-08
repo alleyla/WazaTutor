@@ -1,0 +1,24 @@
+[
+    {
+        "id": "a67a51aprealg_4.6_try144a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "Add Wholes",
+        "text": "Add $$8$$ + $$1$$ $$=$$ $$9$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "a67a51aprealg_4.6_try144a-h2",
+        "type": "hint",
+        "dependencies": [
+            "a67a51aprealg_4.6_try144a-h1"
+        ],
+        "title": "Add Fractions",
+        "text": "Add $$\\frac{2}{11}$$ + $$\\frac{4}{11}$$ $$=$$ $$\\frac{6}{11}$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]

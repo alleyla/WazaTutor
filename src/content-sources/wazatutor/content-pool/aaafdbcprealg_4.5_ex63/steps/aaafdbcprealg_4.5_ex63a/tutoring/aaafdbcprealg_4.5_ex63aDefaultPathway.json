@@ -1,0 +1,36 @@
+[
+    {
+        "id": "aaafdbcprealg_4.5_ex63a-h1",
+        "type": "hint",
+        "dependencies": [],
+        "title": "LCD",
+        "text": "The LCD of $$8$$ and $$4$$ is $$8$$.",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex63a-h2",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex63a-h1"
+        ],
+        "title": "Convert",
+        "text": "$$\\frac{3}{4}$$ $$=$$ $$\\frac{6}{8}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    },
+    {
+        "id": "aaafdbcprealg_4.5_ex63a-h3",
+        "type": "hint",
+        "dependencies": [
+            "aaafdbcprealg_4.5_ex63a-h2"
+        ],
+        "title": "Subtract",
+        "text": "$$\\frac{7}{8}$$ - $$\\frac{6}{8}$$ $$=$$ $$\\frac{1}{8}$$",
+        "variabilization": {},
+        "oer": "",
+        "license": ""
+    }
+]
